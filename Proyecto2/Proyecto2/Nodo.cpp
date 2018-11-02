@@ -5,6 +5,6 @@
 Nodo::Nodo(int d) // constructor recibiendo datos
 {
 	dato = d;
-	ptr_izq = nullptr;
-	ptr_der = nullptr;
+	superior = nullptr;
+	inferior = nullptr;
 }
