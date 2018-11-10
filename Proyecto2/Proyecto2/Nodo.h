@@ -7,5 +7,6 @@ private:
 	Nodo * inferior;// puntero al nodo der
 public:
 	Nodo(int);// constructor recibiendo datos
+	friend class Arbol;
 };
 
