@@ -24,6 +24,12 @@
     <ClInclude Include="Arbol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sistema_alarma.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Monitoreo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -36,6 +42,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Arbol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sistema_alarma.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Monitoreo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
