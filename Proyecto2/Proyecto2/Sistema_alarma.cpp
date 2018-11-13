@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <vector>
 using namespace std;
 
 Sistema_alarma::Sistema_alarma()
@@ -13,6 +14,22 @@ Sistema_alarma::Sistema_alarma()
 Sistema_alarma::~Sistema_alarma()
 {
 }
+
+struct CS
+{
+	int codigo;
+	string codigoAcceso;
+	string NombreUsuario;
+	int telefono;
+};
+
+struct Alarma
+{
+	string CP;
+	vector<CS>codigosSecundarios;
+	int zonas;
+};
+
 
 
 void Sistema_alarma::Menu()

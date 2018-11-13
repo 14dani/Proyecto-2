@@ -14,6 +14,7 @@ public:
 	Nodo* buscar(int); 
 	Nodo* buscar_nodo(Nodo*, int); 
 	Nodo* buscar_nodo_iterativo(int);
+	friend class Sistema_alarma;
 };
 
 
