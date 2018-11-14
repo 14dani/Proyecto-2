@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 using namespace std;
 vector<string> lineas; /*guarda las lineas del archivo de monitoreo para que se pueda cerrar el archivo de registros inmediatamente
 					   , asi el sistema de alarma puede seguir enviando alertas mientras el sistema de monitoreo esta encendido*/
@@ -25,12 +26,66 @@ void lineasf()//Funcion para guardar las lineas en el vector.
 	monitoreo.close();
 }
 
+vector<string> dividir_string(string string1)//Divide string separado  por espacios
+{
+	vector<string> space;
+
+
+	istringstream iss(string1);
+
+	string token;
+
+	while (getline(iss, token, ' '))
+	{
+
+		space.push_back(token);
+
+	}
+	return space;
+}
+
 void imprimir_lineas(int tanda)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
 {
 	int indice_min = (tanda-1) * 15;
 	int indice_max = indice_min + 14;
-	for (int i = indice_min; i <= indice_max; i++)
+	int tope;
+	string descripcion = "";
+	string accion = "";
+	int sw = 0;
+	int sw2 = 0;
+	vector<string> elementos;
+	int contador = 1;
+
+	if (indice_max > lineas.size() - 1)tope = lineas.size() - 1;
+	else tope = indice_max;
+
+	for (int i = indice_min; i <= tope; i++)
 	{
+			elementos = dividir_string(lineas[i]);
+			for (int j = 0; j < elementos.size(); j++) {
+				if (elementos[i] == "." || sw == 1)
+				{
+					sw = 1;
+					if (elementos[i] == "..") {
+						sw = 0; sw2 = 1;
+					}
+					if (elementos[i] != "." && sw==1)
+					{
+						descripcion += elementos[i];
+					}
+
+				}
+				if (sw2 == 1)
+				{
+					if (elementos[1] == "...")sw2 = 0;
+					if (elementos[i]!=".." && sw2 == 1)accion += elementos[i];
+				}
+			}
+			if (elementos[elementos.size() - 1] == "1")
+			{
+				cout << contador << "-" << setw(1) << elementos[1] << setw(3) << elementos[2] << setw(3) << elementos[3] << setw(3) << elementos[4] << setw(3);
+				cout << elementos[5] << setw(3) << descripcion << setw(3) << accion << endl;
+			}
 
 	}
 }
@@ -117,7 +172,7 @@ string Desencript(string frase)//Algortimo para desencriptar
 	}return resultado;
 }
 
-void Monitoreo::Monitorear()
+void Monitorear()
 {
 
 }
