@@ -4,15 +4,37 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 using namespace std;
 vector<string> lineas; /*guarda las lineas del archivo de monitoreo para que se pueda cerrar el archivo de registros inmediatamente
 					   , asi el sistema de alarma puede seguir enviando alertas mientras el sistema de monitoreo esta encendido*/
 
+void lineasf()//Funcion para guardar las lineas en el vector.
+{
+	fstream monitoreo;
+	string linea;
+	monitoreo.open("monitoreo.txt", ios::in);/////Recordar cambiar a nombre del archivo real.
+	cin.ignore();
+	while (!monitoreo.eof())
+	{
+		getline(monitoreo, linea);
 
-/*Supuestamente la pagina se tiene que actualizar al apretar cierto comando,
-lo que se me ocurre es que siempre que se ingrese al comando de monitoreo el programa cargue automaticamente la lista.
-Le colocamos un switch al puro inicio, si el swicth esta encendido quiere decir que el programa se reinicio para refrescar la lista.
-Si el interruptor switch esta apagado quiere decir que el programa de monitoreo se esta iniciando normalmente*/
+		lineas.push_back(linea);
+
+	}
+	monitoreo.close();
+}
+
+void imprimir_lineas(int tanda)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
+{
+	int indice_min = (tanda-1) * 15;
+	int indice_max = indice_min + 14;
+	for (int i = indice_min; i <= indice_max; i++)
+	{
+
+	}
+}
+
 
 Monitoreo::Monitoreo()
 {
@@ -175,6 +197,7 @@ void Monitoreo::Menu()
 		switch (opcion)
 		{
 		case 1:
+			lineasf();
 			break;
 		case 2:
 			cout << "Ingrese usuario: ";
