@@ -179,9 +179,53 @@ void Monitorear()
 
 void Monitoreo::Establecer_Usuarios(string pusuario)
 {
+	Usuario us;
+	string nom, propiedad, dir, correo1;
+	int t1, t2;
+
 	if (caracteres(pusuario))
 	{
-		cout << "Yes" << endl;
+		if (users.size() == 0)
+		{
+			us.identificacion = pusuario;
+			cout << "Nombre y apellidos: ";
+			getline(cin, nom);
+			us.nombre = nom;
+
+			cout << "Tipo de propiedad donde desea instalar el sistema de alarma: ";
+			getline(cin, propiedad);
+			us.tipo_propiedad = propiedad;
+
+			cout << "Direccion de propiedad: ";
+			getline(cin, dir);
+			us.direccion = dir;
+
+			cout << "Telefono 1: ";
+			cin >> t1;
+			us.tel_1 = t1;
+
+			cout << "Telefono 2: ";
+			cin >> t2;
+			us.tel_2 = t2;
+
+			cout << "Correo electronico: ";
+			getline(cin, correo1);
+			us.correo = correo1;
+
+			users.push_back(us);
+
+		}
+		else
+		{
+			if (RecorrenUsuarios(pusuario))
+			{
+				cout << "Usuario ya registrado" << endl;
+			}
+			else
+			{
+
+			}
+		}
 	}
 	else
 		cout << "Identificación debe tener 10 o más caracteres" << endl;
