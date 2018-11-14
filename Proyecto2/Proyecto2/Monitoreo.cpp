@@ -174,7 +174,28 @@ string Desencript(string frase)//Algortimo para desencriptar
 
 void Monitorear()
 {
-
+	string comando = "enter";
+	int contador = 1;
+	lineasf();
+	cin.ignore();
+	while (comando != "f")
+	{
+		if (comando == "enter") {
+			if (15 <= (contador * 15 - lineas.size))
+			{
+				cout << endl << "No hay mas datos." << endl;
+			}
+			else {
+				imprimir_lineas(contador);
+				contador++;
+			}
+		}
+		else (comando == "A")
+		{
+			Monitorear();
+		}
+		getline(cin, comando);
+	}
 }
 
 void Monitoreo::Establecer_Usuarios(string pusuario)
