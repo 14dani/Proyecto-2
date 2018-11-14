@@ -18,6 +18,18 @@ Monitoreo::Monitoreo()
 {
 }
 
+struct Usuario   //estructura para establecer el usuario
+{
+	string identificacion;
+	string nombre;
+	string tipo_propiedad;
+	string direccion;
+	int tel_1;
+	int tel_2;
+	string correo;
+
+};
+
 string Encript(string frase)//Algoritmo de encriptado
 {
 	string resultado = "";
@@ -51,6 +63,16 @@ string Desencript(string frase)//Algortimo para desencriptar
 	}return resultado;
 }
 
+void Monitoreo::Monitorear()
+{
+
+}
+
+void Monitoreo::Establecer_Usuarios()
+{
+
+}
+
 void Monitoreo::Menu()
 {
 	string opcion;
@@ -61,7 +83,7 @@ void Monitoreo::Menu()
 		cout << "3. Ayuda" << endl;
 		cout << "4. Acerca de" << endl;
 		cout << "0. Fin" << endl;
-		cout << setw(10) << "F.FUEGO" << setw(10) << "A.AYUDA" << setw(11) << "P.PANICO" << endl;
+		
 		getline(cin, opcion);
 
 	}

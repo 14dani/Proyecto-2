@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Arbol.h"
 #include "Nodo.h"
+#include <string>
+using namespace std;
 
 
 Arbol::Arbol() // constructor
@@ -8,7 +10,7 @@ Arbol::Arbol() // constructor
 	raiz = nullptr;
 }
 
-void Arbol::insertar(int valor) // llega el puntero del nodo a insertar 
+void Arbol::insertar(string valor) // llega el puntero del nodo a insertar 
 {
 	Nodo* ptr = new Nodo(valor);
 	raiz = insertar_nodo(raiz, ptr); // envia punteros de la raiz y del nodo a insertar 
@@ -41,12 +43,12 @@ void Arbol::en_orden(Nodo *ptr) // recorrido I-R-D
 	}
 }
 
-Nodo* Arbol::buscar(int valor)
+Nodo* Arbol::buscar(string valor)
 {
 	return buscar_nodo(raiz, valor);
 }
 
-Nodo* Arbol::buscar_nodo(Nodo* ptr_raiz, int valor)
+Nodo* Arbol::buscar_nodo(Nodo* ptr_raiz, string valor)
 {
 	if (ptr_raiz == nullptr) // caso base 1: algoritmo termina si arbol vacio o no esta el valor
 		return nullptr;
@@ -58,7 +60,7 @@ Nodo* Arbol::buscar_nodo(Nodo* ptr_raiz, int valor)
 		return buscar_nodo(ptr_raiz->inferior, valor); // se mueve por el hijo derecho > 
 }
 
-Nodo* Arbol::buscar_nodo_iterativo(int valor)
+Nodo* Arbol::buscar_nodo_iterativo(string valor)
 {
 	Nodo* ptr_raiz = raiz;
 	while (ptr_raiz != nullptr)

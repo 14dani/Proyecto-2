@@ -1,12 +1,15 @@
 #pragma once
+#include <string>
+using namespace std;
 class Nodo // componentes del nodo
 {
 private:
-	int dato;// datos del nodo, en este caso es solo un entero
+	string dato;// datos del nodo, en este caso es solo un string por la identificacion
 	Nodo * superior;// puntero al nodo izq
 	Nodo * inferior;// puntero al nodo der
 public:
-	Nodo(int);// constructor recibiendo datos
+	Nodo(string);// constructor recibiendo datos
 	friend class Arbol;
 };
+
 

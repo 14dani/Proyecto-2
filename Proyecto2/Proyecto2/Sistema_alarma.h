@@ -6,7 +6,7 @@ using namespace std;
 
 class Sistema_alarma
 {
-	string identificacion;
+
 
 public:
 	Sistema_alarma();
