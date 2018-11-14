@@ -51,10 +51,11 @@ void Monitoreo::Menu()
 	{
 		cout << "1. Monitorear" << endl;//Salida del comando que se desee ingresar
 		cout << "2. Establecer usuarios" << endl;
-		cout << "3. Ayuda" << endl;
-		cout << "4. Acerca de" << endl;
+		cout << "3. Eliminar usuarios" << endl;
+		cout << "4. Ayuda" << endl;
+		cout << "5. Acerca de" << endl;
 		cout << "0. Fin" << endl;
-		cout << setw(10) << "F.FUEGO" << setw(10) << "A.AYUDA" << setw(11) << "P.PANICO" << endl;
+		
 		getline(cin, opcion);
 
 	}
