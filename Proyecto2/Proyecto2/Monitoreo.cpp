@@ -30,6 +30,38 @@ struct Usuario   //estructura para establecer el usuario
 
 };
 
+vector<Usuario>users;//vector para guardar los usuarios establecidos
+
+bool RecorrenUsuarios(string usuario)
+{
+	bool f = false;
+	{
+		for (int i = 0; i < users.size(); i++)
+		{
+			if (users.at(i).identificacion == usuario)
+			{
+				f = true;
+			}
+		}
+	}
+	return f;
+}
+
+bool caracteres(string user) //verifica que la identificacion sea de 10 o más caracteres
+{
+	bool f = false;
+	{
+		for (int i = 0; i < user.length(); i++)
+		{
+			if (i >= 10)
+			{
+				f = true;
+			}
+		}
+	}
+	return f;
+}
+
 string Encript(string frase)//Algoritmo de encriptado
 {
 	string resultado = "";
@@ -68,23 +100,56 @@ void Monitoreo::Monitorear()
 
 }
 
-void Monitoreo::Establecer_Usuarios()
+void Monitoreo::Establecer_Usuarios(string pusuario)
 {
+	if (caracteres(pusuario))
+	{
+		cout << "Yes" << endl;
+	}
+	else
+		cout << "Identificación debe tener 10 o más caracteres" << endl;
 
 }
 
+
+
 void Monitoreo::Menu()
 {
-	string opcion;
-	while (true)
-	{
+	int opcion;
+	do {
+		cout << "MENU" << endl;
 		cout << "1. Monitorear" << endl;//Salida del comando que se desee ingresar
 		cout << "2. Establecer usuarios" << endl;
 		cout << "3. Ayuda" << endl;
 		cout << "4. Acerca de" << endl;
 		cout << "0. Fin" << endl;
+		cout << "Opcion :";
+		cin >> opcion;
+		cout << endl;
+		string U;
 		
-		getline(cin, opcion);
+		switch (opcion)
+		{
+		case 1:
+			break;
+		case 2:
+			cout << "Ingrese usuario: ";
+			cin.ignore();
+			getline(cin, U);
+			Establecer_Usuarios(U);
+			cout << endl;
+			break;
+		case 3:
+		
+			break;
+		case 4:
+			break;
+		
+		
+		//case 0:
+			//break;
+		}
+	} while (opcion > 4&&opcion >0);
 
-	}
+	
 }
