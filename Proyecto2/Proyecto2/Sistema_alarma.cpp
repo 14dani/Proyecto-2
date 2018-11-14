@@ -15,20 +15,6 @@ Sistema_alarma::~Sistema_alarma()
 {
 }
 
-struct CS
-{
-	int codigo;
-	string codigoAcceso;
-	string NombreUsuario;
-	int telefono;
-};
-
-struct Alarma
-{
-	string CP;
-	vector<CS>codigosSecundarios;
-	int zonas;
-};
 
 
 

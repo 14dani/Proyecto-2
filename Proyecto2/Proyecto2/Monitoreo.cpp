@@ -17,6 +17,33 @@ Monitoreo::~Monitoreo()
 {
 }
 
+
+struct CS
+{
+	int codigo;
+	string codigoAcceso;
+	string NombreUsuario;
+	int telefono;
+};
+
+struct Alarma
+{
+	string CP;
+	vector<CS>codigosSecundarios;
+	int zonas;
+};
+
+void Monitoreo::Monitorear()
+{
+
+}
+
+void Monitoreo::Establecer_Usuarios()
+{
+
+}
+
+
 void Monitoreo::Menu()
 {
 	string opcion;
