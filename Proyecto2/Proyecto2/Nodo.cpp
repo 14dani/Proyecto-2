@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Nodo.h"
+#include <string>
+using namespace std;
 
 
-Nodo::Nodo(int d) // constructor recibiendo datos
+Nodo::Nodo(string d) // constructor recibiendo datos
 {
 	dato = d;
 	superior = nullptr;
