@@ -336,7 +336,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 			{
 				for (int i = 0; i < users.size(); i++)
 				{
-					if (pusuario == users.at(i).identificacion)
+					if (pusuario == users.at(i).identificacion) //Desplega informacion cuando ya hay un usuario registrado y da la opcion para realizar cambios
 					{
 						cout << "Identificacion: " << users.at(i).identificacion << endl;
 						cout << "Nombre: " << users.at(i).nombre << endl;
