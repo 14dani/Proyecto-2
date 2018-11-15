@@ -335,7 +335,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 
 void Monitoreo::Menu()
 {
-	int opcion;
+	string opcion;
 	while(true)
 	{
 		cout << "MENU" << endl;
@@ -345,16 +345,16 @@ void Monitoreo::Menu()
 		cout << "4. Acerca de" << endl;
 		cout << "0. Fin" << endl;
 		cout << "Opcion :";
-		cin >> opcion;
+		getline(cin, opcion);
 		cout << endl;
 		string U;
 		
-		if (opcion == 1)
+		if (opcion == "1")
 		{
-		case 1:
 			Monitorear();
-			break;
-		case 2:
+		}
+		if(opcion == "2")
+		{
 			cout << "Ingrese usuario: ";
 			cin.ignore();
 			getline(cin, U);
