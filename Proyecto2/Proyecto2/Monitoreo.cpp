@@ -352,7 +352,7 @@ void Monitoreo::Menu()
 		if (opcion == 1)
 		{
 		case 1:
-			Monitorear();
+			lineasf();
 			break;
 		case 2:
 			cout << "Ingrese usuario: ";
