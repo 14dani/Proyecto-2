@@ -10,6 +10,8 @@ using namespace std;
 vector<string> lineas; /*guarda las lineas del archivo de monitoreo para que se pueda cerrar el archivo de registros inmediatamente
 					   , asi el sistema de alarma puede seguir enviando alertas mientras el sistema de monitoreo esta encendido*/
 
+
+
 void lineasf()//Funcion para guardar las lineas en el vector.
 {
 	fstream monitoreo;
@@ -56,7 +58,7 @@ void imprimir_lineas(int tanda)//Funcion para imprimir lineas(de 15 en 15), el s
 	vector<string> elementos;
 	int contador = 1;
 
-	if (indice_max > lineas.size() - 1)tope = lineas.size() - 1;
+	if (indice_max > int(lineas.size()) - 1)tope = int(lineas.size()) - 1;
 	else tope = indice_max;
 
 	for (int i = indice_min; i <= tope; i++)
@@ -71,29 +73,31 @@ void imprimir_lineas(int tanda)//Funcion para imprimir lineas(de 15 en 15), el s
 					}
 					if (elementos[i] != "." && sw==1)
 					{
-						descripcion += elementos[i];
+						if (elementos[i] == "0") { descripcion = "none"; }
+						else { descripcion += elementos[i]; }
 					}
 
 				}
 				if (sw2 == 1)
 				{
 					if (elementos[1] == "...")sw2 = 0;
-					if (elementos[i]!=".." && sw2 == 1)accion += elementos[i];
+					if (elementos[i] != ".." && sw2 == 1) {
+						if (elementos[i] == "0") { accion = "none"; }
+						else { accion += elementos[i]; }
+					}
 				}
 			}
 			if (elementos[elementos.size() - 1] == "1")
 			{
-				cout << contador << "-" << setw(1) << elementos[1] << setw(3) << elementos[2] << setw(3) << elementos[3] << setw(3) << elementos[4] << setw(3);
-				cout << elementos[5] << setw(3) << descripcion << setw(3) << accion << endl;
+				cout << contador << "-" << elementos[1] << setw(10) << elementos[2] << setw(10) << elementos[3] << setw(10) << elementos[4];
+				cout <<setw(10)<< elementos[5] << setw(10) << descripcion << setw(10) << accion << endl;
+				contador++;
 			}
 
 	}
 }
 
 
-Monitoreo::Monitoreo()
-{
-}
 
 struct Usuario   //estructura para establecer el usuario
 {
@@ -177,11 +181,13 @@ void Monitorear()
 	string comando = "enter";
 	int contador = 1;
 	lineasf();
-	cin.ignore();
+	int variable;
+
 	while (comando != "f")
 	{
 		if (comando == "enter") {
-			if (15 <= (contador * 15 - lineas.size))
+			variable = contador * 15 - int(lineas.size());
+			if (15 <= variable)
 			{
 				cout << endl << "No hay mas datos." << endl;
 			}
@@ -190,10 +196,11 @@ void Monitorear()
 				contador++;
 			}
 		}
-		else (comando == "A")
+		else if (comando == "A")
 		{
 			Monitorear();
 		}
+		cin.ignore();
 		getline(cin, comando);
 	}
 }
@@ -273,7 +280,7 @@ void Monitoreo::Menu()
 		switch (opcion)
 		{
 		case 1:
-			lineasf();
+			Monitorear();
 			break;
 		case 2:
 			cout << "Ingrese usuario: ";
