@@ -241,6 +241,42 @@ void SaveFile()//Archivo para guardar usuarios
 
 }
 
+void CrearUsuario(string usu)
+{
+	Usuario us;
+	string nom, propiedad, dir, correo1;
+	int t1, t2;
+	us.identificacion = usu;
+	cout << "Nombre y apellidos: ";
+	getline(cin, nom);
+	us.nombre = nom;
+
+	cout << "Tipo de propiedad donde desea instalar el sistema de alarma: ";
+	getline(cin, propiedad);
+	us.tipo_propiedad = propiedad;
+
+	cout << "Direccion de propiedad: ";
+	getline(cin, dir);
+	us.direccion = dir;
+
+	cout << "Telefono 1: ";
+	cin >> t1;
+	us.tel_1 = t1;
+
+	cout << "Telefono 2: ";
+	cin >> t2;
+	us.tel_2 = t2;
+
+	cout << "Correo electronico: ";
+	cin.ignore();
+	getline(cin, correo1);
+	us.correo = correo1;
+
+	users.push_back(us);
+	SaveFile();
+}
+
+
 void Monitoreo::Establecer_Usuarios(string pusuario)
 {
 	Usuario us;
@@ -251,35 +287,8 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 	{
 		if (users.size() == 0)
 		{
-			us.identificacion = pusuario;
-			cout << "Nombre y apellidos: ";
-			getline(cin, nom);
-			us.nombre = nom;
-
-			cout << "Tipo de propiedad donde desea instalar el sistema de alarma: ";
-			getline(cin, propiedad);
-			us.tipo_propiedad = propiedad;
-
-			cout << "Direccion de propiedad: ";
-			getline(cin, dir);
-			us.direccion = dir;
-
-			cout << "Telefono 1: ";
-			cin >> t1;
-			us.tel_1 = t1;
-
-			cout << "Telefono 2: ";
-			cin >> t2;
-			us.tel_2 = t2;
-
-			cout << "Correo electronico: ";
-			cin.ignore();
-			getline(cin, correo1);
-			us.correo = correo1;
-
-			users.push_back(us);
-			SaveFile();
-
+			
+			CrearUsuario(pusuario);
 		}
 		else
 		{
@@ -300,34 +309,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 			}
 			else
 			{
-				us.identificacion = pusuario;
-				cout << "Nombre y apellidos: ";
-				getline(cin, nom);
-				us.nombre = nom;
-
-				cout << "Tipo de propiedad donde desea instalar el sistema de alarma: ";
-				getline(cin, propiedad);
-				us.tipo_propiedad = propiedad;
-
-				cout << "Direccion de propiedad: ";
-				getline(cin, dir);
-				us.direccion = dir;
-
-				cout << "Telefono 1: ";
-				cin >> t1;
-				us.tel_1 = t1;
-
-				cout << "Telefono 2: ";
-				cin >> t2;
-				us.tel_2 = t2;
-
-				cout << "Correo electronico: ";
-				cin.ignore();
-				getline(cin, correo1);
-				us.correo = correo1;
-
-				users.push_back(us);
-				SaveFile();
+				CrearUsuario(pusuario);
 			}
 		}
 	}
@@ -363,7 +345,6 @@ void Monitoreo::Menu()
 		if(opcion == 2)
 		{
 			cout << "Ingrese usuario: ";
-			cin.ignore();
 			getline(cin, U);
 			cout << endl;
 			Establecer_Usuarios(U);
