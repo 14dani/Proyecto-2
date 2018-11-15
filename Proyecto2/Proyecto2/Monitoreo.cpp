@@ -176,7 +176,7 @@ string Desencript(string frase)//Algortimo para desencriptar
 	}return resultado;
 }
 
-void Monitoreo::Monitorear()
+void Monitorear()
 {
 	string comando = "enter";
 	int contador = 1;
@@ -352,7 +352,7 @@ void Monitoreo::Menu()
 		if (opcion == 1)
 		{
 		case 1:
-			lineasf();
+			Monitorear();
 			break;
 		case 2:
 			cout << "Ingrese usuario: ";
