@@ -149,6 +149,29 @@ bool caracteres(string user) //verifica que la identificacion sea de 10 o más ca
 	return f;
 }
 
+bool telefono(string numero) //verifica que la identificacion sea de 10 o más caracteres
+{
+	bool f = false;
+	{
+		for (int i = 0; i < numero.size(); i++)
+		{
+			if (i >= 7)
+			{
+				f = true;
+			}
+		}
+	}
+	return f;
+}
+
+int ToInt(string s) //Funcion que convierte lo telefono en int
+{
+	stringstream ss(s);
+	int x = 0;
+	ss >> x;
+	return x;
+}
+
 string Encript(string frase)//Algoritmo de encriptado
 {
 	string resultado = "";
@@ -223,17 +246,17 @@ void SaveFile()//Archivo para guardar usuarios
 		cout << "Error al abrir archivo" << endl;
 	else
 	{
-		for (unsigned int mats = 0; mats < users.size(); mats++)
+		for (unsigned int i = 0; i < users.size(); i++)
 		{
 			my_file << endl;
 
-			my_file << users.at(mats).identificacion << endl;
-			my_file << users.at(mats).nombre << endl;
-			my_file << users.at(mats).tipo_propiedad << endl;
-			my_file << users.at(mats).direccion << endl;
-			my_file << users.at(mats).tel_1 << endl;
-			my_file << users.at(mats).tel_2 << endl;
-			my_file << users.at(mats).correo << endl;
+			my_file << users.at(i).identificacion << "|"
+				<< users.at(i).nombre << "|"
+				<< users.at(i).tipo_propiedad << "|"
+				<< users.at(i).direccion << "|"
+				<< users.at(i).tel_1 << "|"
+				<< users.at(i).tel_2 << "|"
+				<< users.at(i).correo << endl;
 
 		}
 		my_file.close();
@@ -244,8 +267,8 @@ void SaveFile()//Archivo para guardar usuarios
 void CrearUsuario(string usu)
 {
 	Usuario us;
-	string nom, propiedad, dir, correo1;
-	int t1, t2;
+	string nom, propiedad, dir, correo1,t1,t2;
+	
 	us.identificacion = usu;
 	cout << "Nombre y apellidos: ";
 	getline(cin, nom);
@@ -259,16 +282,33 @@ void CrearUsuario(string usu)
 	getline(cin, dir);
 	us.direccion = dir;
 
-	cout << "Telefono 1: ";
-	cin >> t1;
-	us.tel_1 = t1;
+	do {
+		cout << "Telefono 1: ";
+		getline(cin, t1);
+		if (telefono(t1))
+		{
 
-	cout << "Telefono 2: ";
-	cin >> t2;
-	us.tel_2 = t2;
+			us.tel_1 = ToInt(t1);
+		}
+		else
+			cout << "Numero debe tener 8 numeros exactos" << endl;
+	} while (telefono(t1) == false);
+	
+	do {
+		cout << "Telefono 2: ";
+		getline(cin, t2);
+		if (telefono(t2))
+		{
+
+			us.tel_2 = ToInt(t2);
+		}
+		else
+			cout << "Numero debe tener 8 numeros exactos" << endl;
+	} while (telefono(t2) == false);
+	
 
 	cout << "Correo electronico: ";
-	cin.ignore();
+	//cin.ignore();
 	getline(cin, correo1);
 	us.correo = correo1;
 
@@ -280,8 +320,8 @@ void CrearUsuario(string usu)
 void Monitoreo::Establecer_Usuarios(string pusuario)
 {
 	Usuario us;
-	string nom, propiedad, dir, correo1;
-	int t1, t2;
+	string op,id,nom2,prop2,dir2,correo2,t11,t22;
+	
 
 	if (caracteres(pusuario))
 	{
@@ -298,12 +338,74 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 				{
 					if (pusuario == users.at(i).identificacion)
 					{
+						cout << "Identificacion: " << users.at(i).identificacion << endl;
 						cout << "Nombre: " << users.at(i).nombre << endl;
 						cout << "Tipo de propiedad: " << users.at(i).tipo_propiedad << endl;
 						cout << "Direccion: " << users.at(i).direccion << endl;
 						cout << "Telefono 1: " << users.at(i).tel_1 << endl;
 						cout << "Telefono 2: " << users.at(i).tel_2 << endl;
 						cout << "Correo: " << users.at(i).correo << endl;
+						cout << "Para cambiar algun dato presione la tecla <C>" << endl;
+						cout << "Para salir presione la tecla <S>" << endl;
+						string c;
+						getline(cin, c);
+						if (c == "C" || c == "c")
+						{
+							while (true)
+							{
+								cout << "1. Identificacion" << endl;
+								cout << "2. Nombre" << endl;
+								cout << "3. Tipo de propiedad" << endl;
+								cout << "4. Direccion" << endl;
+								cout << "5. Telefono 1" << endl;
+								cout << "6. Telefono 2" << endl;
+								cout << "7. Correo" << endl;
+								cout << "S. Salir" << endl;
+								cout << "Cambiar: "; getline(cin, op);
+								if (op == "1")
+								{
+									cout << "Identificacion nueva: ";
+									getline(cin, id);
+									if (caracteres(id))
+									{
+										users.at(i).identificacion = id;
+									}
+									else
+										cout << "Identificacion debe tener 10 o mas caracteres" << endl;
+
+								}
+								if (op == "2"){cout << "Nombre nuevo: ";getline(cin, nom2);users.at(i).nombre = nom2;}
+								if (op == "3") { cout << "Tipo de propiedad nueva: "; getline(cin, prop2); users.at(i).tipo_propiedad = prop2; }
+								if (op == "4") { cout << "Direccion nueva: "; getline(cin, dir2); users.at(i).direccion = dir2; }
+								if (op == "5") {
+									do {
+										cout << "Telefono 1 nuevo: "; getline(cin, t11); if (telefono(t11))
+										{
+											users.at(i).tel_1 = ToInt(t11);
+										}
+										else
+											cout << "Numero debe tener 8 numeros exactos" << endl;
+									} while (telefono(t11) == false);
+								}
+								if (op == "6")
+								{
+									do {
+										cout << "Telefono 2 nuevo: ";
+										getline(cin, t22);
+										if (telefono(t22))
+										{
+
+											users.at(i).tel_2 = ToInt(t22);
+										}
+										else
+											cout << "Numero debe tener 8 numeros exactos" << endl;
+									} while (telefono(t22) == false);
+								}
+								if (op == "7") { cout << "Correo nuevo: "; getline(cin, correo2); users.at(i).correo = correo2; }
+								if (op == "S" || op == "s")break;
+								SaveFile();
+							}
+						}
 					}
 				}
 			}
@@ -314,7 +416,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 		}
 	}
 	else
-		cout << "Identificación debe tener 10 o mas caracteres" << endl;
+		cout << "Identificacion debe tener 10 o mas caracteres" << endl;
 
 }
 
@@ -330,8 +432,9 @@ void Monitoreo::Menu()
 		cout << "MENU" << endl;
 		cout << "1. Monitorear" << endl;//Salida del comando que se desee ingresar
 		cout << "2. Establecer usuarios" << endl;
-		cout << "3. Ayuda" << endl;
-		cout << "4. Acerca de" << endl;
+		cout << "3. Eliminar usario" << endl;
+		cout << "4. Ayuda" << endl;
+		cout << "5. Acerca de" << endl;
 		cout << "0. Fin" << endl;
 		cout << "Opcion :";
 		cin >> opcion;
@@ -345,6 +448,7 @@ void Monitoreo::Menu()
 		if(opcion == 2)
 		{
 			cout << "Ingrese usuario: ";
+			cin.ignore();
 			getline(cin, U);
 			cout << endl;
 			Establecer_Usuarios(U);

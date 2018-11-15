@@ -1,16 +1,2 @@
 
-DF123456789
-DAC
-Est
-234m oeste
-88888888
-88889888
-Dan@gmail.com
-
-Em123456789
-EMH
-bod
-334 m sur
-22222222
-22222222
-S@gmail.com
+DAC123456789|Daniela AC|Bodega|SD|88182682|88888888|Daniela@gmail.com

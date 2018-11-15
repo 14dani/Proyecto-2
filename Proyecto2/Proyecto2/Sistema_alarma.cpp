@@ -12,11 +12,29 @@ Sistema_alarma::Sistema_alarma()
 {
 }
 
-
-Sistema_alarma::~Sistema_alarma()
+struct U_secundario
 {
-}
+	int codigo;
+	string cod_acceso;
+	string nombre_persona;
+	int telefono;
+};
+struct zona
+{
+	int z;
+	string descrpcion;
+	string dispositivo;
+};
 
+struct S_A
+{
+	string identificacion;
+	string codigo_principal;
+	vector<U_secundario>UsuariosS;
+	vector<zona>zonas;
+
+};
+vector<S_A>usuarios;
 
 void readFile()//Lee usuarios establecidos, todavia me hace falta volver a cargarlo
 {
