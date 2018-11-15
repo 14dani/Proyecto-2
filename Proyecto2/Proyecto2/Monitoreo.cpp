@@ -10,7 +10,11 @@ using namespace std;
 vector<string> lineas; /*guarda las lineas del archivo de monitoreo para que se pueda cerrar el archivo de registros inmediatamente
 					   , asi el sistema de alarma puede seguir enviando alertas mientras el sistema de monitoreo esta encendido*/
 
-
+void imprimir_vector(vector<string> x)
+{
+	for (int i = 0; i<int(x.size()); i++)
+		cout << endl << " x " << x[i];
+}
 
 void lineasf()//Funcion para guardar las lineas en el vector.
 {
@@ -18,6 +22,7 @@ void lineasf()//Funcion para guardar las lineas en el vector.
 	string linea;
 	monitoreo.open("monitoreo.txt", ios::in);/////Recordar cambiar a nombre del archivo real.
 	cin.ignore();
+	lineas.clear();
 	while (!monitoreo.eof())
 	{
 		getline(monitoreo, linea);
@@ -46,55 +51,56 @@ vector<string> dividir_string(string string1)//Divide string separado  por espac
 	return space;
 }
 
-void imprimir_lineas(int tanda)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
+int imprimir_lineas(int tanda, int contador)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
 {
-	int indice_min = (tanda-1) * 15;
+	int indice_min = (tanda - 1) * 15;
 	int indice_max = indice_min + 14;
 	int tope;
-	string descripcion = "";
-	string accion = "";
+	string descripcion;
+	string accion;
 	int sw = 0;
 	int sw2 = 0;
 	vector<string> elementos;
-	int contador = 1;
 
 	if (indice_max > int(lineas.size()) - 1)tope = int(lineas.size()) - 1;
 	else tope = indice_max;
 
 	for (int i = indice_min; i <= tope; i++)
 	{
+		descripcion = "";
+		accion = "";
 			elementos = dividir_string(lineas[i]);
-			for (int j = 0; j < elementos.size(); j++) {
-				if (elementos[i] == "." || sw == 1)
+			for (int j = 0; j < int(elementos.size()); j++) {
+				if (elementos[j] == "." || sw == 1)
 				{
 					sw = 1;
-					if (elementos[i] == "..") {
+					if (elementos[j] == "..") {
 						sw = 0; sw2 = 1;
 					}
-					if (elementos[i] != "." && sw==1)
+					if (elementos[j] != "." && sw==1)
 					{
-						if (elementos[i] == "0") { descripcion = "none"; }
-						else { descripcion += elementos[i]; }
+						if (elementos[j] == "&") { descripcion = "none"; }
+						else { descripcion +=(" "+ elementos[j]); }
 					}
 
 				}
 				if (sw2 == 1)
 				{
-					if (elementos[1] == "...")sw2 = 0;
-					if (elementos[i] != ".." && sw2 == 1) {
-						if (elementos[i] == "0") { accion = "none"; }
-						else { accion += elementos[i]; }
+					if (elementos[j] == "...")sw2 = 0;
+					if (elementos[j] != ".." && sw2 == 1) {
+						if (elementos[j] == "&") { accion = "none"; }
+						else { accion +=(" "+ elementos[j]); }
 					}
 				}
 			}
 			if (elementos[elementos.size() - 1] == "1")
 			{
-				cout << contador << "-" << elementos[1] << setw(10) << elementos[2] << setw(10) << elementos[3] << setw(10) << elementos[4];
+				cout << contador << "-" << elementos[1] << setw(10) << elementos[2] << setw(13) << elementos[3] <<"    " << elementos[4];
 				cout <<setw(10)<< elementos[5] << setw(10) << descripcion << setw(10) << accion << endl;
 				contador++;
 			}
 
-	}
+	}return contador;
 }
 
 
@@ -176,10 +182,11 @@ string Desencript(string frase)//Algortimo para desencriptar
 	}return resultado;
 }
 
-void Monitorear()
+int Monitorear()
 {
 	string comando = "enter";
 	int contador = 1;
+	int contador2=1;
 	lineasf();
 	int variable;
 
@@ -189,20 +196,20 @@ void Monitorear()
 			variable = contador * 15 - int(lineas.size());
 			if (15 <= variable)
 			{
-				cout << endl << "No hay mas datos." << endl;
+				cout << endl << "No hay mas datos." << endl<<endl;
 			}
 			else {
-				imprimir_lineas(contador);
+				contador2=imprimir_lineas(contador, contador2);
 				contador++;
 			}
 		}
 		else if (comando == "A")
 		{
-			Monitorear();
+			return(Monitorear());
 		}
-		cin.ignore();
+		cout << ": ";
 		getline(cin, comando);
-	}
+	}cout << endl; return NULL;
 }
 
 
@@ -335,7 +342,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 
 void Monitoreo::Menu()
 {
-	string opcion;
+	int opcion;
 	while(true)
 	{
 		cout << "MENU" << endl;
@@ -345,15 +352,15 @@ void Monitoreo::Menu()
 		cout << "4. Acerca de" << endl;
 		cout << "0. Fin" << endl;
 		cout << "Opcion :";
-		getline(cin, opcion);
+		cin >> opcion;
 		cout << endl;
 		string U;
 		
-		if (opcion == "1")
+		if (opcion == 1)
 		{
 			Monitorear();
 		}
-		if(opcion == "2")
+		if(opcion == 2)
 		{
 			cout << "Ingrese usuario: ";
 			cin.ignore();

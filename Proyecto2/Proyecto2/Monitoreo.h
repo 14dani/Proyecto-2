@@ -4,7 +4,6 @@ using namespace std;
 class Monitoreo
 {
 public:
-	void Monitorear();
 	void Establecer_Usuarios(string);
 	void Menu();
 	friend class Sistema_alarma;
