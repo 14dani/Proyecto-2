@@ -9,5 +9,6 @@ public:
 	void Establecer_Usuarios(string);
 	void Menu();
 	friend class Sistema_alarma;
+
 };
 
