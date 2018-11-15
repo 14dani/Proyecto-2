@@ -4,6 +4,8 @@
 #include <string>
 #include <iomanip>
 #include <vector>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 Sistema_alarma::Sistema_alarma()
@@ -15,6 +17,35 @@ Sistema_alarma::~Sistema_alarma()
 {
 }
 
+
+void readFile()//Lee usuarios establecidos, todavia me hace falta volver a cargarlo
+{
+	fstream my_file;
+
+	string registro;
+
+	my_file.open("Usuarios.txt", ios::in);
+
+	if (my_file.fail())
+	{
+
+		cout << endl << "Archivo no existente" << endl << endl;
+
+	}
+	else
+	{
+		while (!my_file.eof())
+		{
+
+			getline(my_file, registro);
+			cout << registro << endl;
+
+		}
+
+		if (my_file.eof())
+			cout << endl;
+	}
+}
 
 
 

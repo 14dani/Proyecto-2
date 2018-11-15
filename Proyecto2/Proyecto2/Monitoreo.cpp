@@ -134,7 +134,7 @@ bool caracteres(string user) //verifica que la identificacion sea de 10 o más ca
 	{
 		for (int i = 0; i < user.length(); i++)
 		{
-			if (i >= 10)
+			if (i >= 9)
 			{
 				f = true;
 			}
@@ -176,7 +176,7 @@ string Desencript(string frase)//Algortimo para desencriptar
 	}return resultado;
 }
 
-void Monitorear()
+void Monitoreo::Monitorear()
 {
 	string comando = "enter";
 	int contador = 1;
@@ -203,6 +203,35 @@ void Monitorear()
 		cin.ignore();
 		getline(cin, comando);
 	}
+}
+
+
+void SaveFile()//Archivo para guardar usuarios
+{
+	fstream my_file;
+
+	my_file.open("Usuarios.txt", ios::out);
+
+	if (!my_file.is_open())
+		cout << "Error al abrir archivo" << endl;
+	else
+	{
+		for (unsigned int mats = 0; mats < users.size(); mats++)
+		{
+			my_file << endl;
+
+			my_file << users.at(mats).identificacion << endl;
+			my_file << users.at(mats).nombre << endl;
+			my_file << users.at(mats).tipo_propiedad << endl;
+			my_file << users.at(mats).direccion << endl;
+			my_file << users.at(mats).tel_1 << endl;
+			my_file << users.at(mats).tel_2 << endl;
+			my_file << users.at(mats).correo << endl;
+
+		}
+		my_file.close();
+	}
+
 }
 
 void Monitoreo::Establecer_Usuarios(string pusuario)
@@ -237,35 +266,78 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 			us.tel_2 = t2;
 
 			cout << "Correo electronico: ";
+			cin.ignore();
 			getline(cin, correo1);
 			us.correo = correo1;
 
 			users.push_back(us);
+			SaveFile();
 
 		}
 		else
 		{
 			if (RecorrenUsuarios(pusuario))
 			{
-				cout << "Usuario ya registrado" << endl;
+				for (int i = 0; i < users.size(); i++)
+				{
+					if (pusuario == users.at(i).identificacion)
+					{
+						cout << "Nombre: " << users.at(i).nombre << endl;
+						cout << "Tipo de propiedad: " << users.at(i).tipo_propiedad << endl;
+						cout << "Direccion: " << users.at(i).direccion << endl;
+						cout << "Telefono 1: " << users.at(i).tel_1 << endl;
+						cout << "Telefono 2: " << users.at(i).tel_2 << endl;
+						cout << "Correo: " << users.at(i).correo << endl;
+					}
+				}
 			}
 			else
 			{
+				us.identificacion = pusuario;
+				cout << "Nombre y apellidos: ";
+				getline(cin, nom);
+				us.nombre = nom;
 
+				cout << "Tipo de propiedad donde desea instalar el sistema de alarma: ";
+				getline(cin, propiedad);
+				us.tipo_propiedad = propiedad;
+
+				cout << "Direccion de propiedad: ";
+				getline(cin, dir);
+				us.direccion = dir;
+
+				cout << "Telefono 1: ";
+				cin >> t1;
+				us.tel_1 = t1;
+
+				cout << "Telefono 2: ";
+				cin >> t2;
+				us.tel_2 = t2;
+
+				cout << "Correo electronico: ";
+				cin.ignore();
+				getline(cin, correo1);
+				us.correo = correo1;
+
+				users.push_back(us);
+				SaveFile();
 			}
 		}
 	}
 	else
-		cout << "Identificación debe tener 10 o más caracteres" << endl;
+		cout << "Identificación debe tener 10 o mas caracteres" << endl;
 
 }
+
+
 
 
 
 void Monitoreo::Menu()
 {
 	int opcion;
-	do {
+	while(true)
+	{
 		cout << "MENU" << endl;
 		cout << "1. Monitorear" << endl;//Salida del comando que se desee ingresar
 		cout << "2. Establecer usuarios" << endl;
@@ -277,7 +349,7 @@ void Monitoreo::Menu()
 		cout << endl;
 		string U;
 		
-		switch (opcion)
+		if (opcion == 1)
 		{
 		case 1:
 			Monitorear();
@@ -286,20 +358,12 @@ void Monitoreo::Menu()
 			cout << "Ingrese usuario: ";
 			cin.ignore();
 			getline(cin, U);
+			cout << endl;
 			Establecer_Usuarios(U);
 			cout << endl;
-			break;
-		case 3:
-		
-			break;
-		case 4:
-			break;
-		
-		
-		//case 0:
-			//break;
 		}
-	} while (opcion > 4&&opcion >0);
+		
+	} 
 
 	
 }
