@@ -172,8 +172,37 @@ string Desencript(string frase)//Algortimo para desencriptar
 	}return resultado;
 }
 
-void Monitorear()
+void Monitoreo::Monitorear()
 {
+
+}
+
+
+void SaveFile()//Archivo para guardar usuarios
+{
+	fstream my_file;
+
+	my_file.open("Usuarios.txt", ios::out);
+
+	if (!my_file.is_open())
+		cout << "Error al abrir archivo" << endl;
+	else
+	{
+		for (unsigned int mats = 0; mats < users.size(); mats++)
+		{
+			my_file << endl;
+
+			my_file << users.at(mats).identificacion << endl;
+			my_file << users.at(mats).nombre << endl;
+			my_file << users.at(mats).tipo_propiedad << endl;
+			my_file << users.at(mats).direccion << endl;
+			my_file << users.at(mats).tel_1 << endl;
+			my_file << users.at(mats).tel_2 << endl;
+			my_file << users.at(mats).correo << endl;
+
+		}
+		my_file.close();
+	}
 
 }
 
@@ -214,6 +243,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 			us.correo = correo1;
 
 			users.push_back(us);
+			SaveFile();
 
 		}
 		else
@@ -262,6 +292,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 				us.correo = correo1;
 
 				users.push_back(us);
+				SaveFile();
 			}
 		}
 	}
@@ -269,6 +300,8 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 		cout << "Identificación debe tener 10 o mas caracteres" << endl;
 
 }
+
+
 
 
 
