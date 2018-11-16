@@ -12,35 +12,69 @@ Sistema_alarma::Sistema_alarma()
 {
 }
 
-struct U_secundario
+Sistema_alarma::Sistema_alarma(string iden,string c_p, vector<U_secundario>U2,vector<zona>z)
 {
-	int codigo;
-	string cod_acceso;
-	string nombre_persona;
-	int telefono;
-};
-struct zona
-{
-	int z;
-	string descrpcion;
-	string dispositivo;
-};
+	identificacion = iden;
+	codigo_principal = c_p;
+	UsuariosS = U2;
+	zonas = z;
+}
 
-struct S_A
+Sistema_alarma::~Sistema_alarma()
 {
-	string identificacion;
-	string codigo_principal;
-	vector<U_secundario>UsuariosS;
-	vector<zona>zonas;
+}
 
-};
-vector<S_A>usuarios;
+
+
+
+
+vector<Sistema_alarma>usuarios;
+
+
+
+
+Sistema_alarma Sistema(string id, string cod_prin, vector<U_secundario>US, vector<zona>zonas)
+{
+	Sistema_alarma sa(id, cod_prin, US, zonas);
+	return sa;
+}
+
+
+
+vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios o comas
+{
+	vector<string> space;
+
+
+	istringstream iss(string1);
+
+	string token;
+
+	while (getline(iss, token, ' '))
+	{
+
+		space.push_back(token);
+
+	}
+	return space;
+}
+
+vector<string>registro1;
+vector<string>NOidentificaciones;
+vector<string>identificaciones;
+vector<string>identificaciones1;
+
+void ExtrarID(string str1) //Extrae cada identificacion
+{
+	identificaciones = Scmd(str1);
+	identificaciones1.push_back(identificaciones[0]);
+}
 
 void readFile()//Lee usuarios establecidos, todavia me hace falta volver a cargarlo
 {
-	fstream my_file;
-
+	ifstream my_file;
 	string registro;
+	
 
 	my_file.open("Usuarios.txt", ios::in);
 
@@ -54,22 +88,48 @@ void readFile()//Lee usuarios establecidos, todavia me hace falta volver a carga
 	{
 		while (!my_file.eof())
 		{
-
+			registro1.clear();
 			getline(my_file, registro);
-			cout << registro << endl;
+			registro1.push_back(registro);
+			
+			for (int i = 0; i < registro1.size(); i++)
+			{
+				NOidentificaciones.push_back(registro1[i]);
+				
+			}
 
+					
 		}
 
 		if (my_file.eof())
+		{
 			cout << endl;
+		}
 	}
+
+	
 }
+
+void Ids()//Funcion que extrae las identificaciones del archivo
+{
+	
+	for (int i = 0; i < NOidentificaciones.size()-1; i++)
+	{
+		
+		ExtrarID(NOidentificaciones[i]);
+	}
+	
+}
+
 
 
 
 void Sistema_alarma::Menu()
 {
 	string opcion;
+	readFile();
+	Ids();
+	/*
 	while (true)
 	{
 		cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
@@ -89,5 +149,5 @@ void Sistema_alarma::Menu()
 
 
 
-	}
+	}*/
 }

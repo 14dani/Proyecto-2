@@ -248,14 +248,12 @@ void SaveFile()//Archivo para guardar usuarios
 	{
 		for (unsigned int i = 0; i < users.size(); i++)
 		{
-			my_file << endl;
-
-			my_file << users.at(i).identificacion << "|"
-				<< users.at(i).nombre << "|"
-				<< users.at(i).tipo_propiedad << "|"
-				<< users.at(i).direccion << "|"
-				<< users.at(i).tel_1 << "|"
-				<< users.at(i).tel_2 << "|"
+			my_file << users.at(i).identificacion << " "
+				<< users.at(i).nombre << " "
+				<< users.at(i).tipo_propiedad << " "
+				<< users.at(i).direccion << " "
+				<< users.at(i).tel_1 << " "
+				<< users.at(i).tel_2 << " "
 				<< users.at(i).correo << endl;
 
 		}
@@ -454,6 +452,8 @@ void Monitoreo::Menu()
 			Establecer_Usuarios(U);
 			cout << endl;
 		}
+		if (opcion == 0)
+			break;
 		
 	} 
 
