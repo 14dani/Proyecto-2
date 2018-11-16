@@ -64,7 +64,7 @@ vector<string>NOidentificaciones;
 vector<string>identificaciones;
 vector<string>identificaciones1;
 
-void ExtrarID(string str1) //Extrae cada identificacion
+void ExtraerInfo(string str1) //Extrae cada identificacion
 {
 	identificaciones = Scmd(str1);
 	identificaciones1.push_back(identificaciones[0]);
@@ -116,7 +116,7 @@ void Ids()//Funcion que extrae las identificaciones del archivo
 	for (int i = 0; i < NOidentificaciones.size()-1; i++)
 	{
 		
-		ExtrarID(NOidentificaciones[i]);
+		ExtraerInfo(NOidentificaciones[i]);
 	}
 	
 }
