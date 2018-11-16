@@ -155,7 +155,7 @@ bool telefono(string numero) //verifica que la identificacion sea de 10 o más ca
 	{
 		for (int i = 0; i < numero.size(); i++)
 		{
-			if (i >= 7)
+			if (i == 7)
 			{
 				f = true;
 			}
@@ -431,7 +431,7 @@ void Monitoreo::Menu()
 		cout << "1. Monitorear" << endl;//Salida del comando que se desee ingresar
 		cout << "2. Establecer usuarios" << endl;
 		cout << "3. Eliminar usario" << endl;
-		cout << "4. Ayuda" << endl;
+		cout << "4. Centro de ayuda" << endl;
 		cout << "5. Acerca de" << endl;
 		cout << "0. Fin" << endl;
 		cout << "Opcion :";
