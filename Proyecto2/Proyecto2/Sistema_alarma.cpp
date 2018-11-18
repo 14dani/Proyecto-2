@@ -68,8 +68,11 @@ vector<string>identificaciones1;//Se guardan identificaciones
 
 void ExtraerInfo(string str1) //Extrae cada identificacion
 {
+	S_A s;
 	identificaciones = Scmd(str1);
 	identificaciones1.push_back(identificaciones[0]);
+	s.identificacion = identificaciones[0];
+	usuarios.push_back(s);
 }
 
 void readFile()//Lee usuarios establecidos, todavia me hace falta volver a cargarlo
@@ -152,7 +155,7 @@ void desarmar_sistema()
 	else cout << "Usuario no registrado" << endl;
 }
 
-void desacticar_sistema()
+void desactivar_sistema()
 {
 	string id;
 	cout << "Ingrese usuario o la identificacion: ";
@@ -168,6 +171,7 @@ void programar_zonas() //Me falta terminar esta
 {
 	S_A sa;
 	zona zo;
+	vector<zona>zv;
 	string id,des,dis;
 	int num;
 
@@ -175,16 +179,38 @@ void programar_zonas() //Me falta terminar esta
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		sa.identificacion = id;
-		cout << "Numero de zona: ";
-		cin >> num;
-		if (sa.zonas.size() == 0)
+		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if (num >= 1)
+			if (id == usuarios.at(i).identificacion)
 			{
-				zo.z = num;
-				sa.zonas.push_back(zo);
+				cout << "Numero de zona: ";
+				cin >> num;
+				for (int m = 0; m < usuarios[i].zonas.size(); m++)
+				{
+					if (num == usuarios[i].zonas[m].z)
+					{
+						cout << "Numero de zona: " << usuarios[i].zonas[m].z << endl;
+						cout << "Descripcion: " << usuarios[i].zonas[m].descrpcion << endl;
+						cout << "Dispositivo instalado en la zona: " << usuarios[i].zonas[m].dispositivo << endl;
+					}
+					else
+					{
+						cout << "Numero de zona no registrado" << endl;
+						cout << "Ingrese numero de zona: ";
+						cin >> num;
+						zo.z = num;
+						cout << "Ingrese descripcion: ";
+						getline(cin, des);
+						zo.descrpcion = des;
+						cout << "Dispositivo que se va a instalar: ";
+						getline(cin, dis);
+						zo.dispositivo = dis;
+						zv.push_back(zo);
+						sa.zonas = zv;
+					}
+				}
 			}
+			else cout << "Usuario no registrado" << endl;
 		}
 		
 
@@ -195,11 +221,15 @@ void programar_zonas() //Me falta terminar esta
 void lista_zonas()
 {
 	string id;
+	S_A sa;
+	zona zo;
+
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		cout << "H" << endl;
+		cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(20) << "Dispositivo" << endl;
+		cout << setw(62) << "================================================" << endl;
 	}
 	else cout << "Usuario no registrado" << endl;
 }
@@ -269,9 +299,9 @@ void panico()
 void Sistema_alarma::Menu()
 {
 	string opcion;
-	readFile();
-	Ids();
-	string identificacion;
+	readFile(); 
+	Ids(); //se cargan las identidades del monitoreo.cpp
+	
 	
 	while (true)
 	{
@@ -290,11 +320,12 @@ void Sistema_alarma::Menu()
 		cout << setw(10) << "F.FUEGO" << setw(10) << "A.AYUDA" << setw(11) << "P.PANICO" << endl;
 		cout << "Opcion: ";
 		getline(cin, opcion);
+		cout << endl;
 
 		if (opcion == "0")break;
 		else if (opcion == "1")armar_sistema();
 		else if (opcion == "2")desarmar_sistema;
-		else if (opcion == "3")desacticar_sistema();
+		else if (opcion == "3")desactivar_sistema();
 		else if (opcion == "4")programar_zonas();
 		else if (opcion == "5")lista_zonas();
 		else if (opcion == "6")bitacora();
