@@ -113,6 +113,7 @@ void Ids()//Funcion que extrae las identificaciones del archivo
 		
 		ExtraerInfo(NOidentificaciones[i]);
 	}
+	
 }
 
 bool RecorrerIden(string usuario)
@@ -172,13 +173,13 @@ void programar_zonas() //Me falta terminar esta
 	S_A sa;
 	zona zo;
 	vector<zona>zv;
-	string id,des,dis;
-	int num;
+	string id, des, dis, op, op2, des2, dis2;
+	int num, num2;
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
-	if (RecorrerIden(id))
-	{
+//	if (RecorrerIden(id))
+//	{
 		for (int i = 0; i < usuarios.size(); i++)
 		{
 			if (id == usuarios.at(i).identificacion)
@@ -192,6 +193,41 @@ void programar_zonas() //Me falta terminar esta
 						cout << "Numero de zona: " << usuarios[i].zonas[m].z << endl;
 						cout << "Descripcion: " << usuarios[i].zonas[m].descrpcion << endl;
 						cout << "Dispositivo instalado en la zona: " << usuarios[i].zonas[m].dispositivo << endl;
+						cout << "Para cambiar algun dato presione la tecla <c>" << endl;
+						cout << "Para borrar alguna zona presione la tecla <b>" << endl;
+						cout << "Para agregar zona presione la tecla <a>" << endl;
+						getline(cin, op);
+						if (op == "c" || op == "C")
+						{
+							while (true)
+							{
+								cout << "1. Numero de zona" << endl;
+								cout << "2. Descripcion" << endl;
+								cout << "3. Dispositivo" << endl;
+								cout << "S. Salir" << endl;
+								cout << "Cambiar: "; getline(cin, op2);
+								if (op2 == "1")
+								{
+									cout << "Numero nuevo: "; cin >> num2;
+									if (num2 >= 1)
+									{
+										for(int h=0;h< usuarios[i].zonas.size(); h++)
+										{
+											if (num2 != usuarios[i].zonas[h].z)
+											{
+												usuarios[i].zonas[m].z = num2;
+											}
+										}
+									}
+
+								}
+								if (op == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descrpcion = des2; }
+								if (op == "3") { cout << "Nuevo dispositivo: "; getline(cin, dis2); usuarios[i].zonas[m].dispositivo = dis2; }
+								if (op == "S" || op == "s")break;
+								
+							}
+						}
+
 					}
 					else
 					{
@@ -214,8 +250,8 @@ void programar_zonas() //Me falta terminar esta
 		}
 		
 
-	}
-	else cout << "Usuario no registrado" << endl;
+//	}
+	//else cout << "Usuario no registrado" << endl;
 }
 
 void lista_zonas()
