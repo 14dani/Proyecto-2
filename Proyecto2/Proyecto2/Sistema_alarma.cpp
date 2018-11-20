@@ -120,9 +120,9 @@ bool RecorrerIden(string usuario)
 {
 	bool f = false;
 	{
-		for (int i = 0; i < identificaciones1.size(); i++)
+		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if (identificaciones1[i] == usuario)
+			if (usuario == usuarios.at(i).identificacion)
 			{
 				f = true;
 			}
@@ -174,84 +174,107 @@ void programar_zonas() //Me falta terminar esta
 	zona zo;
 	vector<zona>zv;
 	string id, des, dis, op, op2, des2, dis2;
-	int num, num2;
+	int num, num2,num3;
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
-//	if (RecorrerIden(id))
-//	{
+	if (RecorrerIden(id))
+	{
 		for (int i = 0; i < usuarios.size(); i++)
 		{
+			
 			if (id == usuarios.at(i).identificacion)
 			{
 				cout << "Numero de zona: ";
 				cin >> num;
-				for (int m = 0; m < usuarios[i].zonas.size(); m++)
+				if (usuarios.at(i).zonas.size() == 0)
 				{
-					if (num == usuarios[i].zonas[m].z)
+					cout << "Numero de zona no registrado" << endl;
+					cout << "Ingrese numero de zona: ";
+					cin >> num;
+					zo.z = num;
+					cout << "Ingrese descripcion: ";
+					cin.ignore();
+					getline(cin, des);
+					zo.descrpcion = des;
+					cout << "Dispositivo que se va a instalar: ";
+					
+					getline(cin, dis);
+					zo.dispositivo = dis;
+
+					zv.push_back(zo);
+					usuarios.at(i).zonas = zv;
+				}
+				else
+				{
+					for (int m = 0; m < usuarios.at(i).zonas.size(); m++)
 					{
-						cout << "Numero de zona: " << usuarios[i].zonas[m].z << endl;
-						cout << "Descripcion: " << usuarios[i].zonas[m].descrpcion << endl;
-						cout << "Dispositivo instalado en la zona: " << usuarios[i].zonas[m].dispositivo << endl;
-						cout << "Para cambiar algun dato presione la tecla <c>" << endl;
-						cout << "Para borrar alguna zona presione la tecla <b>" << endl;
-						cout << "Para agregar zona presione la tecla <a>" << endl;
-						getline(cin, op);
-						if (op == "c" || op == "C")
+
+						if (num == usuarios[i].zonas[m].z)
 						{
-							while (true)
+							cout << "Numero de zona: " << usuarios[i].zonas[m].z << endl;
+							cout << "Descripcion: " << usuarios[i].zonas[m].descrpcion << endl;
+							cout << "Dispositivo instalado en la zona: " << usuarios[i].zonas[m].dispositivo << endl;
+							cout << "Para cambiar algun dato presione la tecla <c>" << endl;
+							cout << "Para borrar alguna zona presione la tecla <b>" << endl;
+							cout << "Para agregar zona presione la tecla <a>" << endl;
+							cin.ignore();
+							getline(cin, op);
+							if (op == "c" || op == "C")
 							{
-								cout << "1. Numero de zona" << endl;
-								cout << "2. Descripcion" << endl;
-								cout << "3. Dispositivo" << endl;
-								cout << "S. Salir" << endl;
-								cout << "Cambiar: "; getline(cin, op2);
-								if (op2 == "1")
+								while (true)
 								{
-									cout << "Numero nuevo: "; cin >> num2;
-									if (num2 >= 1)
+									cout << "1. Numero de zona" << endl;
+									cout << "2. Descripcion" << endl;
+									cout << "3. Dispositivo" << endl;
+									cout << "S. Salir" << endl;
+									cout << "Cambiar: "; getline(cin, op2);
+									if (op2 == "1")
 									{
-										for(int h=0;h< usuarios[i].zonas.size(); h++)
+										cout << "Numero nuevo: "; cin >> num2;
+										if (num2 >= 1)
 										{
-											if (num2 != usuarios[i].zonas[h].z)
+											for (int h = 0; h < usuarios[i].zonas.size(); h++)
 											{
-												usuarios[i].zonas[m].z = num2;
+												if (num2 != usuarios[i].zonas[h].z)
+												{
+													usuarios[i].zonas[m].z = num2;
+												}
 											}
 										}
 									}
-
+									if (op2 == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descrpcion = des2; }
+									if (op2 == "3") { cout << "Nuevo dispositivo: "; getline(cin, dis2); usuarios[i].zonas[m].dispositivo = dis2; }
+									if (op2 == "S" || op2 == "s")break;
 								}
-								if (op == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descrpcion = des2; }
-								if (op == "3") { cout << "Nuevo dispositivo: "; getline(cin, dis2); usuarios[i].zonas[m].dispositivo = dis2; }
-								if (op == "S" || op == "s")break;
-								
 							}
 						}
+						else
+						{
+							cout << "Numero de zona no registrado" << endl;
+							cout << "Ingrese numero de zona: ";
+							cin >> num3;
+							zo.z = num3;
+							cout << "Ingrese descripcion: ";
+							cin.ignore();
+							getline(cin, des);
+							zo.descrpcion = des;
+							cout << "Dispositivo que se va a instalar: ";
+							getline(cin, dis);
+							zo.dispositivo = dis;
 
-					}
-					else
-					{
-						cout << "Numero de zona no registrado" << endl;
-						cout << "Ingrese numero de zona: ";
-						cin >> num;
-						zo.z = num;
-						cout << "Ingrese descripcion: ";
-						getline(cin, des);
-						zo.descrpcion = des;
-						cout << "Dispositivo que se va a instalar: ";
-						getline(cin, dis);
-						zo.dispositivo = dis;
-						zv.push_back(zo);
-						sa.zonas = zv;
+							zv = usuarios.at(i).zonas;
+							zv.push_back(zo);
+							usuarios.at(i).zonas = zv;
+							break;
+						}
 					}
 				}
 			}
-			else cout << "Usuario no registrado" << endl;
+			
 		}
-		
-
-//	}
-	//else cout << "Usuario no registrado" << endl;
+	}
+	else cout << "Usuario no registrado" << endl;
 }
 
 void lista_zonas()
@@ -264,8 +287,19 @@ void lista_zonas()
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(20) << "Dispositivo" << endl;
-		cout << setw(62) << "================================================" << endl;
+		cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
+		cout << setw(108) << "==============================================================================================" << endl;
+		for (int i = 0; i < usuarios.size(); i++)
+		{
+
+			if (id == usuarios.at(i).identificacion)
+			{
+				for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
+				{
+					cout << setw(19) << usuarios.at(i).zonas.at(j).z << setw(11)<< setw(10) << usuarios.at(i).zonas.at(j).descrpcion << setw(30) << usuarios.at(i).zonas.at(j).dispositivo << endl;
+				}
+			}
+		}
 	}
 	else cout << "Usuario no registrado" << endl;
 }
@@ -370,7 +404,7 @@ void Sistema_alarma::Menu()
 		else if (opcion == "9")establecer_CAS();
 		//else if (opcion == "10")armar_sistema();
 		//else if (opcion == "11")armar_sistema();
-		
-		
+
+
 	}
 }
