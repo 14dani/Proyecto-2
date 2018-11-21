@@ -35,6 +35,14 @@ void alerta(int estado)
 	}
 }
 
+
+struct U_Principal
+{
+	int codigoP;
+	string cod_accesoP;
+
+};
+
 struct U_secundario
 {
 	int codigo;
@@ -52,7 +60,7 @@ struct zona
 struct S_A
 {
 	string identificacion;
-	string codigo_principal;
+	U_Principal UsuarioP;
 	vector<U_secundario>UsuariosS;
 	vector<zona>zonas;
 };
@@ -91,6 +99,8 @@ void ExtraerInfo(string str1) //Extrae cada identificacion
 	s.identificacion = identificaciones[0];
 	usuarios.push_back(s);
 }
+
+
 
 void readFile()//Lee usuarios establecidos, todavia me hace falta volver a cargarlo
 {
@@ -148,6 +158,29 @@ bool RecorrerIden(string usuario)
 	return f;
 }
 
+
+bool telefono1(string numero) //verifica que la identificacion sea de 10 o más caracteres
+{
+	bool f = false;
+	{
+		for (int i = 0; i < numero.size(); i++)
+		{
+			if (i == 7)
+			{
+				f = true;
+			}
+		}
+	}
+	return f;
+}
+
+int ToInt1(string s) //Funcion que convierte lo telefono en int
+{
+	stringstream ss(s);
+	int x = 0;
+	ss >> x;
+	return x;
+}
 
 void armar_sistema()
 {
@@ -209,18 +242,24 @@ void programar_zonas() //Me falta terminar esta
 					cout << "Numero de zona no registrado" << endl;
 					cout << "Ingrese numero de zona: ";
 					cin >> num;
-					zo.z = num;
-					cout << "Ingrese descripcion: ";
-					cin.ignore();
-					getline(cin, des);
-					zo.descrpcion = des;
-					cout << "Dispositivo que se va a instalar: ";
-					
-					getline(cin, dis);
-					zo.dispositivo = dis;
+					if (num >= 1)
+					{
+						zo.z = num;
+						cout << "Ingrese descripcion: ";
+						cin.ignore();
+						getline(cin, des);
+						zo.descrpcion = des;
+						cout << "Dispositivo que se va a instalar: ";
 
-					zv.push_back(zo);
-					usuarios.at(i).zonas = zv;
+						getline(cin, dis);
+						zo.dispositivo = dis;
+
+						zv.push_back(zo);
+						usuarios.at(i).zonas = zv;
+						cout << endl;
+					}
+					else
+						cout << "Numero de zona debe ser mayor o igual a 1" << endl << endl;
 				}
 				else
 				{
@@ -232,6 +271,7 @@ void programar_zonas() //Me falta terminar esta
 							cout << "Numero de zona: " << usuarios[i].zonas[m].z << endl;
 							cout << "Descripcion: " << usuarios[i].zonas[m].descrpcion << endl;
 							cout << "Dispositivo instalado en la zona: " << usuarios[i].zonas[m].dispositivo << endl;
+							cout << endl;
 							cout << "Para cambiar algun dato presione la tecla <c>" << endl;
 							cout << "Para borrar alguna zona presione la tecla <b>" << endl;
 							cout << "Para agregar zona presione la tecla <a>" << endl;
@@ -241,6 +281,7 @@ void programar_zonas() //Me falta terminar esta
 							{
 								while (true)
 								{
+									cout << endl;
 									cout << "1. Numero de zona" << endl;
 									cout << "2. Descripcion" << endl;
 									cout << "3. Dispositivo" << endl;
@@ -259,6 +300,8 @@ void programar_zonas() //Me falta terminar esta
 												}
 											}
 										}
+										else
+											cout << "Numero debe ser mayor o igual a 1" << endl << endl;;
 									}
 									if (op2 == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descrpcion = des2; }
 									if (op2 == "3") { cout << "Nuevo dispositivo: "; getline(cin, dis2); usuarios[i].zonas[m].dispositivo = dis2; }
@@ -271,19 +314,25 @@ void programar_zonas() //Me falta terminar esta
 							cout << "Numero de zona no registrado" << endl;
 							cout << "Ingrese numero de zona: ";
 							cin >> num3;
-							zo.z = num3;
-							cout << "Ingrese descripcion: ";
-							cin.ignore();
-							getline(cin, des);
-							zo.descrpcion = des;
-							cout << "Dispositivo que se va a instalar: ";
-							getline(cin, dis);
-							zo.dispositivo = dis;
+							if (num3 >= 1)
+							{
+								zo.z = num3;
+								cout << "Ingrese descripcion: ";
+								cin.ignore();
+								getline(cin, des);
+								zo.descrpcion = des;
+								cout << "Dispositivo que se va a instalar: ";
+								getline(cin, dis);
+								zo.dispositivo = dis;
 
-							zv = usuarios.at(i).zonas;
-							zv.push_back(zo);
-							usuarios.at(i).zonas = zv;
-							break;
+								zv = usuarios.at(i).zonas;
+								zv.push_back(zo);
+								usuarios.at(i).zonas = zv;
+								cout << endl;
+								break;
+							}
+							else
+								cout << "Numero debe ser mayor o igual a 1" << endl << endl;
 						}
 					}
 				}
@@ -415,24 +464,102 @@ void borrar_bitacora()
 
 void establecer_CAP()
 {
-	string id;
+	string id,con1,con2;
+	vector<string>contraseñas;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		cout << "H" << endl;
+		for (int i = 0; i < usuarios.size(); i++)
+		{
+			if (id == usuarios.at(i).identificacion)
+			{
+				cout << "Ingrese codigo de acceso principal: ";
+				getline(cin, con1);
+				contraseñas.push_back(con1);
+				cout << "Confirme el codigo de acceso principal: ";
+				getline(cin, con2);
+				for (int m = 0; m < contraseñas.size(); m++)
+				{
+					if (contraseñas[m] == con2)
+					{
+						usuarios.at(i).UsuarioP.codigoP = 0;
+						usuarios.at(i).UsuarioP.cod_accesoP = con1;
+
+					}
+					else
+						cout << "Contraseñas no concuerdan" << endl;
+				}
+
+
+			}
+		}
 	}
 	else cout << "Usuario no registrado" << endl;
 }
 
 void establecer_CAS()
 {
-	string id;
+	string id, conP, conS1, conS2,numTel;
+	int numCod;
+	string Cod, nombre;
+	U_secundario ss;
+	vector<U_secundario>us;
+	vector<string>contraseñas;
+
+
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		cout << "H" << endl;
+		cout << "Ingrese codigo de acceso principal: ";
+		getline(cin, conP);
+		for (int i = 0; i < usuarios.size(); i++)
+		{
+			if ((id == usuarios.at(i).identificacion)&&(conP==usuarios.at(i).UsuarioP.cod_accesoP))
+			{
+				if (usuarios.at(i).UsuariosS.size() == 0)
+				{
+					cout << "Ingrese número de código: ";
+					cin >> numCod;
+					ss.codigo = numCod;
+					cout << "Codigo de acceso secundario: ";
+					getline(cin, conS1);
+					contraseñas.push_back(conS1);
+					cout << "Confirmacion de codigo de acceso secundario: ";
+					getline(cin, conS2);
+					for (auto c : contraseñas)
+					{
+						if (c == conS2)
+						{
+							ss.cod_acceso = conS1;
+							cout << "Ingrese nombre de usuario: ";
+							getline(cin, nombre);
+							ss.nombre_persona = nombre;
+							cout << "Ingrese numero de telefono: ";
+							getline(cin, numTel);
+							if (telefono1(numTel))
+							{
+								ss.telefono = ToInt1(numTel);
+								us.push_back(ss);
+								usuarios.at(i).UsuariosS = us;
+							}
+							else
+							{
+								cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
+							}
+						}
+						else
+							cout << "Contraseñas no concuerdan" << endl;
+					}
+				
+				}
+				/*for (int g = 0; g < usuarios.at(i).UsuariosS.size(); g++)
+				{
+					
+				}*/
+			}
+		}
 	}
 	else cout << "Usuario no registrado" << endl;
 }
