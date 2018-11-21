@@ -277,11 +277,37 @@ void programar_zonas() //Me falta terminar esta
 	else cout << "Usuario no registrado" << endl;
 }
 
+
+
+void SaveFile(vector<zona>zz1)//Archivo pdf para imprimir lista
+{
+	fstream my_file;
+
+	my_file.open("Lista.pdf", ios::out);
+
+	if (!my_file.is_open())
+		cout << "Error al abrir archivo" << endl;
+	else
+	{
+		for (int i = 0; i < zz1.size(); i++)
+		{
+
+			my_file << setw(19) << zz1.at(i).z << setw(11) << setw(10) << zz1.at(i).descrpcion << setw(30) << zz1.at(i).dispositivo << endl;
+
+		}
+		my_file.close();
+	}
+
+}
+
+
 void lista_zonas()
 {
 	string id;
-	S_A sa;
-	zona zo;
+	vector<int>Nzonas;
+	vector<zona>zz;
+	int z;
+	vector<zona>zz2;
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -289,6 +315,7 @@ void lista_zonas()
 	{
 		cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
 		cout << setw(108) << "==============================================================================================" << endl;
+
 		for (int i = 0; i < usuarios.size(); i++)
 		{
 
@@ -296,13 +323,57 @@ void lista_zonas()
 			{
 				for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
 				{
-					cout << setw(19) << usuarios.at(i).zonas.at(j).z << setw(11)<< setw(10) << usuarios.at(i).zonas.at(j).descrpcion << setw(30) << usuarios.at(i).zonas.at(j).dispositivo << endl;
+					Nzonas.push_back(usuarios.at(i).zonas.at(j).z);
+					zz.push_back(usuarios.at(i).zonas.at(j));
+				}
+			}
+		}  
+
+
+		for (int i = 1; i < Nzonas.size(); i++)//for n-1 passes
+		{
+			//In pass i,compare the first n-i elements
+			//with their next elements
+			for (int j = 0; j < Nzonas.size() - 1; j++)
+			{
+				if (Nzonas[j] > Nzonas[j + 1])
+				{
+					int temp;
+					temp = Nzonas[j];
+					Nzonas[j] = Nzonas[j + 1];
+					Nzonas[j + 1] = temp;
+
+				}
+
+			}
+		}
+
+		for (int i = 0; i < zz.size(); i++)
+		{
+			z = zz[i].z;
+			for (int s = 0; s < Nzonas.size(); s++)
+			{
+				if (Nzonas[s] == z)
+				{
+					//cout << zz.at(s).z << "  " << zz.at(s).descrpcion << "  " << zz.at(s).dispositivo << endl;//Push_back al tercer vector 
+					zz2.push_back(zz.at(s));
 				}
 			}
 		}
+
+		for (int i = 0; i < zz2.size(); i++)
+		{
+
+			cout << setw(19) << zz2.at(i).z<< setw(11) << setw(10) << zz2.at(i).descrpcion << setw(30) << zz2.at(i).dispositivo << endl;
+
+		}
+		SaveFile(zz2);
 	}
 	else cout << "Usuario no registrado" << endl;
 }
+
+
+
 
 void bitacora()
 {
@@ -372,7 +443,6 @@ void Sistema_alarma::Menu()
 	readFile(); 
 	Ids(); //se cargan las identidades del monitoreo.cpp
 	
-	
 	while (true)
 	{
 		cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
@@ -397,7 +467,9 @@ void Sistema_alarma::Menu()
 		else if (opcion == "2")desarmar_sistema;
 		else if (opcion == "3")desactivar_sistema();
 		else if (opcion == "4")programar_zonas();
-		else if (opcion == "5")lista_zonas();
+		else if (opcion == "5") {
+			lista_zonas(); 
+	}
 		else if (opcion == "6")bitacora();
 		else if (opcion == "7")borrar_bitacora();
 		else if (opcion == "8")establecer_CAP();
