@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <thread>
 using namespace std;
 
 Sistema_alarma::Sistema_alarma()
@@ -564,12 +565,14 @@ void panico()
 {
 
 }
-void Sistema_alarma::Menu()
+
+void Sistema_alarma::Menu(int estado)/*Estado es un interruptor que indica si se esta llamando a la funcion para consultar el estado 
+									 o para correr el menu*/
 {
 	string opcion;
 	readFile(); 
 	Ids(); //se cargan las identidades del monitoreo.cpp
-	
+	cin.ignore();
 	while (true)
 	{
 		cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
