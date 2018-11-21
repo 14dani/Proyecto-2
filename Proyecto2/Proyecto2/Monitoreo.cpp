@@ -9,7 +9,12 @@
 using namespace std;
 vector<string> lineas; /*guarda las lineas del archivo de monitoreo para que se pueda cerrar el archivo de registros inmediatamente
 					   , asi el sistema de alarma puede seguir enviando alertas mientras el sistema de monitoreo esta encendido*/
-
+struct datos_de_linea
+{
+	vector<string> elementos;
+	string accion;
+	string descripcion;
+};
 void imprimir_vector(vector<string> x)
 {
 	for (int i = 0; i<int(x.size()); i++)
@@ -33,6 +38,19 @@ void lineasf()//Funcion para guardar las lineas en el vector.
 	monitoreo.close();
 }
 
+void guardar()
+{
+	fstream monitoreo;
+	monitoreo.open("monitoreo.txt", ios::out);
+	for (int i=0; i<int(lineas.size()-1);i++)
+	{
+		monitoreo << lineas[i] << endl;
+	}
+	monitoreo << lineas[int(lineas.size() - 1)]; //guardar el ultimo
+	monitoreo.close();
+}/*Esta funcion borra el archivo y guarda las lineas que se encuentran en el vector de lineas, cuidado porque el vector de lineas
+ tiene que estar lleno*/
+
 vector<string> dividir_string(string string1)//Divide string separado  por espacios
 {
 	vector<string> space;
@@ -51,59 +69,126 @@ vector<string> dividir_string(string string1)//Divide string separado  por espac
 	return space;
 }
 
-int imprimir_lineas(int tanda, int contador)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
+datos_de_linea separar_linea(string linea)
 {
-	int indice_min = (tanda - 1) * 15;
-	int indice_max = indice_min + 14;
-	int tope;
-	string descripcion;
-	string accion;
+	string descripcion = "";
+	string accion = "";
 	int sw = 0;
 	int sw2 = 0;
+	vector<string> elementos = dividir_string(linea);
+	datos_de_linea lineac;
+
+	for (int j = 0; j < int(elementos.size()); j++) {
+		if (elementos[j] == "." || sw == 1)
+		{
+			sw = 1;
+			if (elementos[j] == "..") {
+				sw = 0; sw2 = 1;
+			}
+			if (elementos[j] != "." && sw == 1)
+			{
+				if (elementos[j] == "&") { descripcion = "none"; }
+				else { descripcion += (" " + elementos[j]); }
+			}
+
+		}
+		if (sw2 == 1)
+		{
+			if (elementos[j] == "...")sw2 = 0;
+			if (elementos[j] != ".." && sw2 == 1) {
+				if (elementos[j] == "&") { accion = "none"; }
+				else { accion += (" " + elementos[j]); }
+			}
+		}
+		lineac.accion = accion;
+		lineac.descripcion = descripcion;
+		lineac.elementos = elementos;
+	}return lineac;
+}
+
+vector<int> imprimir_lineas(int indice_min, int contador, int indice_max)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
+{
+	int tope;
 	vector<string> elementos;
+	datos_de_linea datos;
+	vector<int> respuesta;
 
 	if (indice_max > int(lineas.size()) - 1)tope = int(lineas.size()) - 1;
 	else tope = indice_max;
 
 	for (int i = indice_min; i <= tope; i++)
 	{
-		descripcion = "";
-		accion = "";
-			elementos = dividir_string(lineas[i]);
-			for (int j = 0; j < int(elementos.size()); j++) {
-				if (elementos[j] == "." || sw == 1)
-				{
-					sw = 1;
-					if (elementos[j] == "..") {
-						sw = 0; sw2 = 1;
-					}
-					if (elementos[j] != "." && sw==1)
-					{
-						if (elementos[j] == "&") { descripcion = "none"; }
-						else { descripcion +=(" "+ elementos[j]); }
-					}
+			datos = separar_linea(lineas[i]);
+			elementos = datos.elementos;
 
-				}
-				if (sw2 == 1)
-				{
-					if (elementos[j] == "...")sw2 = 0;
-					if (elementos[j] != ".." && sw2 == 1) {
-						if (elementos[j] == "&") { accion = "none"; }
-						else { accion +=(" "+ elementos[j]); }
-					}
-				}
-			}
 			if (elementos[elementos.size() - 1] == "1")
 			{
 				cout << contador << "-" << elementos[1] << setw(10) << elementos[2] << setw(13) << elementos[3] <<"    " << elementos[4];
-				cout <<setw(10)<< elementos[5] << setw(10) << descripcion << setw(10) << accion << endl;
+				cout <<setw(10)<< elementos[5] << setw(10) << datos.descripcion << setw(10) << datos.accion << endl;
 				contador++;
 			}
-
-	}return contador;
+			else { if (tope<int(lineas.size()) - 1)tope++; }
+	}
+	respuesta.push_back(contador);
+	respuesta.push_back(tope + 1); 
+	return respuesta;
 }
 
+void modificar_accion(int indice_min, int contador, int indice_max)
+{
+	int linea_deseada;
+	int indice_linea;
+	int tope;
+	string accion_monitoreo;
+	vector<string> elementos;
+	string linea_con_accion="";
+	datos_de_linea datos;
 
+	if (indice_max > int(lineas.size()) - 1)tope = int(lineas.size()) - 1;
+	else tope = indice_max;
+
+	cout << endl << "Ingrese la linea deseada:";
+	cin >> linea_deseada;
+	if (linea_deseada<contador || linea_deseada>contador+14 || linea_deseada>int(lineas.size()-1))
+	{
+		cout << endl << "linea fuera de monitor" << endl;
+	}
+	else {
+		for (int i = indice_min; i <= tope; i++)
+		{
+			datos = separar_linea(lineas[i]);
+			elementos = datos.elementos;
+			if (elementos[elementos.size() - 1] == "1")
+			{
+				if (contador == linea_deseada)
+				{
+					if (elementos[4] == "ACTIVACION")
+					{
+						cout << endl << "Escriba la accion:";
+						cin.ignore();
+						getline(cin, accion_monitoreo);
+						if (accion_monitoreo == "")accion_monitoreo = "none";
+						datos.accion = accion_monitoreo;
+						indice_linea = i;
+						for (int y = 0; y <=5 ; y++)
+						{
+							linea_con_accion += elementos[y] + " ";
+						}
+						linea_con_accion +=". "+datos.descripcion+" .. "+datos.accion+" ... "+ elementos[elementos.size() - 1];
+						lineas[indice_linea] = linea_con_accion;
+						guardar();
+						cout << endl << "Listo" << endl;
+					}
+					else {
+						cout << endl << "No es una linea de activacion" << endl;
+					}
+				}
+
+				contador++;
+			}
+		}
+	}
+}
 
 struct Usuario   //estructura para establecer el usuario
 {
@@ -208,27 +293,44 @@ string Desencript(string frase)//Algortimo para desencriptar
 int Monitorear()
 {
 	string comando = "enter";
-	int contador = 1;
-	int contador2=1;
+	int contador=1;
+	int indice_minimo=0;
+	int sw = 0;
+	int tanda = 0;
+	vector<int>respuesta;
+	
+	
 	lineasf();
-	int variable;
 
-	while (comando != "f")
+	while (comando != "F")
 	{
 		if (comando == "enter") {
-			variable = contador * 15 - int(lineas.size());
-			if (15 <= variable)
+			if (indice_minimo==(int(lineas.size())))
 			{
 				cout << endl << "No hay mas datos." << endl<<endl;
+				sw = 1;
 			}
 			else {
-				contador2=imprimir_lineas(contador, contador2);
-				contador++;
+				respuesta= imprimir_lineas(indice_minimo, contador, indice_minimo+14);
+				contador = respuesta[0];
+				indice_minimo = respuesta[1];
+				tanda++;
 			}
 		}
 		else if (comando == "A")
 		{
 			return(Monitorear());
+		}
+		else if (comando == "#")
+		{
+			if (sw==1)
+			{
+				cout<<endl<<"No hay mas datos"<<endl;
+			}
+			else {
+				modificar_accion(((tanda - 1) * 15), ((tanda-1)*15)+1, indice_minimo);
+			}
+			cin.ignore();
 		}
 		cout << ": ";
 		getline(cin, comando);
@@ -417,10 +519,6 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 		cout << "Identificacion debe tener 10 o mas caracteres" << endl;
 
 }
-
-
-
-
 
 void Monitoreo::Menu()
 {
