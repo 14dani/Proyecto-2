@@ -7,16 +7,32 @@
 #include <fstream>
 #include <sstream>
 #include <thread>
+#include <chrono> 
 using namespace std;
 
 Sistema_alarma::Sistema_alarma()
 {
 }
 
-
-
-Sistema_alarma::~Sistema_alarma()
+void monitorear(int estado)
 {
+
+}
+
+void modificar_estado(int tipo, string estado_cambiado)
+{
+	string segunda_lineas;
+	if (tipo == 1)
+	{
+
+	}
+}
+void alerta(int estado)
+{
+	while (true) {
+		cout << endl << "ALERTA" << endl;
+		this_thread::sleep_for(chrono::seconds(2));
+	}
 }
 
 struct U_secundario
@@ -373,9 +389,6 @@ void lista_zonas()
 	else cout << "Usuario no registrado" << endl;
 }
 
-
-
-
 void bitacora()
 {
 	string id;
@@ -439,47 +452,48 @@ void panico()
 
 }
 
-void Sistema_alarma::Menu(int estado)/*Estado es un interruptor que indica si se esta llamando a la funcion para consultar el estado 
-									 o para correr el menu*/
+int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llamando a la funcion para consultar el estado 
+									 o para correr el menu, tipo es el dato de quien esta haciendo la consulta*/
 {
-	string opcion;
-	readFile(); 
-	Ids(); //se cargan las identidades del monitoreo.cpp
-	cin.ignore();
-	while (true)
-	{
-		cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
-		cout << "2. Desarmar sistema" << endl;
-		cout << "3. Desactivar sistema" << endl;
-		cout << "4. Programa zonas" << endl;
-		cout << "5. Lista de zonas" << endl;
-		cout << "6. Bitacora" << endl;
-		cout << "7. Borrar bitacora" << endl;
-		cout << "8. Establecer codigo de acceso principal" << endl;
-		cout << "9. Establecer codigos de acceso secundarios" << endl;
-		cout << "10. Centro de ayuda" << endl;
-		cout << "11. Acerca De" << endl;
-		cout << "0. Fin" << endl;
-		cout << setw(10) << "F.FUEGO" << setw(10) << "A.AYUDA" << setw(11) << "P.PANICO" << endl;
-		cout << "Opcion: ";
-		getline(cin, opcion);
-		cout << endl;
+		string opcion;
+		readFile();
+		Ids(); //se cargan las identidades del monitoreo.cpp
+		while (true)
+		{
+			cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
+			cout << "2. Desarmar sistema" << endl;
+			cout << "3. Desactivar sistema" << endl;
+			cout << "4. Programa zonas" << endl;
+			cout << "5. Lista de zonas" << endl;
+			cout << "6. Bitacora" << endl;
+			cout << "7. Borrar bitacora" << endl;
+			cout << "8. Establecer codigo de acceso principal" << endl;
+			cout << "9. Establecer codigos de acceso secundarios" << endl;
+			cout << "10. Centro de ayuda" << endl;
+			cout << "11. Acerca De" << endl;
+			cout << "0. Fin" << endl;
+			cout << setw(10) << "F.FUEGO" << setw(10) << "A.AYUDA" << setw(11) << "P.PANICO" << endl;
+			cout << "Opcion: ";
+			getline(cin, opcion);
+			cout << endl;
 
-		if (opcion == "0")break;
-		else if (opcion == "1")armar_sistema();
-		else if (opcion == "2")desarmar_sistema;
-		else if (opcion == "3")desactivar_sistema();
-		else if (opcion == "4")programar_zonas();
-		else if (opcion == "5") {
-			lista_zonas(); 
-	}
-		else if (opcion == "6")bitacora();
-		else if (opcion == "7")borrar_bitacora();
-		else if (opcion == "8")establecer_CAP();
-		else if (opcion == "9")establecer_CAS();
-		//else if (opcion == "10")armar_sistema();
-		//else if (opcion == "11")armar_sistema();
+			if (opcion == "0")return 0;
+			else if (opcion == "1") {alerta(0);
+			}
+			else if (opcion == "2")desarmar_sistema;
+			else if (opcion == "3")desactivar_sistema();
+			else if (opcion == "4")programar_zonas();
+			else if (opcion == "5") {
+				lista_zonas();
+			}
+			else if (opcion == "6")bitacora();
+			else if (opcion == "7")borrar_bitacora();
+			else if (opcion == "8")establecer_CAP();
+			else if (opcion == "9")establecer_CAS();
+			//else if (opcion == "10")armar_sistema();
+			//else if (opcion == "11")armar_sistema();
 
 
-	}
+		}
+
 }
