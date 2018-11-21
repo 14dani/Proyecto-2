@@ -14,6 +14,6 @@ public:
 	Sistema_alarma();
 	
 	~Sistema_alarma();
-	void Menu();
+	void Menu(int);
 };
 
