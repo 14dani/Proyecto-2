@@ -4,6 +4,7 @@
 #include <string>
 #include <iomanip>
 #include <vector>
+#include <ctype.h>
 #include <fstream>
 #include <sstream>
 #include <thread>
@@ -171,7 +172,7 @@ struct S_A
 vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
 
 
-vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios o comas
+vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
 {
 	vector<string> space;
 
@@ -205,7 +206,7 @@ void ExtraerInfo(string str1) //Extrae cada identificacion
 
 
 
-void readFile()//Lee usuarios establecidos, todavia me hace falta volver a cargarlo
+void readFile()//Lee usuarios establecidos del monitoreo.cpp
 {
 	ifstream my_file;
 	string registro;
@@ -246,7 +247,10 @@ void Ids()//Funcion que extrae las identificaciones del archivo
 	
 }
 
-bool RecorrerIden(string usuario)
+
+//Validaciones
+
+bool RecorrerIden(string usuario) //Verifica que la identidad o usuario que se ingrese este entre los usuarios establecidos
 {
 	bool f = false;
 	{
@@ -262,7 +266,9 @@ bool RecorrerIden(string usuario)
 }
 
 
-bool telefono1(string numero) //verifica que la identificacion sea de 10 o más caracteres
+//Validacion del telefono de usuario secundarios
+
+bool telefono1(string numero) //verifica que la identificacion sea de 8 digitos exactos
 {
 	bool f = false;
 	{
@@ -277,13 +283,87 @@ bool telefono1(string numero) //verifica que la identificacion sea de 10 o más c
 	return f;
 }
 
-int ToInt1(string s) //Funcion que convierte lo telefono en int
+int ToInt1(string s) //Funcion que convierte lo de telefono en int
 {
 	stringstream ss(s);
 	int x = 0;
 	ss >> x;
 	return x;
 }
+
+//Validaciones de la contraseña
+
+bool verificar_cantidad(string x) //verifica que la contraseña tenga 8 o mas caracteres
+{
+	if (8 > int(x.length()))
+	{
+		return false;
+	}
+	else { return true; }
+}
+
+bool verificar_repetido(string x)// verifica que la letras no se repita 3 0 mas veces
+{
+	int contador = 0;
+	for (int i = 0; i < int(x.length()); i++)
+	{
+		contador = 0;
+		for (int j = 0; j <int(x.length()); j++)
+		{
+			if (x[i] == x[j]) { contador++; }
+		}
+		if (contador > 2) { return false; }
+	} { return true; }
+}
+
+bool verificar_mayuscula(string  x) //verifica que al menos haya una mayuscula
+{
+	for (int i = 0; i < int(x.length()); i++)
+	{
+		if (!isdigit(x[i])) {
+			if (isupper(x[i]))
+				return true;
+		}
+	}
+	return false;
+}
+
+
+bool verificar_minuscula(string x) //verifica que haya al menos una minuscula
+{
+	for (int i = 0; i < int(x.length()); i++)
+	{
+		if (!isdigit(x[i])) {
+			if (!isupper(x[i]))
+				return  true;
+		}
+	}return false;
+}
+
+bool verificar_digito(string x) //verifica que hayaal menos un digito
+{
+	for (int i = 0; i < int(x.length()); i++)
+	{
+		if (isdigit(x[i])) { return true; }
+	} { return false; }
+}
+
+bool verificar_todo(string x) //verifica que hay al menos un simbolo que no sea ni letra o digito
+{
+	for (int i = 0; i < int(x.length()); i++)
+	{
+		if (!isalnum(x[i]))return true;
+	}return false;
+}
+
+bool validar_palabra_clave(string x) //Verifica todo el string para que se cumplan la validaciones anteriores
+{
+	if (verificar_cantidad(x) && verificar_digito(x) && verificar_mayuscula(x) && verificar_minuscula(x) && verificar_repetido(x) && verificar_todo(x))
+		return true;
+	else return false;
+}
+
+
 
 void armar_sistema()
 {
@@ -579,20 +659,25 @@ void establecer_CAP()//Establece el codigo principal
 			{
 				cout << "Ingrese codigo de acceso principal: ";
 				getline(cin, con1);
-				contraseñas.push_back(con1);
-				cout << "Confirme el codigo de acceso principal: ";
-				getline(cin, con2);
-				for (int m = 0; m < contraseñas.size(); m++)
+				if (validar_palabra_clave(con1))
 				{
-					if (contraseñas[m] == con2)
+					contraseñas.push_back(con1);
+					cout << "Confirme el codigo de acceso principal: ";
+					getline(cin, con2);
+					for (int m = 0; m < contraseñas.size(); m++)
 					{
-						usuarios.at(i).UsuarioP.codigoP = 0;
-						usuarios.at(i).UsuarioP.cod_accesoP = con1;
+						if (contraseñas[m] == con2)
+						{
+							usuarios.at(i).UsuarioP.codigoP = 0;
+							usuarios.at(i).UsuarioP.cod_accesoP = con1;
 
+						}
+						else
+							cout << "Contraseñas no concuerdan" << endl;
 					}
-					else
-						cout << "Contraseñas no concuerdan" << endl;
 				}
+				else
+					cout << "Clave debe tener al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
 
 
 			}
@@ -629,33 +714,39 @@ void establecer_CAS()//Establece codigos secundarios
 					cout << "Codigo de acceso secundario: ";
 					cin.ignore();
 					getline(cin, conS1);
-					contraseñas.push_back(conS1);
-					cout << "Confirmacion de codigo de acceso secundario: ";
-					getline(cin, conS2);
-					for (auto c : contraseñas)
+					if (validar_palabra_clave(conS1))
 					{
-						if (c == conS2)
+						contraseñas.push_back(conS1);
+						cout << "Confirmacion de codigo de acceso secundario: ";
+						getline(cin, conS2);
+						for (auto c : contraseñas)
 						{
-							ss.cod_acceso = conS1;
-							cout << "Ingrese nombre de usuario: ";
-							getline(cin, nombre);
-							ss.nombre_persona = nombre;
-							cout << "Ingrese numero de telefono: ";
-							getline(cin, numTel);
-							if (telefono1(numTel))
+							if (c == conS2)
 							{
-								ss.telefono = ToInt1(numTel);
-								us.push_back(ss);
-								usuarios.at(i).UsuariosS = us;
+								ss.cod_acceso = conS1;
+								cout << "Ingrese nombre de usuario: ";
+								getline(cin, nombre);
+								ss.nombre_persona = nombre;
+								cout << "Ingrese numero de telefono: ";
+								getline(cin, numTel);
+								if (telefono1(numTel))
+								{
+									ss.telefono = ToInt1(numTel);
+									us.push_back(ss);
+									usuarios.at(i).UsuariosS = us;
+								}
+								else
+								{
+									cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
+								}
 							}
 							else
-							{
-								cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
-							}
+								cout << "Claves no concuerdan" << endl;
 						}
-						else
-							cout << "Contraseñas no concuerdan" << endl;
+
 					}
+					else
+						cout << "Clave debe tener al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
 				
 				}
 				else
@@ -670,34 +761,39 @@ void establecer_CAS()//Establece codigos secundarios
 							cout << "Codigo de acceso secundario: ";
 							cin.ignore();
 							getline(cin, conS1);
-							contraseñas.push_back(conS1);
-							cout << "Confirmacion de codigo de acceso secundario: ";
-							getline(cin, conS2);
-							for (auto c : contraseñas)
+							if (validar_palabra_clave(conS1))
 							{
-								if (c == conS2)
+								contraseñas.push_back(conS1);
+								cout << "Confirmacion de codigo de acceso secundario: ";
+								getline(cin, conS2);
+								for (auto c : contraseñas)
 								{
-									ss.cod_acceso = conS1;
-									cout << "Ingrese nombre de usuario: ";
-									getline(cin, nombre);
-									ss.nombre_persona = nombre;
-									cout << "Ingrese numero de telefono: ";
-									getline(cin, numTel);
-									if (telefono1(numTel))
+									if (c == conS2)
 									{
-										ss.telefono = ToInt1(numTel);
-										us = usuarios.at(i).UsuariosS;
-										us.push_back(ss);
-										usuarios.at(i).UsuariosS = us;
+										ss.cod_acceso = conS1;
+										cout << "Ingrese nombre de usuario: ";
+										getline(cin, nombre);
+										ss.nombre_persona = nombre;
+										cout << "Ingrese numero de telefono: ";
+										getline(cin, numTel);
+										if (telefono1(numTel))
+										{
+											ss.telefono = ToInt1(numTel);
+											us = usuarios.at(i).UsuariosS;
+											us.push_back(ss);
+											usuarios.at(i).UsuariosS = us;
+										}
+										else
+										{
+											cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
+										}
 									}
 									else
-									{
-										cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
-									}
+										cout << "Claves no concuerdan" << endl;
 								}
-								else
-									cout << "Contraseñas no concuerdan" << endl;
 							}
+							else
+								cout << "Clave debe tener al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
 
 						}
 						else
