@@ -462,7 +462,7 @@ void borrar_bitacora()
 	else cout << "Usuario no registrado" << endl;
 }
 
-void establecer_CAP()
+void establecer_CAP()//Establece el codigo principal
 {
 	string id,con1,con2;
 	vector<string>contraseñas;
@@ -498,10 +498,10 @@ void establecer_CAP()
 	else cout << "Usuario no registrado" << endl;
 }
 
-void establecer_CAS()
+void establecer_CAS()//Establece codigos secundarios
 {
 	string id, conP, conS1, conS2,numTel;
-	int numCod;
+	int numCod, numCod2;
 	string Cod, nombre;
 	U_secundario ss;
 	vector<U_secundario>us;
@@ -524,6 +524,7 @@ void establecer_CAS()
 					cin >> numCod;
 					ss.codigo = numCod;
 					cout << "Codigo de acceso secundario: ";
+					cin.ignore();
 					getline(cin, conS1);
 					contraseñas.push_back(conS1);
 					cout << "Confirmacion de codigo de acceso secundario: ";
@@ -554,14 +555,81 @@ void establecer_CAS()
 					}
 				
 				}
-				/*for (int g = 0; g < usuarios.at(i).UsuariosS.size(); g++)
+				else
 				{
-					
-				}*/
+					cout << "Ingrese numero de codigo: ";
+					cin >> numCod2;
+					for (int g = 0; g < usuarios.at(i).UsuariosS.size(); g++)
+					{
+						if (numCod2 != usuarios.at(i).UsuariosS.at(g).codigo)
+						{
+							ss.codigo = numCod2;
+							cout << "Codigo de acceso secundario: ";
+							cin.ignore();
+							getline(cin, conS1);
+							contraseñas.push_back(conS1);
+							cout << "Confirmacion de codigo de acceso secundario: ";
+							getline(cin, conS2);
+							for (auto c : contraseñas)
+							{
+								if (c == conS2)
+								{
+									ss.cod_acceso = conS1;
+									cout << "Ingrese nombre de usuario: ";
+									getline(cin, nombre);
+									ss.nombre_persona = nombre;
+									cout << "Ingrese numero de telefono: ";
+									getline(cin, numTel);
+									if (telefono1(numTel))
+									{
+										ss.telefono = ToInt1(numTel);
+										us = usuarios.at(i).UsuariosS;
+										us.push_back(ss);
+										usuarios.at(i).UsuariosS = us;
+									}
+									else
+									{
+										cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
+									}
+								}
+								else
+									cout << "Contraseñas no concuerdan" << endl;
+							}
+
+						}
+						else
+							cout << "Numero de codigo repetido" << endl;
+					}
+				}
+				
 			}
 		}
 	}
 	else cout << "Usuario no registrado" << endl;
+}
+
+void imp()
+{
+	string id;
+	cout << "Ingrese usuario o la identificacion: ";
+	getline(cin, id);
+	
+		for (int i = 0; i < usuarios.size(); i++)
+		{
+			if (id == usuarios.at(i).identificacion)
+			{
+				for (int j = 0; j < usuarios.at(i).UsuariosS.size(); j++)
+				{
+					cout << usuarios.at(i).UsuariosS.at(j).codigo << endl;
+					cout << usuarios.at(i).UsuariosS.at(j).cod_acceso << endl;
+					cout << usuarios.at(i).UsuariosS.at(j).nombre_persona << endl;
+					cout << usuarios.at(i).UsuariosS.at(j).telefono << endl;
+
+				}
+
+			}
+		}
+	
 }
 
 void Fuego()
@@ -585,6 +653,7 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		string opcion;
 		readFile();
 		Ids(); //se cargan las identidades del monitoreo.cpp
+		cin.ignore();
 		while (true)
 		{
 			cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
@@ -616,7 +685,7 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 			else if (opcion == "6")bitacora();
 			else if (opcion == "7")borrar_bitacora();
 			else if (opcion == "8")establecer_CAP();
-			else if (opcion == "9")establecer_CAS();
+			else if (opcion == "9") { establecer_CAS(); imp(); }
 			//else if (opcion == "10")armar_sistema();
 			//else if (opcion == "11")armar_sistema();
 
