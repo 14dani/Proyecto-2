@@ -115,6 +115,7 @@ void monitorear(int estado)
 				{
 					archivo << 0 << endl;
 				}archivo.close();
+				/////MANDAR CORREO
 				/////thread de alarma on
 
 			}
