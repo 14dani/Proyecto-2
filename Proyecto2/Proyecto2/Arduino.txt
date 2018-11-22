@@ -1,0 +1,4 @@
+0
+0
+Valor 1. Proximidad.
+Valor 2. Temperatura.

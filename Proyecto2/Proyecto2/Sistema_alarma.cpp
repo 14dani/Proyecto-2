@@ -8,30 +8,133 @@
 #include <sstream>
 #include <thread>
 #include <chrono> 
+#include"Arduino.h"
 using namespace std;
+
+Arduino arduino;
+
+struct alertas
+{
+	string dispositivo;
+	string estado;
+};
 
 Sistema_alarma::Sistema_alarma()
 {
 }
 
-void monitorear(int estado)
+string consultar_estado(int tipo)
 {
+	string linea_a_guardar;
+	fstream linea;
+	string linead;
+	linea.open("estados.txt", ios::in);
+	for (int i = 1; i <= 2; i++)
+	{
+		getline(linea, linead);
+		if (tipo==1 && i==1)linea_a_guardar = linead;
+		else if (tipo == 2 && i == 2)linea_a_guardar = linead;
+	}
+	linea.close();
+	cout << endl << linea_a_guardar << endl;
+	return linea_a_guardar;
 
 }
-
 void modificar_estado(int tipo, string estado_cambiado)
 {
-	string segunda_lineas;
+	string linea_a_guardar;
+	fstream linea;
+	string linead;
+	linea.open("estados.txt", ios::in);
 	if (tipo == 1)
 	{
+		for (int i = 1; i <= 2; i++)
+		{
+			getline(linea, linead);
+			if (i == 2)linea_a_guardar=linead;
+		}
+		linea.close();
+		linea.open("estados.txt", ios::out);
+		linea << estado_cambiado << endl;
+		linea << linea_a_guardar << endl;
+		linea.close();
+	}
+	else if (tipo == 2)
+	{
+		for (int i = 1; i <= 2; i++)
+		{
+			getline(linea, linead);
+			if (i == 1)linea_a_guardar=linead;
+		}
+		linea.close();
+		linea.open("estados.txt", ios::out);
+		linea << linea_a_guardar << endl;
+		linea << estado_cambiado << endl;
 
+		linea.close();
 	}
 }
+
+alertas estado_alerta()
+{
+	fstream dispositivos;
+	int numero_dispositivo;
+	string estado="0";
+	alertas alertad;
+	dispositivos.open("Arduino.txt", ios::in);
+	for (int i = 1; i <= 2; i++)////Aqui se harian cambios en los dispositivos.
+	{
+		getline(dispositivos, estado);
+		numero_dispositivo = i;
+		if (estado == "1")
+		{
+			break;
+		}
+
+	}
+	dispositivos.close();
+	alertad.dispositivo = numero_dispositivo;
+	alertad.estado = estado;
+	return alertad;
+}
+void monitorear(int estado)
+{
+	alertas alertad;
+	fstream archivo;
+	while (true)
+	{
+		if (consultar_estado(1) == "ACTIVADO")
+		{
+			archivo.open("Arduino.txt", ios::out);
+
+			alertad = estado_alerta();
+
+			if (alertad.estado == "1")////Primero apaga la alerta para que no siga apareciendo
+			{
+				for (int i = 1; i <= 2; i++)////aqui se cambiarian los dispositivos
+				{
+					archivo << 0 << endl;
+				}archivo.close();
+				/////MANDAR CORREO
+				/////thread de alarma on
+
+			}
+
+		}
+	}
+
+}
+
+
+
 void alerta(int estado)
 {
 	while (true) {
-		cout << endl << "ALERTA" << endl;
-		this_thread::sleep_for(chrono::seconds(2));
+		if (consultar_estado(2) == "ACTIVADO") {
+			cout << endl << "ALERTA" << endl;
+			this_thread::sleep_for(chrono::seconds(2));
+		}
+		else break;
 	}
 }
 
@@ -674,10 +777,9 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 			cout << endl;
 
 			if (opcion == "0")return 0;
-			else if (opcion == "1") {alerta(0);
-			}
-			else if (opcion == "2")desarmar_sistema;
-			else if (opcion == "3")desactivar_sistema();
+			else if (opcion == "1") { modificar_estado(1, "ACTIVADO"); armar_sistema(); }
+			else if (opcion == "2") { modificar_estado(1, "DESACTIVADO"); desarmar_sistema(); }
+			else if (opcion == "3") { modificar_estado(2, "DESACTIVADO"); desactivar_sistema(); }
 			else if (opcion == "4")programar_zonas();
 			else if (opcion == "5") {
 				lista_zonas();
@@ -693,3 +795,6 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		}
 
 }
+
+////El estado tipo 1 indica si la alarma esta o no esta armada.
+////El estado tipo 2 indica si la sirena esta sonando.

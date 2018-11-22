@@ -30,6 +30,9 @@
     <ClInclude Include="Monitoreo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Arduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Monitoreo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arduino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
