@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Arbol.h" />
+    <ClInclude Include="Arduino.h" />
     <ClInclude Include="Monitoreo.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="pch.h" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arbol.cpp" />
+    <ClCompile Include="Arduino.cpp" />
     <ClCompile Include="Monitoreo.cpp" />
     <ClCompile Include="Nodo.cpp" />
     <ClCompile Include="pch.cpp">
