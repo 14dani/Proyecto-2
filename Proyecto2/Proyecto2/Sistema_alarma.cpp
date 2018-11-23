@@ -170,6 +170,7 @@ struct S_A
 };
 
 vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
+vector<string>Ucontraseña;
 
 
 vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
@@ -645,9 +646,10 @@ void borrar_bitacora()
 	else cout << "Usuario no registrado" << endl;
 }
 
+
 void establecer_CAP()//Establece el codigo principal
 {
-	string id,con1,con2;
+	string id, con1, con2, cambio, clave;
 	vector<string>contraseñas;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -657,31 +659,121 @@ void establecer_CAP()//Establece el codigo principal
 		{
 			if (id == usuarios.at(i).identificacion)
 			{
-				cout << "Ingrese codigo de acceso principal: ";
-				getline(cin, con1);
-				if (validar_palabra_clave(con1))
+				if (Ucontraseña.size() == 0)
 				{
-					contraseñas.push_back(con1);
-					cout << "Confirme el codigo de acceso principal: ";
-					getline(cin, con2);
-					for (int m = 0; m < contraseñas.size(); m++)
+
+					cout << "Ingrese codigo de acceso principal: ";
+					getline(cin, con1);
+					if (validar_palabra_clave(con1))
 					{
-						if (contraseñas[m] == con2)
+						contraseñas.push_back(con1);
+						cout << "Confirme el codigo de acceso principal: ";
+						getline(cin, con2);
+						for (int m = 0; m < contraseñas.size(); m++)
 						{
-							usuarios.at(i).UsuarioP.codigoP = 0;
-							usuarios.at(i).UsuarioP.cod_accesoP = con1;
+							if (contraseñas[m] == con2)
+							{
+								usuarios.at(i).UsuarioP.codigoP = 0;
+								usuarios.at(i).UsuarioP.cod_accesoP = con1;
+								Ucontraseña.push_back(id);
+
+							}
+							else
+								cout << "Contraseñas no concuerdan" << endl;
+						}
+					}
+					else
+						cout << "Clave debe tener 8 o mas caracteres y al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
+				}
+				else
+				{
+					for (int e = 0; e < Ucontraseña.size(); e++)
+					{
+						if (id == Ucontraseña[e])
+						{
+
+							cout << "La clave ha sido establecida anteriormente" << endl << endl;
+							cout << "Para cambiarla presione la tecla <c>" << endl;
+							cout << "Para salir presione <s>" << endl << endl;
+							getline(cin, cambio);
+							if (cambio == "c" || cambio == "C")
+							{
+								cout << "Ingrese clave anterior: ";
+								getline(cin, clave);
+								for (int f = 0; f < usuarios.size(); f++)
+								{
+									if ((id == usuarios.at(f).identificacion) && (clave == usuarios.at(f).UsuarioP.cod_accesoP))
+									{
+										cout << "Ingrese codigo de acceso principal: ";
+										getline(cin, con1);
+										if (validar_palabra_clave(con1))
+										{
+											contraseñas.push_back(con1);
+											cout << "Confirme el codigo de acceso principal: ";
+											getline(cin, con2);
+											for (int q = 0; q < contraseñas.size(); q++)
+											{
+												if (contraseñas[q] == con2)
+												{
+													usuarios.at(f).UsuarioP.codigoP = 0;
+													usuarios.at(f).UsuarioP.cod_accesoP = con1;
+
+												}
+												else
+													cout << "Contraseñas no concuerdan" << endl;
+											}
+										}
+										else
+											cout << "Clave debe tener 8 o mas caracteres y al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
+
+									}
+									else
+										cout << "Clave incorrecta" << endl;
+								}
+							}
 
 						}
 						else
-							cout << "Contraseñas no concuerdan" << endl;
+						{
+							for (int x = 0; x < usuarios.size(); x++)
+							{
+								if (id == usuarios.at(x).identificacion)
+								{
+
+									cout << "Ingrese codigo de acceso principal: ";
+									getline(cin, con1);
+									if (validar_palabra_clave(con1))
+									{
+										contraseñas.push_back(con1);
+										cout << "Confirme el codigo de acceso principal: ";
+										getline(cin, con2);
+										for (int m = 0; m < contraseñas.size(); m++)
+										{
+											if (contraseñas[m] == con2)
+											{
+												usuarios.at(x).UsuarioP.codigoP = 0;
+												usuarios.at(x).UsuarioP.cod_accesoP = con1;
+												Ucontraseña.push_back(id);
+
+											}
+											else
+												cout << "Contraseñas no concuerdan" << endl;
+										}
+									}
+									else
+
+										cout << "Clave debe tener 8 o mas caracteres y al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
+
+								}
+							}
+						}
+						break;
 					}
 				}
-				else
-					cout << "Clave debe tener al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
-
 
 			}
 		}
+		
 	}
 	else cout << "Usuario no registrado" << endl;
 }
