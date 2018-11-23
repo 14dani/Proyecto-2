@@ -8,7 +8,7 @@ using namespace std;
 
 class Sistema_alarma
 {
-	
+
 
 public:
 	Sistema_alarma();
