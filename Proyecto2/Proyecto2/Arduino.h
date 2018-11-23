@@ -7,7 +7,7 @@ class Arduino
 private:
 	string dispositivo_1;
 	string dispositivo_2;
-	friend void Ejecutar();
+	friend void gestionar_arduino();
 	friend int monitorear();
 public:
 	Arduino();
