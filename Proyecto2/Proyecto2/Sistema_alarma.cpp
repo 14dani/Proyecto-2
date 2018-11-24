@@ -243,8 +243,22 @@ struct S_A
 	vector<zona>zonas;
 };
 
+struct Linea_Bitacora
+{
+	string fecha;
+	string hora;
+	string id;
+	string balerta;
+	string z_c;
+	string bdescripcion;
+	string accion;
+	int el;
+
+};
+
 vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
+vector<Linea_Bitacora>lines;
 
 
 vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
@@ -696,14 +710,78 @@ void lista_zonas()
 	else cout << "Usuario no registrado" << endl;
 }
 
+void crear_archivo_Bitacora(string bitacora)
+{
+	fstream Bit;
+	string arch = bitacora + ".txt";
+	
+	Bit.open(arch, ios::out);
+
+	if (!Bit.is_open())
+		cout << "Error al abrir archivo" << endl;
+	else
+	{
+		Bit << endl;
+		
+		Bit << "25.10.2018" << " " << "10:46:45" << " " << "AB12345678" << " " << "ACTIVACION" << " " << "2" << "       " << "Sala" << endl;
+		/*for (int i = 0; i < lines.size(); i++)
+		{
+			Bit << i + 1 << "-" << lines.at(i).fecha << " " << lines.at(i).hora << " " << lines.at(i).id << " " << lines.at(i).balerta << " " << lines.at(i).z_c << " " << lines.at(i).bdescripcion << " " << lines.at(i).accion << " " << lines.at(i).el << endl;
+		}*/
+	}
+
+
+}
+
+void leer_AB(string bitacora)
+{
+	fstream Bit;
+	string registro;
+	string arch = bitacora + ".txt";
+
+	Bit.open(arch, ios::in);
+
+	if (Bit.fail())
+	{
+
+		cout << endl << "Archivo no existente" << endl << endl;
+
+	}
+	else
+	{
+		while (!Bit.eof())
+		{
+
+			getline(Bit, registro);
+			cout << registro << endl;
+
+		}
+
+		if (Bit.eof())
+			cout << endl;
+	}
+
+}
+
+
 void bitacora()
 {
-	string id;
+	string id,c_a;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		cout << "H" << endl;
+		cout << "Ingrese codigo de acceso: ";
+		getline(cin, c_a);
+		for (int i = 0; i < usuarios.size(); i++)
+		{
+			if ((id == usuarios.at(i).identificacion)&&(c_a == usuarios.at(i).UsuarioP.cod_accesoP))
+			{
+				crear_archivo_Bitacora(id);
+				leer_AB(id);
+			}
+
+		}
 	}
 	else cout << "Usuario no registrado" << endl;
 }
@@ -866,7 +944,7 @@ void establecer_CAS()//Establece codigos secundarios
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		cout << "Ingrese codigo de acceso principal: ";
+		cout << "Ingrese codigo de acceso: ";
 		getline(cin, conP);
 		for (int i = 0; i < usuarios.size(); i++)
 		{
