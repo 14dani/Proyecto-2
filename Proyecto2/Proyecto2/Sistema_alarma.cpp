@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Sistema_alarma.h"
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -7,8 +8,7 @@
 #include <ctype.h>
 #include <fstream>
 #include <sstream>
-#include <thread>
-#include <chrono> 
+#include <thread> 
 #include"Arduino.h"
 using namespace std;
 
@@ -16,18 +16,11 @@ Arduino arduino;
 
 string dispositivo_1_;
 string dispositivo_2_;
-string variable_para_gestion = "NO ACTIVADO";
-string variable_monitoreo = "NO ACTIVADO";
-string variable_alarma = "NO ACTIVADO";
-vector<string*> dispos = { &dispositivo_1_,&dispositivo_2_ };////Estas tres lineas se cambian con dispositivos
-
-string linea_a_guardar;
-fstream linea12;
-string linead;
-
-string lineadzx;
-string linea_a_guardarzx;
-
+string variable_monitoreo;
+string variable_alarma;
+string variable_alarma_desactivada;
+vector<string> dispos;////Estas tres lineas se cambian con dispositivos
+Arduino comunicacion;
 
 struct alertas
 {
@@ -35,7 +28,6 @@ struct alertas
 	string estado;
 };
 
-//fstream dispositivos1;
 int numero_dispositivo;
 string estadoi;
 alertas alertadx;
@@ -44,112 +36,12 @@ Sistema_alarma::Sistema_alarma()
 {
 }
 
-
-int esperar1_1()
-{
-	if (!linea12.is_open())
-	{
-		esperar1_1();
-	}
-	return NULL;
-}
-/*int esperar3_1()
-{
-	if (!dispositivos1.is_open())
-	{
-		esperar3_1();
-	}
-	return NULL;
-}*/
-int esperar1()//////Funcion de esperar para funcion consultar estado y modificar estado.
-{
-	if (linea12.is_open())
-	{
-		esperar1();
-	}
-	return NULL;
-}
-/*int esperar3()//////Funcion de esperar para estado de alerta.
-{
-	if (dispositivos1.is_open())
-	{
-		esperar3();		
-	}
-	return NULL;
-}*/
-
-/*void Ejecutar()
-{
-		esperar3();
-		dispositivos1.open("Arduino.txt", ios::out);
-		esperar3_1();
-		dispositivos1 << dispositivo_1_ << endl;
-		esperar3_1();
-		dispositivos1 << dispositivo_2_ << endl;
-		dispositivos1.close();
-	
-}*/
-/*string consultar_estado(int tipo)
-{
-	if (!linea12.is_open()) {
-		linea12.open("estados.txt", ios::in);
-		for (int i = 1; i <= 2; i++)
-		{
-			getline(linea12, linead);
-			if (tipo == 1 && i == 1)linea_a_guardar = linead;
-			else if (tipo == 2 && i == 2)linea_a_guardar = linead;
-		}
-		linea12.close();
-		return linea_a_guardar;
-	}
-	else return consultar_estado(tipo);
-
-}*/
-
-
-/*void modificar_estado(int tipo, string estado_cambiado)
-{
-	if (!linea12.is_open()) {
-		linea12.open("estados.txt", ios::in);
-		if (tipo == 1)
-		{
-			for (int i = 1; i <= 2; i++)
-			{
-				getline(linea12, lineadzx);
-				if (i == 2)linea_a_guardarzx = lineadzx;
-			}
-			linea12.close();
-			linea12.open("estados.txt", ios::out);
-			linea12 << estado_cambiado << endl;
-			linea12 << linea_a_guardarzx << endl;
-			if (estado_cambiado == "NO ACTIVADO")variable_para_gestion = "NO ACTIVADO";
-			else if (estado_cambiado == "ACTIVADO")variable_para_gestion = "ACTIVADO";
-			linea12.close();
-		}
-		else if (tipo == 2)
-		{
-			for (int i = 1; i <= 2; i++)
-			{
-				getline(linea12, lineadzx);
-				if (i == 1)linea_a_guardarzx = lineadzx;
-			}
-			linea12.close();
-			linea12.open("estados.txt", ios::out);
-			linea12 << linea_a_guardarzx << endl;
-			linea12 << estado_cambiado << endl;
-			linea12.close();
-		}
-		else linea12.close();
-	}
-	else modificar_estado(tipo, estado_cambiado);
-}*/
-
-
 alertas estado_alerta()
 {
+	dispos={dispositivo_1_, dispositivo_2_ };
 	for (int i = 1; i <= 2; i++)////Aqui se harian cambios en los dispositivos.
 	{
-		estadoi = *(dispos[i - 1]);
+		estadoi = dispos[i - 1];
 		numero_dispositivo = i;
 		if (estadoi == "ACTIVADO")
 		{
@@ -164,25 +56,17 @@ alertas estado_alerta()
 
 void alerta()
 {
-	while (true) {
-			if (variable_alarma=="ACTIVADO") {
-				this_thread::sleep_for(chrono::seconds(10));
+	while (variable_alarma == "ACTIVADO" && variable_monitoreo == "ACTIVADO" && variable_alarma_desactivada=="NO ACTIVADO") {
+
 				cout << endl << "ALERTA" << endl;
-			}
-			else { cout << "HE CERRADO"; break; }
-
-
+				this_thread::sleep_for(chrono::milliseconds(2000));
 	}
 }
-void gestionar_arduino()
+void gestionar_arduino()///Aqui se cambiarian
 {
-	while (true) {
-		if (variable_para_gestion == "ACTIVADO") {
-			dispositivo_1_ = "ACTIVADO";
-			dispositivo_2_ = "DESACTIVADO";
-		}
-		else break;
-	}
+			comunicacion.proveer();
+			dispositivo_1_ = comunicacion.dispositivo_1;
+			dispositivo_2_ = comunicacion.dispositivo_2;
 }
 int monitorear()
 {
@@ -191,25 +75,20 @@ int monitorear()
 	{
 		if (variable_monitoreo == "ACTIVADO")
 		{
+			gestionar_arduino();
 			alertad = estado_alerta();
-			if (alertad.estado == "ACTIVADO")////Primero apaga la alerta para que no siga apareciendo
-			{
-				for (int i = 1; i <= 2; i++)////aqui se cambiarian los dispositivos
+				if (alertad.estado == "ACTIVADO")////Primero apaga la alerta para que no siga apareciendo
 				{
-					*dispos[i - 1] = "NO ACTIVADO";
+					dispositivo_1_ == "NO ACTIVADO";
+					dispositivo_2_ == "NO ACTIVADO";////aqui se cambiarian los dispositivos
+					/////MANDAR CORREO
+					variable_alarma = "ACTIVADO";
+						thread alertar(alerta);
+						alertar.detach();
 				}
-				/////MANDAR CORREO
-				variable_alarma="ACTIVADO";
-				thread alertar(alerta);
-				alertar.detach();
-			}
 
-			//thread gestion(gestionar_arduino);
-			//gestion.join();
-			
 		}
 		else return NULL;
-		this_thread::sleep_for(chrono::seconds(1));
 	}
 
 }
@@ -457,9 +336,7 @@ void armar_sistema()
 	if (RecorrerIden(id))
 	{
 		variable_monitoreo = "ACTIVADO"; 
-		variable_para_gestion = "ACTIVADO"; 
-		thread gestion(gestionar_arduino); 
-		gestion.detach();
+		variable_alarma_desactivada = "NO ACTIVADO";
 		thread a_monitorear(monitorear);
 		a_monitorear.detach();
 		cout << endl << "LISTO" << endl<<endl;
@@ -475,13 +352,14 @@ void desarmar_sistema()
 	if (RecorrerIden(id))
 	{
 		variable_monitoreo = "NO ACTIVADO";
+		variable_alarma = "NO ACTIVADO";
 	}
-	else cout << "Usuario no registrado" << endl;
+	else { variable_alarma_desactivada = "NO ACTIVADO"; alerta(); cout << "Usuario no registrado" << endl; }
 }
 
 void desactivar_sistema()
 {
-	variable_alarma = "NO ACTIVADO";
+	
 	string id;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -489,7 +367,7 @@ void desactivar_sistema()
 	{
 		variable_alarma = "NO ACTIVADO";
 	}
-	else cout << "Usuario no registrado" << endl;
+	else { variable_alarma_desactivada=="NO ACTIVADO"; alerta(); cout << "Usuario no registrado" << endl; }
 }
 
 void programar_zonas() //Me falta terminar esta
@@ -1118,8 +996,8 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 
 			if (opcion == "0")return 0;
 			else if (opcion == "1") {  armar_sistema(); }
-			else if (opcion == "2") { desarmar_sistema(); }
-			else if (opcion == "3") { desactivar_sistema(); }
+			else if (opcion == "2") { variable_alarma_desactivada = "ACTIVADO"; desarmar_sistema(); }
+			else if (opcion == "3") { variable_alarma_desactivada = "ACTIVADO"; desactivar_sistema(); }
 			else if (opcion == "4")programar_zonas();
 			else if (opcion == "5") {
 				lista_zonas();

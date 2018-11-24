@@ -14,6 +14,7 @@ string dispositivo_2;
 
 void Arduino::proveer()/////Aqui se envian los datos en terminos activos o desactivos.
 {
+	
 	dispositivo_1 = "ACTIVADO";
 	dispositivo_2 = "DESACTIVADO";
 	this->dispositivo_1 = dispositivo_1;
