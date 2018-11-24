@@ -199,6 +199,7 @@ struct Usuario   //estructura para establecer el usuario
 	int tel_1;
 	int tel_2;
 	string correo;
+	int el;
 
 };
 
@@ -356,7 +357,8 @@ void SaveFile()//Archivo para guardar usuarios
 				<< users.at(i).direccion << " "
 				<< users.at(i).tel_1 << " "
 				<< users.at(i).tel_2 << " "
-				<< users.at(i).correo << endl;
+				<< users.at(i).correo << " "
+				<< users.at(i).el << endl;
 
 		}
 		my_file.close();
@@ -411,7 +413,7 @@ void CrearUsuario(string usu)
 	//cin.ignore();
 	getline(cin, correo1);
 	us.correo = correo1;
-
+	us.el = 1;
 	users.push_back(us);
 	SaveFile();
 }
@@ -439,7 +441,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 					if (pusuario == users.at(i).identificacion) //Desplega informacion cuando ya hay un usuario registrado y da la opcion para realizar cambios
 					{
 						cout << "Identificacion: " << users.at(i).identificacion << endl;
-						cout << "Nombre: " << users.at(i).nombre << endl;
+						cout << "Nombre completo: " << users.at(i).nombre << endl;
 						cout << "Tipo de propiedad: " << users.at(i).tipo_propiedad << endl;
 						cout << "Direccion: " << users.at(i).direccion << endl;
 						cout << "Telefono 1: " << users.at(i).tel_1 << endl;

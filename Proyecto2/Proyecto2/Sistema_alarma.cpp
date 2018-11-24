@@ -10,6 +10,11 @@
 #include <sstream>
 #include <thread> 
 #include"Arduino.h"
+#include <time.h>
+#include <ctime>
+#include <winsock2.h>
+#include <stdexcept> //Clave
+#include <windows.h>//Clave
 using namespace std;
 
 Arduino arduino;
@@ -27,6 +32,34 @@ struct alertas
 	string dispositivo;
 	string estado;
 };
+
+struct Linea_bitacora
+{
+	string fyh;
+	string id;
+	string balerta;
+	string z_c;
+	string bdescripcion;
+	string baccion;
+	int el;
+};
+
+struct Linea_bitacora1
+{
+	string f1;
+	string h1;
+	string id1;
+	string balertas1;
+	string z_c1;
+	string bdescripcion1;
+	string baccion1;
+	int el;
+};
+
+vector<Linea_bitacora>lb;
+
+
+
 
 int numero_dispositivo;
 string estadoi;
@@ -70,6 +103,7 @@ void gestionar_arduino()///Aqui se cambiarian
 }
 int monitorear()
 {
+	
 	alertas alertad;
 	while (true)
 	{
@@ -81,6 +115,7 @@ int monitorear()
 				{
 					dispositivo_1_ == "NO ACTIVADO";
 					dispositivo_2_ == "NO ACTIVADO";////aqui se cambiarian los dispositivos
+					
 					/////MANDAR CORREO
 					variable_alarma = "ACTIVADO";
 						thread alertar(alerta);
@@ -122,22 +157,10 @@ struct S_A
 	vector<zona>zonas;
 };
 
-struct Linea_Bitacora
-{
-	string fecha;
-	string hora;
-	string id;
-	string balerta;
-	string z_c;
-	string bdescripcion;
-	string accion;
-	int el;
-
-};
 
 vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
-vector<Linea_Bitacora>lines;
+
 
 
 vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
@@ -327,30 +350,199 @@ bool validar_palabra_clave(string x) //Verifica todo el string para que se cumpl
 		return true;
 	else return false;
 }
+/*
+string Encript(string frase)//Algoritmo de encriptado
+{
+	string resultado = "";
+	int n = 1;
+	for (int tamano = 0; tamano < frase.size(); tamano++)
+	{
+		char letra = frase[tamano] - n;
+		resultado += letra;
+		n++;
+		if (n > 10)
+		{
+			n = 1;
+		}
+	}
+	return resultado;
+}
+
+string Desencript(string frase)//Algortimo para desencriptar
+{
+	string resultado = "";
+	int n = 1;
+	for (int tamano = 0; tamano < frase.size(); tamano++)
+	{
+		char letra = frase[tamano] - n;
+		resultado += letra;
+		n++;
+		if (n > 10)
+		{
+			n = 1;
+		}
+	}return resultado;
+}
+*/
+string getpassword(const string& prompt = "Enter password> ") //Hace que no se vean la clave cuando se ingresa
+{
+	string result;
+
+	// Set the console mode to no-echo, not-line-buffered input
+	DWORD mode, count;
+	HANDLE ih = GetStdHandle(STD_INPUT_HANDLE);
+	HANDLE oh = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (!GetConsoleMode(ih, &mode))
+		throw runtime_error(
+			"getpassword: You must be connected to a console to use this program.\n"
+		);
+	SetConsoleMode(ih, mode & ~(ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT));
+
+	// Get the password string
+	WriteConsoleA(oh, prompt.c_str(), prompt.length(), &count, NULL);
+	char c;
+	while (ReadConsoleA(ih, &c, 1, &count, NULL) && (c != '\r') && (c != '\n'))
+	{
+		if (c == '\b')
+		{
+			if (result.length())
+			{
+				WriteConsoleA(oh, "\b \b", 3, &count, NULL);
+				result.erase(result.end() - 1);
+			}
+		}
+		else
+		{
+			WriteConsoleA(oh, "*", 1, &count, NULL);
+			result.push_back(c);
+		}
+	}
+	// Restore the console mode
+	SetConsoleMode(ih, mode);
+	return result;
+}
 
 void armar_sistema()
 {
-	string id;
+	string id, con,con1;
+	string est = "Armar";
+	//time_t H = time(nullptr);
+	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
+	Linea_bitacora linea;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		variable_monitoreo = "ACTIVADO"; 
+		/*
+		cout << "Ingrese la clave: ";
+		con = getpassword(con1);
+		getline(cin, con1);
+		for(int i=0;i<usuarios.size();i++)
+		{
+			if ((id == usuarios.at(i).identificacion)&&(con == usuarios.at(i).UsuarioP.cod_accesoP))
+			{
+				usuarios.at(i).UsuarioP.codigoP = 0;
+
+				//linea.fyh = ctime(&H);
+				linea.id = id;
+				linea.balerta = est;
+				linea.z_c = usuarios.at(i).UsuarioP.codigoP;
+				linea.bdescripcion = "&";
+				linea.baccion = "&";
+				linea.el = 1;
+				lb.push_back(linea);
+
+			}
+			else
+			{
+				for (int n = 0; n < usuarios.size(); n++)
+				{
+					for (int m = 0; m < usuarios.at(n).UsuariosS.size(); m++)
+					{
+						if (con == usuarios.at(n).UsuariosS.at(m).cod_acceso)
+						{
+							//linea.fyh = ctime(&H);
+							linea.id = id;
+							linea.balerta = est;
+							linea.z_c = usuarios.at(n).UsuariosS.at(m).codigo;
+							linea.bdescripcion = "&";
+							linea.baccion = "&";
+							linea.el = 1;
+							lb.push_back(linea);
+
+						}
+
+					}
+				}
+			}
+
+		}*/
+		variable_monitoreo = "ACTIVADO";
 		variable_alarma_desactivada = "NO ACTIVADO";
 		thread a_monitorear(monitorear);
 		a_monitorear.detach();
-		cout << endl << "LISTO" << endl<<endl;
+		cout << endl << "LISTO" << endl << endl;
+
 	}
 	else cout << "Usuario no registrado" << endl;
 }
 
 void desarmar_sistema()
 {
-	string id;
+	string id, con,con1;
+	string est = "Desarmar";
+	//time_t H = time(nullptr);
+	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
+	Linea_bitacora linea;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
+		/*
+		cout << "Ingrese la clave: ";
+		con=getpassword(con1);
+		getline(cin, con1);
+		for (int i = 0; i < usuarios.size(); i++)
+		{
+			if ((id == usuarios.at(i).identificacion) && (con == usuarios.at(i).UsuarioP.cod_accesoP))
+			{
+				usuarios.at(i).UsuarioP.codigoP = 0;
+
+				//linea.fyh = ctime(&H);
+				linea.id = id;
+				linea.balerta = est;
+				linea.z_c = usuarios.at(i).UsuarioP.codigoP;
+				linea.bdescripcion = "&";
+				linea.baccion = "&";
+				linea.el = 1;
+				lb.push_back(linea);
+
+			}
+			else
+			{
+				for (int n = 0; n < usuarios.size(); n++)
+				{
+					for (int m = 0; m < usuarios.at(n).UsuariosS.size(); m++)
+					{
+						if (con == usuarios.at(n).UsuariosS.at(m).cod_acceso)
+						{
+							//linea.fyh = ctime(&H);
+							linea.id = id;
+							linea.balerta = est;
+							linea.z_c = usuarios.at(n).UsuariosS.at(m).codigo;
+							linea.bdescripcion = "&";
+							linea.baccion = "&";
+							linea.el = 1;
+							lb.push_back(linea);
+
+						}
+
+					}
+				}
+			}
+
+		}*/
+
 		variable_monitoreo = "NO ACTIVADO";
 		variable_alarma = "NO ACTIVADO";
 	}
@@ -359,12 +551,18 @@ void desarmar_sistema()
 
 void desactivar_sistema()
 {
-	
-	string id;
+	string id, con, con1;
+	string est = "DESACTIVACION";
+	//time_t H = time(nullptr);
+	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
+	Linea_bitacora linea;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
+		cout << "Ingrese la clave: ";
+		con = getpassword(con1);
+		getline(cin, con1);
 		variable_alarma = "NO ACTIVADO";
 	}
 	else { variable_alarma_desactivada=="NO ACTIVADO"; alerta(); cout << "Usuario no registrado" << endl; }
@@ -375,17 +573,21 @@ void programar_zonas() //Me falta terminar esta
 	S_A sa;
 	zona zo;
 	vector<zona>zv;
-	string id, des, dis, op, op2, des2, dis2;
+	string id, des, dis, op, op2, des2, dis2, con, con1;
 	int num, num2,num3;
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
+		cout << "Ingrese codigo de acceso principal: ";
+		con = getpassword(con1);
+		getline(cin, con1);
+
 		for (int i = 0; i < usuarios.size(); i++)
 		{
 			
-			if (id == usuarios.at(i).identificacion)
+			if (id == usuarios.at(i).identificacion&&usuarios.at(i).UsuarioP.cod_accesoP==con)
 			{
 				cout << "Numero de zona: ";
 				cin >> num;
@@ -495,11 +697,12 @@ void programar_zonas() //Me falta terminar esta
 	else cout << "Usuario no registrado" << endl;
 }
 
-void SaveFile(vector<zona>zz1)//Archivo pdf para imprimir lista
+void SaveFile(vector<zona>zz1,string ids)//Archivo pdf para imprimir lista
 {
 	fstream my_file;
+	string m = "Lista"+ids + ".txt";
 
-	my_file.open("Lista.pdf", ios::out);
+	my_file.open(m, ios::out);
 
 	if (!my_file.is_open())
 		cout << "Error al abrir archivo" << endl;
@@ -516,10 +719,16 @@ void SaveFile(vector<zona>zz1)//Archivo pdf para imprimir lista
 
 }
 
+void ArchivoImprimir(string id)
+{
+	string m = id + ".pdf";
+	
+	ShellExecute(NULL, TEXT("open"), TEXT("C:\\Users\\User\\Desktop\\Prueba12\\Proyecto2\\Proyecto2\\Lista.pdf"), NULL, NULL, SW_SHOWNORMAL);
+}
 
 void lista_zonas()
 {
-	string id;
+	string id,con,imp,con1;
 	vector<int>Nzonas;
 	vector<zona>zz;
 	int z;
@@ -527,29 +736,53 @@ void lista_zonas()
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
+	
 	if (RecorrerIden(id))
 	{
-		cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
-		cout << setw(108) << "==============================================================================================" << endl;
+		
+		cout << "Ingrese la clave: ";
+		con = getpassword(con1);
+		getline(cin, con1);
 
 		for (int i = 0; i < usuarios.size(); i++)
 		{
 
 			if (id == usuarios.at(i).identificacion)
 			{
-				for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
+				if (usuarios.at(i).UsuarioP.cod_accesoP == con)
 				{
-					Nzonas.push_back(usuarios.at(i).zonas.at(j).z);
-					zz.push_back(usuarios.at(i).zonas.at(j));
+					for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
+					{
+						Nzonas.push_back(usuarios.at(i).zonas.at(j).z);
+						zz.push_back(usuarios.at(i).zonas.at(j));
+					}
 				}
+				else
+				{
+					for (int n = 0; n < usuarios.size(); n++)
+					{
+						for (int m = 0; m < usuarios.at(n).UsuariosS.size(); m++)
+						{
+							if (con == usuarios.at(n).UsuariosS.at(m).cod_acceso)
+							{
+								for (int h = 0; h < usuarios.at(n).zonas.size(); h++)
+								{
+									Nzonas.push_back(usuarios.at(n).zonas.at(h).z);
+									zz.push_back(usuarios.at(n).zonas.at(h));
+								}
+							}
+
+						}
+					}
+				}
+
 			}
-		}  
+		}
 
 
-		for (int i = 1; i < Nzonas.size(); i++)//for n-1 passes
+		for (int i = 1; i < Nzonas.size(); i++)//acomoda la lista en orden
 		{
-			//In pass i,compare the first n-i elements
-			//with their next elements
+		
 			for (int j = 0; j < Nzonas.size() - 1; j++)
 			{
 				if (Nzonas[j] > Nzonas[j + 1])
@@ -576,6 +809,8 @@ void lista_zonas()
 				}
 			}
 		}
+		cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
+		cout << setw(108) << "==============================================================================================" << endl;
 
 		for (int i = 0; i < zz2.size(); i++)
 		{
@@ -583,7 +818,15 @@ void lista_zonas()
 			cout << setw(19) << zz2.at(i).z<< setw(11) << setw(10) << zz2.at(i).descrpcion << setw(30) << zz2.at(i).dispositivo << endl;
 
 		}
-		SaveFile(zz2);
+		SaveFile(zz2,id);
+		cout << "Para imprimir presione la tecla <I>" <<  endl;
+		cout << "Para Salir presione la tecla <S>" << endl << endl;
+		getline(cin, imp);
+		/*if (imp == "i" || imp == "I")
+		{
+			ArchivoImprimir(id);
+		}*/
+
 	}
 	else cout << "Usuario no registrado" << endl;
 }
@@ -641,7 +884,6 @@ void leer_AB(string bitacora)
 
 }
 
-
 void bitacora()
 {
 	string id,c_a;
@@ -676,10 +918,9 @@ void borrar_bitacora()
 	else cout << "Usuario no registrado" << endl;
 }
 
-
 void establecer_CAP()//Establece el codigo principal
 {
-	string id, con1, con2, cambio, clave;
+	string id, con1,con11, con2,con22, cambio, clave;
 	vector<string>contraseñas;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -693,12 +934,14 @@ void establecer_CAP()//Establece el codigo principal
 				{
 
 					cout << "Ingrese codigo de acceso principal: ";
-					getline(cin, con1);
+					con1 = getpassword(con11);
+					getline(cin, con11);
 					if (validar_palabra_clave(con1))
 					{
 						contraseñas.push_back(con1);
 						cout << "Confirme el codigo de acceso principal: ";
-						getline(cin, con2);
+						con2 = getpassword(con22);
+						getline(cin, con22);
 						for (int m = 0; m < contraseñas.size(); m++)
 						{
 							if (contraseñas[m] == con2)
@@ -806,11 +1049,12 @@ void establecer_CAP()//Establece el codigo principal
 		
 	}
 	else cout << "Usuario no registrado" << endl;
+	cout << endl;
 }
 
 void establecer_CAS()//Establece codigos secundarios
 {
-	string id, conP, conS1, conS2,numTel;
+	string id, conP, conP1, conS1,conS11,conS22, conS2, numTel;
 	int numCod, numCod2;
 	string Cod, nombre;
 	U_secundario ss;
@@ -823,24 +1067,27 @@ void establecer_CAS()//Establece codigos secundarios
 	if (RecorrerIden(id))
 	{
 		cout << "Ingrese codigo de acceso: ";
-		getline(cin, conP);
+		conP = getpassword(conP1);
+		getline(cin, conP1);
 		for (int i = 0; i < usuarios.size(); i++)
 		{
 			if ((id == usuarios.at(i).identificacion)&&(conP==usuarios.at(i).UsuarioP.cod_accesoP))
 			{
 				if (usuarios.at(i).UsuariosS.size() == 0)
 				{
-					cout << "Ingrese número de código: ";
+					cout << "Ingrese numero de codigo: ";
 					cin >> numCod;
 					ss.codigo = numCod;
 					cout << "Codigo de acceso secundario: ";
 					cin.ignore();
-					getline(cin, conS1);
+					conS1 = getpassword(conS11);
+					getline(cin, conS11);
 					if (validar_palabra_clave(conS1))
 					{
 						contraseñas.push_back(conS1);
 						cout << "Confirmacion de codigo de acceso secundario: ";
-						getline(cin, conS2);
+						conS2 = getpassword(conS22);
+						getline(cin, conS22);
 						for (auto c : contraseñas)
 						{
 							if (c == conS2)
@@ -856,20 +1103,27 @@ void establecer_CAS()//Establece codigos secundarios
 									ss.telefono = ToInt1(numTel);
 									us.push_back(ss);
 									usuarios.at(i).UsuariosS = us;
+									break;
 								}
 								else
 								{
 									cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
+									break;
 								}
 							}
 							else
+							{
 								cout << "Claves no concuerdan" << endl;
+								break;
+							}
 						}
 
 					}
 					else
+					{
 						cout << "Clave debe tener al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
-				
+						break;
+					}
 				}
 				else
 				{
@@ -882,12 +1136,14 @@ void establecer_CAS()//Establece codigos secundarios
 							ss.codigo = numCod2;
 							cout << "Codigo de acceso secundario: ";
 							cin.ignore();
-							getline(cin, conS1);
+							conS1 = getpassword(conS11);
+							getline(cin, conS11);
 							if (validar_palabra_clave(conS1))
 							{
 								contraseñas.push_back(conS1);
 								cout << "Confirmacion de codigo de acceso secundario: ";
-								getline(cin, conS2);
+								conS2 = getpassword(conS22);
+								getline(cin, conS22);
 								for (auto c : contraseñas)
 								{
 									if (c == conS2)
@@ -904,22 +1160,34 @@ void establecer_CAS()//Establece codigos secundarios
 											us = usuarios.at(i).UsuariosS;
 											us.push_back(ss);
 											usuarios.at(i).UsuariosS = us;
+											break;
 										}
 										else
 										{
 											cout << "Numero de telefono debe tener 8 numeors exactos" << endl;
+											break;
 										}
 									}
 									else
+									{
 										cout << "Claves no concuerdan" << endl;
+										break;
+									}
+									
 								}
 							}
 							else
+							{
 								cout << "Clave debe tener al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
-
+								break;
+							}
 						}
 						else
+						{
 							cout << "Numero de codigo repetido" << endl;
+							break;
+						}
+						break;
 					}
 				}
 				
@@ -934,23 +1202,23 @@ void imp()
 	string id;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
-	
-		for (int i = 0; i < usuarios.size(); i++)
-		{
-			if (id == usuarios.at(i).identificacion)
-			{
-				for (int j = 0; j < usuarios.at(i).UsuariosS.size(); j++)
-				{
-					cout << usuarios.at(i).UsuariosS.at(j).codigo << endl;
-					cout << usuarios.at(i).UsuariosS.at(j).cod_acceso << endl;
-					cout << usuarios.at(i).UsuariosS.at(j).nombre_persona << endl;
-					cout << usuarios.at(i).UsuariosS.at(j).telefono << endl;
 
-				}
+	for (int i = 0; i < usuarios.size(); i++)
+	{
+		if (id == usuarios.at(i).identificacion)
+		{
+			for (int j = 0; j < usuarios.at(i).UsuariosS.size(); j++)
+			{
+				cout << usuarios.at(i).UsuariosS.at(j).codigo << endl;
+				cout << usuarios.at(i).UsuariosS.at(j).cod_acceso << endl;
+				cout << usuarios.at(i).UsuariosS.at(j).nombre_persona << endl;
+				cout << usuarios.at(i).UsuariosS.at(j).telefono << endl;
 
 			}
+
 		}
-	
+	}
+
 }
 
 void Fuego()
