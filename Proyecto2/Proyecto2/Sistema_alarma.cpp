@@ -464,13 +464,142 @@ string getpassword(const string& prompt = "Enter password> ") //Hace que no se v
 }
 //////ARCHIVOS///////////////////////////////////////////////////////////
 
-void Archivo_Usuario_contraseñaP()
+void Archivo_usuario_SA()
 {
+	fstream file;
+
+	file.open("UsuariosSistemaAlarma.txt", ios::out);
+
+	if (!file.is_open())
+		cout << "Error al abrir archivo" << endl;
+	else
+	{
+		for (unsigned int u = 0; u < usuarios.size(); u++)
+		{
+			file << usuarios.at(u).identificacion << "-"
+				<< usuarios.at(u).UsuarioP.codigoP << "-"
+				<< usuarios.at(u).UsuarioP.cod_accesoP << ".";
+			for (int i = 0; i < usuarios.at(u).UsuariosS.size(); i++)
+			{
+				file << usuarios.at(u).UsuariosS.at(i).codigo << "-"
+					<< usuarios.at(u).UsuariosS.at(i).cod_acceso << "-"
+					<< usuarios.at(u).UsuariosS.at(i).nombre_persona << "-"
+					<< usuarios.at(u).UsuariosS.at(i).telefono << "|";
+			}
+			file << ".";
+			for (int f = 0; f < usuarios.at(u).zonas.size(); f++)
+			{
+				file << usuarios.at(u).zonas.at(f).z << "-"
+					<< usuarios.at(u).zonas.at(f).descrpcion << "-"
+					<< usuarios.at(u).zonas.at(f).dispositivo << "-"
+					<< usuarios.at(u).zonas.at(f).disponible << "|";
+			}
+			file << ".";
+			file << usuarios.at(u).disponible << endl;
+		}
+		file.close();
+	}
 
 }
 
-void Archivo_Usuarios_secundarios()
+vector<string> ScmdS(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
 {
+	vector<string> space;
+
+
+	istringstream iss(string1);
+
+	string token;
+
+	while (getline(iss, token, '.'))
+	{
+
+		space.push_back(token);
+
+	}
+	return space;
+}
+
+vector<string> ScmdUZ(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
+{
+	vector<string> space;
+
+
+	istringstream iss(string1);
+
+	string token;
+
+	while (getline(iss, token, '|'))
+	{
+
+		space.push_back(token);
+
+	}
+	return space;
+}
+
+vector<string>seccion;
+vector<string>seccion1;
+vector<string>secciones;
+vector<string>UCC;
+vector<string>USALL;
+vector<string>ZALL;
+
+void ExtraerInfoSecciones(string str1) //Guarda los usuarios en users
+{
+	S_A user1;
+	secciones = ScmdS(str1);
+	UCC = Scmd(secciones[0]);
+	USALL = ScmdUZ(secciones[1]);
+	ZALL = ScmdUZ(secciones[2]);
+
+	user1.identificacion = UCC[0];
+	user1.UsuarioP.codigoP = ToInt1(UCC[1]);
+	user1.UsuarioP.cod_accesoP = UCC[2];
+
+
+	user1.disponible = secciones[3];
+	
+}
+
+void LeerArchivoSA()
+{
+	ifstream my_file;
+	string registro;
+	my_file.open("UsuariosSistemaAlarma.txt", ios::in);
+
+	if (my_file.fail())
+	{
+		cout << endl << "Archivo no existente" << endl << endl;
+	}
+	else
+	{
+		while (!my_file.eof())
+		{
+			seccion.clear();
+			getline(my_file, registro);
+			seccion.push_back(registro);
+
+			for (int i = 0; i < seccion.size(); i++)
+			{
+				seccion1.push_back(seccion[i]);
+
+			}
+		}
+		if (my_file.eof())
+		{
+			cout << endl;
+		}
+	}
+}
+
+void IU()//Funcion que extrae los atributos de la estructura Usuario para que no se borren
+{
+	for (int i = 0; i < seccion1.size() - 1; i++)
+	{
+
+		ExtraerInfoSecciones(seccion1[i]);
+	}
 
 }
 
@@ -673,6 +802,7 @@ void programar_zonas() //Me falta terminar esta
 						zo.disponible = "1";
 						zv.push_back(zo);
 						usuarios.at(i).zonas = zv;
+						Archivo_usuario_SA();
 						cout << endl;
 					}
 					else
@@ -683,7 +813,7 @@ void programar_zonas() //Me falta terminar esta
 					for (int m = 0; m < usuarios.at(i).zonas.size(); m++)
 					{
 
-						if (num == usuarios[i].zonas[m].z)
+						if (num == usuarios.at(i).zonas.at(m).z)
 						{
 							cout << "Numero de zona: " << usuarios[i].zonas[m].z << endl;
 							cout << "Descripcion: " << usuarios[i].zonas[m].descrpcion << endl;
@@ -723,11 +853,13 @@ void programar_zonas() //Me falta terminar esta
 									if (op2 == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descrpcion = des2; }
 									if (op2 == "3") { cout << "Nuevo dispositivo: "; getline(cin, dis2); usuarios[i].zonas[m].dispositivo = dis2; }
 									if (op2 == "S" || op2 == "s")break;
+									Archivo_usuario_SA();
 								}
 							}
 							if (op == "b" || op == "B")
 							{
 								usuarios[i].zonas[m].disponible = "0";
+								Archivo_usuario_SA();
 							}
 							if (op == "a" || op == "A")
 							{
@@ -748,6 +880,7 @@ void programar_zonas() //Me falta terminar esta
 									zv = usuarios.at(i).zonas;
 									zv.push_back(zo);
 									usuarios.at(i).zonas = zv;
+									Archivo_usuario_SA();
 									cout << endl;
 									break;
 								}
@@ -775,6 +908,7 @@ void programar_zonas() //Me falta terminar esta
 								zv = usuarios.at(i).zonas;
 								zv.push_back(zo);
 								usuarios.at(i).zonas = zv;
+								Archivo_usuario_SA();
 								cout << endl;
 								break;
 							}
@@ -1041,6 +1175,7 @@ void establecer_CAP()//Establece el codigo principal
 								usuarios.at(i).UsuarioP.codigoP = 0;
 								usuarios.at(i).UsuarioP.cod_accesoP = con1;
 								Ucontraseña.push_back(id);
+								Archivo_usuario_SA();
 
 							}
 							else
@@ -1086,6 +1221,7 @@ void establecer_CAP()//Establece el codigo principal
 												{
 													usuarios.at(f).UsuarioP.codigoP = 0;
 													usuarios.at(f).UsuarioP.cod_accesoP = con1;
+													Archivo_usuario_SA();
 
 												}
 												else
@@ -1126,6 +1262,7 @@ void establecer_CAP()//Establece el codigo principal
 												usuarios.at(x).UsuarioP.codigoP = 0;
 												usuarios.at(x).UsuarioP.cod_accesoP = con1;
 												Ucontraseña.push_back(id);
+												Archivo_usuario_SA();
 
 											}
 											else
@@ -1202,6 +1339,7 @@ void establecer_CAS()//Establece codigos secundarios
 									ss.telefono = ToInt1(numTel);
 									us.push_back(ss);
 									usuarios.at(i).UsuariosS = us;
+									Archivo_usuario_SA();
 									break;
 								}
 								else
@@ -1259,6 +1397,7 @@ void establecer_CAS()//Establece codigos secundarios
 											us = usuarios.at(i).UsuariosS;
 											us.push_back(ss);
 											usuarios.at(i).UsuariosS = us;
+											Archivo_usuario_SA();
 											break;
 										}
 										else
@@ -1339,8 +1478,10 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 									 o para correr el menu, tipo es el dato de quien esta haciendo la consulta*/
 {
 		string opcion;
+		
 		readFile();
 		Ids(); //se cargan las identidades del monitoreo.cpp
+		
 	//	prueba();
 		
 		cin.ignore();
@@ -1380,7 +1521,7 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 
 
 		}
-
+		
 }
 
 ////El estado tipo 1 indica si la alarma esta o no esta armada.

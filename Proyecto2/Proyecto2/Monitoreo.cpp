@@ -364,6 +364,7 @@ void ExtraerInfoM(string str1) //Guarda los usuarios en users
 	string m;
 	identificacionesm = ScmdM(str1);
 	identificaciones1m.push_back(identificacionesm[0]);
+
 	s.identificacion = identificacionesm[0];
 	s.nombre = identificacionesm[1];
 	s.tipo_propiedad = identificacionesm[2];
