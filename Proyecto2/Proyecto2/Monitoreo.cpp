@@ -205,7 +205,7 @@ struct Usuario   //estructura para establecer el usuario
 
 vector<Usuario>users;//vector para guardar los usuarios establecidos
 
-bool RecorrenUsuarios(string usuario)
+bool RecorrenUsuarios(string usuario) //Recorre los usuarios de users
 {
 	bool f = false;
 	{
@@ -218,7 +218,7 @@ bool RecorrenUsuarios(string usuario)
 		}
 	}
 	return f;
-}
+} 
 
 bool caracteres(string user) //verifica que la identificacion sea de 10 o más caracteres
 {
@@ -235,7 +235,7 @@ bool caracteres(string user) //verifica que la identificacion sea de 10 o más ca
 	return f;
 }
 
-bool telefono(string numero) //verifica que la identificacion sea de 10 o más caracteres
+bool telefono(string numero) //Valida que el telefono tenga 8 digitos exactos
 {
 	bool f = false;
 	{
@@ -356,9 +356,9 @@ vector<string>registro1m;
 vector<string>NOidentificacionesm;
 vector<string>identificacionesm;
 vector<string>identificaciones1m;//Se guardan identificaciones
-//vector<string>eliminados;
 
-void ExtraerInfoM(string str1) //Extrae cada identificacion
+
+void ExtraerInfoM(string str1) //Guarda los usuarios en users
 {
 	Usuario s;
 	string m;
@@ -406,7 +406,7 @@ void readFileM()//Lee usuarios establecidos del monitoreo.cpp
 	}
 }
 
-void IdsM()//Funcion que extrae las identificaciones del archivo
+void IdsM()//Funcion que extrae los atributos de la estructura Usuario para que no se borren
 {
 	for (int i = 0; i < NOidentificacionesm.size() - 1; i++)
 	{

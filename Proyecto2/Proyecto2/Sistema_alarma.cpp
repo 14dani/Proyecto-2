@@ -12,6 +12,8 @@
 #include"Arduino.h"
 #include <time.h>
 #include <ctime>
+#include <stdlib.h>
+#pragma warning(disable : 4996)
 #include <winsock2.h>
 #include <stdexcept> //Clave
 #include <windows.h>//Clave
@@ -57,8 +59,6 @@ struct Linea_bitacora1
 };
 
 vector<Linea_bitacora>lb;
-
-
 
 
 int numero_dispositivo;
@@ -147,6 +147,7 @@ struct zona
 	int z;
 	string descrpcion;
 	string dispositivo;
+	string disponible;
 };
 
 struct S_A
@@ -162,7 +163,33 @@ struct S_A
 vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
 
+string hora()
+{
+	string h, m, s, r;
+	time_t now;
+	struct tm nowLocal;
+	now = time(NULL);
+	nowLocal = *localtime(&now);
+	h = to_string(nowLocal.tm_hour);
+	m = to_string(nowLocal.tm_min);
+	s = to_string(nowLocal.tm_sec);
+	r = h + ":" + m + ":" + s;
+	return r;
+}
 
+string fecha()
+{
+	string d,m,a,r;
+	time_t now;
+	struct tm nowLocal;
+	now = time(NULL);
+	nowLocal = *localtime(&now);
+	d = to_string(nowLocal.tm_mday);
+	m = to_string(nowLocal.tm_mon + 1);
+	a = to_string(nowLocal.tm_year + 1900);
+	r = d + "." + m + "." + a;
+	return r;
+}
 
 vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
 {
@@ -186,7 +213,7 @@ vector<string>registro1;
 vector<string>NOidentificaciones;
 vector<string>identificaciones;
 vector<string>identificaciones1;//Se guardan identificaciones
-vector<string>eliminados;
+
 
 void ExtraerInfo(string str1) //Extrae cada identificacion
 {
@@ -435,13 +462,35 @@ string getpassword(const string& prompt = "Enter password> ") //Hace que no se v
 	SetConsoleMode(ih, mode);
 	return result;
 }
+//////ARCHIVOS///////////////////////////////////////////////////////////
+
+void Archivo_Usuario_contraseñaP()
+{
+
+}
+
+void Archivo_Usuarios_secundarios()
+{
+
+}
+
+void Archivo_Bitacora()
+{
+
+}
+
+void Archivo_monitoreo()
+{
+
+}
+
+
 
 void armar_sistema()
 {
 	string id, con,con1;
 	string est = "Armar";
-	//time_t H = time(nullptr);
-	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
+
 	Linea_bitacora linea;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -621,7 +670,7 @@ void programar_zonas() //Me falta terminar esta
 
 						getline(cin, dis);
 						zo.dispositivo = dis;
-
+						zo.disponible = "1";
 						zv.push_back(zo);
 						usuarios.at(i).zonas = zv;
 						cout << endl;
@@ -669,13 +718,43 @@ void programar_zonas() //Me falta terminar esta
 											}
 										}
 										else
-											cout << "Numero debe ser mayor o igual a 1" << endl << endl;;
+											cout << "Numero debe ser mayor o igual a 1" << endl << endl;
 									}
 									if (op2 == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descrpcion = des2; }
 									if (op2 == "3") { cout << "Nuevo dispositivo: "; getline(cin, dis2); usuarios[i].zonas[m].dispositivo = dis2; }
 									if (op2 == "S" || op2 == "s")break;
 								}
 							}
+							if (op == "b" || op == "B")
+							{
+								usuarios[i].zonas[m].disponible = "0";
+							}
+							if (op == "a" || op == "A")
+							{
+								cout << "Ingrese numero de zona: ";
+								cin >> num3;
+								if (num3 >= 1)
+								{
+									zo.z = num3;
+									cout << "Ingrese descripcion: ";
+									cin.ignore();
+									getline(cin, des);
+									zo.descrpcion = des;
+									cout << "Dispositivo que se va a instalar: ";
+									getline(cin, dis);
+									zo.dispositivo = dis;
+									zo.disponible = "1";
+
+									zv = usuarios.at(i).zonas;
+									zv.push_back(zo);
+									usuarios.at(i).zonas = zv;
+									cout << endl;
+									break;
+								}
+								else
+									cout << "Numero debe ser mayor o igual a 1" << endl << endl;
+							}
+
 						}
 						else
 						{
@@ -692,7 +771,7 @@ void programar_zonas() //Me falta terminar esta
 								cout << "Dispositivo que se va a instalar: ";
 								getline(cin, dis);
 								zo.dispositivo = dis;
-
+								zo.disponible = "1";
 								zv = usuarios.at(i).zonas;
 								zv.push_back(zo);
 								usuarios.at(i).zonas = zv;
@@ -711,7 +790,7 @@ void programar_zonas() //Me falta terminar esta
 	else cout << "Usuario no registrado" << endl;
 }
 
-void SaveFile(vector<zona>zz1,string ids)//Archivo pdf para imprimir lista
+void SaveFileZ(vector<zona>zz1,string ids)//Archivo pdf para imprimir lista
 {
 	fstream my_file;
 	string m = "Lista"+ids + ".txt";
@@ -823,79 +902,78 @@ void lista_zonas()
 				}
 			}
 		}
-		cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
-		cout << setw(108) << "==============================================================================================" << endl;
 
-		for (int i = 0; i < zz2.size(); i++)
+		for (int i = 0; i < usuarios.size(); i++)
 		{
 
-			cout << setw(19) << zz2.at(i).z<< setw(11) << setw(10) << zz2.at(i).descrpcion << setw(30) << zz2.at(i).dispositivo << endl;
+			if (id == usuarios.at(i).identificacion)
+			{
+				if (usuarios.at(i).UsuarioP.cod_accesoP == con)
+				{
+					for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
+					{
+						
+						cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
+						cout << setw(108) << "==============================================================================================" << endl;
 
+						for (int s = 0; s < zz2.size(); s++)
+						{
+
+							cout << setw(19) << zz2.at(s).z << setw(11) << setw(10) << zz2.at(s).descrpcion << setw(30) << zz2.at(s).dispositivo << endl;
+
+						}
+						SaveFileZ(zz2, id);
+						cout << "Para IMPRIMIR presione la tecla <I>" << endl;
+						cout << "Para SALIR presione la tecla <S>" << endl << endl;
+						getline(cin, imp);
+						/*if (imp == "i" || imp == "I")
+						{
+							ArchivoImprimir(id);
+						}*/
+
+					}
+				}
+				else
+				{
+					for (int n = 0; n < usuarios.size(); n++)
+					{
+						for (int m = 0; m < usuarios.at(n).UsuariosS.size(); m++)
+						{
+							if (con == usuarios.at(n).UsuariosS.at(m).cod_acceso)
+							{
+								for (int h = 0; h < usuarios.at(n).zonas.size(); h++)
+								{
+									cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
+									cout << setw(108) << "==============================================================================================" << endl;
+
+									for (int l = 0; l < zz2.size(); l++)
+									{
+
+										cout << setw(19) << zz2.at(l).z << setw(11) << setw(10) << zz2.at(l).descrpcion << setw(30) << zz2.at(l).dispositivo << endl;
+
+									}
+									SaveFileZ(zz2, id);
+									cout << "Para IMPRIMIR presione la tecla <I>" << endl;
+									cout << "Para SALIR presione la tecla <S>" << endl << endl;
+									getline(cin, imp);
+									/*if (imp == "i" || imp == "I")
+									{
+										ArchivoImprimir(id);
+									}*/
+								}
+							}
+
+						}
+					}
+				}
+
+			}
 		}
-		SaveFile(zz2,id);
-		cout << "Para imprimir presione la tecla <I>" <<  endl;
-		cout << "Para Salir presione la tecla <S>" << endl << endl;
-		getline(cin, imp);
-		/*if (imp == "i" || imp == "I")
-		{
-			ArchivoImprimir(id);
-		}*/
+
+		
 
 	}
 	else cout << "Usuario no registrado" << endl;
-}
-
-void crear_archivo_Bitacora(string bitacora)
-{
-	fstream Bit;
-	string arch = bitacora + ".txt";
-	
-	Bit.open(arch, ios::out);
-
-	if (!Bit.is_open())
-		cout << "Error al abrir archivo" << endl;
-	else
-	{
-		Bit << endl;
-		
-		Bit << "25.10.2018" << " " << "10:46:45" << " " << "AB12345678" << " " << "ACTIVACION" << " " << "2" << "       " << "Sala" << endl;
-		/*for (int i = 0; i < lines.size(); i++)
-		{
-			Bit << i + 1 << "-" << lines.at(i).fecha << " " << lines.at(i).hora << " " << lines.at(i).id << " " << lines.at(i).balerta << " " << lines.at(i).z_c << " " << lines.at(i).bdescripcion << " " << lines.at(i).accion << " " << lines.at(i).el << endl;
-		}*/
-	}
-
-
-}
-
-void leer_AB(string bitacora)
-{
-	fstream Bit;
-	string registro;
-	string arch = bitacora + ".txt";
-
-	Bit.open(arch, ios::in);
-
-	if (Bit.fail())
-	{
-
-		cout << endl << "Archivo no existente" << endl << endl;
-
-	}
-	else
-	{
-		while (!Bit.eof())
-		{
-
-			getline(Bit, registro);
-			cout << registro << endl;
-
-		}
-
-		if (Bit.eof())
-			cout << endl;
-	}
-
 }
 
 void bitacora()
@@ -911,8 +989,8 @@ void bitacora()
 		{
 			if ((id == usuarios.at(i).identificacion)&&(c_a == usuarios.at(i).UsuarioP.cod_accesoP))
 			{
-				crear_archivo_Bitacora(id);
-				leer_AB(id);
+				//crear_archivo_Bitacora(id);
+				//leer_AB(id);
 			}
 
 		}
@@ -934,7 +1012,7 @@ void borrar_bitacora()
 
 void establecer_CAP()//Establece el codigo principal
 {
-	string id, con1,con11, con2,con22, cambio, clave;
+	string id, con1,con11, con2,con22, cambio, clave,clave1;
 	vector<string>contraseñas;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -986,18 +1064,22 @@ void establecer_CAP()//Establece el codigo principal
 							if (cambio == "c" || cambio == "C")
 							{
 								cout << "Ingrese clave anterior: ";
-								getline(cin, clave);
+								clave = getpassword(clave1);
+								getline(cin, clave1);
+								cout << clave << endl;
 								for (int f = 0; f < usuarios.size(); f++)
 								{
 									if ((id == usuarios.at(f).identificacion) && (clave == usuarios.at(f).UsuarioP.cod_accesoP))
 									{
 										cout << "Ingrese codigo de acceso principal: ";
-										getline(cin, con1);
+										con1 = getpassword(con11);
+										getline(cin, con11);
 										if (validar_palabra_clave(con1))
 										{
 											contraseñas.push_back(con1);
 											cout << "Confirme el codigo de acceso principal: ";
-											getline(cin, con2);
+											con2 = getpassword(con22);
+											getline(cin, con22);
 											for (int q = 0; q < contraseñas.size(); q++)
 											{
 												if (contraseñas[q] == con2)
@@ -1012,10 +1094,11 @@ void establecer_CAP()//Establece el codigo principal
 										}
 										else
 											cout << "Clave debe tener 8 o mas caracteres y al menos 1 mayuscula, 1 minuscula, 1 digito, 1 simbolo y que los caracteres no se repitan 3 o mas veces" << endl << endl;
-
+										break;
 									}
 									else
 										cout << "Clave incorrecta" << endl;
+									break;
 								}
 							}
 
@@ -1028,12 +1111,14 @@ void establecer_CAP()//Establece el codigo principal
 								{
 
 									cout << "Ingrese codigo de acceso principal: ";
-									getline(cin, con1);
+									con1 = getpassword(con11);
+									getline(cin, con11);
 									if (validar_palabra_clave(con1))
 									{
 										contraseñas.push_back(con1);
 										cout << "Confirme el codigo de acceso principal: ";
-										getline(cin, con2);
+										con2 = getpassword(con22);
+										getline(cin, con22);
 										for (int m = 0; m < contraseñas.size(); m++)
 										{
 											if (contraseñas[m] == con2)
