@@ -258,38 +258,6 @@ int ToInt(string s) //Funcion que convierte lo telefono en int
 	return x;
 }
 
-string Encript(string frase)//Algoritmo de encriptado
-{
-	string resultado = "";
-	int n = 1;
-	for (int tamano = 0; tamano < frase.size(); tamano++)
-	{
-		char letra = frase[tamano] - n;
-		resultado += letra;
-		n++;
-		if (n > 10)
-		{
-			n = 1;
-		}
-	}
-	return resultado;
-}
-
-string Desencript(string frase)//Algortimo para desencriptar
-{
-	string resultado = "";
-	int n = 1;
-	for (int tamano = 0; tamano < frase.size(); tamano++)
-	{
-		char letra = frase[tamano] - n;
-		resultado += letra;
-		n++;
-		if (n > 10)
-		{
-			n = 1;
-		}
-	}return resultado;
-}
 
 int Monitorear()
 {
@@ -338,7 +306,6 @@ int Monitorear()
 	}cout << endl; return NULL;
 }
 
-
 void SaveFile()//Archivo para guardar usuarios
 {
 	fstream my_file;
@@ -351,17 +318,100 @@ void SaveFile()//Archivo para guardar usuarios
 	{
 		for (unsigned int i = 0; i < users.size(); i++)
 		{
-			my_file << users.at(i).identificacion << " "
-				<< users.at(i).nombre << " "
-				<< users.at(i).tipo_propiedad << " "
-				<< users.at(i).direccion << " "
-				<< users.at(i).tel_1 << " "
-				<< users.at(i).tel_2 << " "
-				<< users.at(i).correo << " "
+			my_file << users.at(i).identificacion << "-"
+				<< users.at(i).nombre << "-"
+				<< users.at(i).tipo_propiedad << "-"
+				<< users.at(i).direccion << "-"
+				<< users.at(i).tel_1 << "-"
+				<< users.at(i).tel_2 << "-"
+				<< users.at(i).correo << "-"
 				<< users.at(i).el << endl;
 
 		}
 		my_file.close();
+	}
+
+}
+
+
+vector<string> ScmdM(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
+{
+	vector<string> space;
+
+
+	istringstream iss(string1);
+
+	string token;
+
+	while (getline(iss, token, '-'))
+	{
+
+		space.push_back(token);
+
+	}
+	return space;
+}
+
+vector<string>registro1m;
+vector<string>NOidentificacionesm;
+vector<string>identificacionesm;
+vector<string>identificaciones1m;//Se guardan identificaciones
+//vector<string>eliminados;
+
+void ExtraerInfoM(string str1) //Extrae cada identificacion
+{
+	Usuario s;
+	string m;
+	identificacionesm = ScmdM(str1);
+	identificaciones1m.push_back(identificacionesm[0]);
+	s.identificacion = identificacionesm[0];
+	s.nombre = identificacionesm[1];
+	s.tipo_propiedad = identificacionesm[2];
+	s.direccion = identificacionesm[3];
+	s.tel_1 = ToInt(identificacionesm[4]);
+	s.tel_2 = ToInt(identificacionesm[5]);
+	s.correo = identificacionesm[6];
+	s.el = ToInt(identificacionesm[7]);
+	users.push_back(s);
+}
+
+void readFileM()//Lee usuarios establecidos del monitoreo.cpp
+{
+	ifstream my_file;
+	string registro;
+	my_file.open("Usuarios.txt", ios::in);
+
+	if (my_file.fail())
+	{
+		cout << endl << "Archivo no existente" << endl << endl;
+	}
+	else
+	{
+		while (!my_file.eof())
+		{
+			registro1m.clear();
+			getline(my_file, registro);
+			registro1m.push_back(registro);
+
+			for (int i = 0; i < registro1m.size(); i++)
+			{
+				NOidentificacionesm.push_back(registro1m[i]);
+
+			}
+		}
+		if (my_file.eof())
+		{
+			cout << endl;
+		}
+	}
+}
+
+void IdsM()//Funcion que extrae las identificaciones del archivo
+{
+	for (int i = 0; i < NOidentificacionesm.size() - 1; i++)
+	{
+
+		ExtraerInfoM(NOidentificacionesm[i]);
 	}
 
 }
@@ -476,9 +526,24 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 										cout << "Identificacion debe tener 10 o mas caracteres" << endl;
 
 								}
-								if (op == "2"){cout << "Nombre nuevo: ";getline(cin, nom2);users.at(i).nombre = nom2;}
-								if (op == "3") { cout << "Tipo de propiedad nueva: "; getline(cin, prop2); users.at(i).tipo_propiedad = prop2; }
-								if (op == "4") { cout << "Direccion nueva: "; getline(cin, dir2); users.at(i).direccion = dir2; }
+								if (op == "2")
+								{
+									cout << "Nombre nuevo: "; 
+									getline(cin, nom2);
+									users.at(i).nombre = nom2;
+								}
+								if (op == "3")
+								{
+									cout << "Tipo de propiedad nueva: "; 
+									getline(cin, prop2); 
+									users.at(i).tipo_propiedad = prop2;
+								}
+								if (op == "4")
+								{
+									cout << "Direccion nueva: "; 
+									getline(cin, dir2);
+									users.at(i).direccion = dir2;
+								}
 								if (op == "5") {
 									do {
 										cout << "Telefono 1 nuevo: "; getline(cin, t11); if (telefono(t11))
@@ -522,15 +587,53 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 
 }
 
+void eliminar_Usuario()
+{
+	Usuario us;
+	string eliminar;
+	cout << "Eliminar usuario: ";
+	cin.ignore();
+	getline(cin, eliminar);
+	for (int i = 0; i < users.size(); i++)
+	{
+		if (eliminar == users.at(i).identificacion)
+		{
+			users.at(i).el = 0;
+			SaveFile();
+		}
+	}
+
+}
+
+void pruebam()
+{
+	for (int i = 0; i < users.size(); i++)
+	{
+		cout << i + 1 << ": " << users.at(i).identificacion << endl;
+		cout << i + 1 << ": " << users.at(i).nombre << endl;
+		cout << i + 1 << ": " << users.at(i).tipo_propiedad << endl;
+		cout << i + 1 << ": " << users.at(i).direccion << endl;
+		cout << i + 1 << ": " << users.at(i).tel_1 << endl;
+		cout << i + 1 << ": " << users.at(i).tel_2 << endl;
+		cout << i + 1 << ": " << users.at(i).correo << endl;
+		cout << i + 1 << ": " << users.at(i).el<< endl;
+	}
+}
+
 void Monitoreo::Menu()
 {
+	
+	readFileM();
+	IdsM();
+	//pruebam();
+
 	int opcion;
 	while(true)
 	{
 		cout << "MENU" << endl;
 		cout << "1. Monitorear" << endl;//Salida del comando que se desee ingresar
 		cout << "2. Establecer usuarios" << endl;
-		cout << "3. Eliminar usario" << endl;
+		cout << "3. Eliminar usuario" << endl;
 		cout << "4. Centro de ayuda" << endl;
 		cout << "5. Acerca de" << endl;
 		cout << "0. Fin" << endl;
@@ -551,6 +654,10 @@ void Monitoreo::Menu()
 			cout << endl;
 			Establecer_Usuarios(U);
 			cout << endl;
+		}
+		if (opcion == 3)
+		{
+			eliminar_Usuario();
 		}
 		if (opcion == 0)
 			break;

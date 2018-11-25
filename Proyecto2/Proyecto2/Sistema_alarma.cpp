@@ -155,6 +155,7 @@ struct S_A
 	U_Principal UsuarioP;
 	vector<U_secundario>UsuariosS;
 	vector<zona>zonas;
+	string disponible;
 };
 
 
@@ -172,7 +173,7 @@ vector<string> Scmd(string string1) //Separa el string cuando se ingresan los co
 
 	string token;
 
-	while (getline(iss, token, ' '))
+	while (getline(iss, token, '-'))
 	{
 
 		space.push_back(token);
@@ -185,13 +186,16 @@ vector<string>registro1;
 vector<string>NOidentificaciones;
 vector<string>identificaciones;
 vector<string>identificaciones1;//Se guardan identificaciones
+vector<string>eliminados;
 
 void ExtraerInfo(string str1) //Extrae cada identificacion
 {
 	S_A s;
+	string m;
 	identificaciones = Scmd(str1);
 	identificaciones1.push_back(identificaciones[0]);
 	s.identificacion = identificaciones[0];
+	s.disponible = identificaciones[7];
 	usuarios.push_back(s);
 }
 
@@ -236,6 +240,16 @@ void Ids()//Funcion que extrae las identificaciones del archivo
 	
 }
 
+void prueba()
+{
+	for (int i = 0; i < usuarios.size(); i++)
+	{
+		cout << i + 1 << ":" << usuarios.at(i).identificacion<< endl;
+		cout << i + 1 << ":" << usuarios.at(i).disponible << endl;
+	}
+}
+
+
 
 //Validaciones
 
@@ -245,7 +259,7 @@ bool RecorrerIden(string usuario) //Verifica que la identidad o usuario que se i
 	{
 		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if (usuario == usuarios.at(i).identificacion)
+			if ((usuario == usuarios.at(i).identificacion) && (usuarios.at(i).disponible == "1"))
 			{
 				f = true;
 			}
@@ -1242,6 +1256,8 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		string opcion;
 		readFile();
 		Ids(); //se cargan las identidades del monitoreo.cpp
+	//	prueba();
+		
 		cin.ignore();
 		while (true)
 		{
