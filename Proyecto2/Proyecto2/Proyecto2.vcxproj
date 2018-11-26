@@ -157,6 +157,8 @@
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sistema_alarma.h" />
+    <ClInclude Include="Usuario.h" />
+    <ClInclude Include="Zona.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arbol.cpp" />
@@ -171,6 +173,8 @@
     </ClCompile>
     <ClCompile Include="Proyecto2.cpp" />
     <ClCompile Include="Sistema_alarma.cpp" />
+    <ClCompile Include="Usuario.cpp" />
+    <ClCompile Include="Zona.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

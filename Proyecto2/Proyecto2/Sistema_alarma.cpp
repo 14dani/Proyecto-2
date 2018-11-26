@@ -21,6 +21,14 @@ using namespace std;
 
 Arduino arduino;
 
+vector<string> lineasd;
+struct datos_de_lineax
+{
+	vector<string> elementos;
+	string accion;
+	string descripcion;
+};
+
 string dispositivo_1_;
 string dispositivo_2_;
 string variable_monitoreo;
@@ -35,22 +43,6 @@ struct alertas
 	string estado;
 };
 
-
-/*struct Linea_bitacora1
-{
-	string f1;
-	string h1;
-	string id1;
-	string balertas1;
-	string z_c1;
-	string bdescripcion1;
-	string baccion1;
-	int el;
-};*/
-
-/*vector<Linea_bitacora1>lb;*/
-
-
 int numero_dispositivo;
 string estadoi;
 alertas alertadx;
@@ -61,7 +53,7 @@ Sistema_alarma::Sistema_alarma()
 
 alertas estado_alerta()
 {
-	dispos={dispositivo_1_, dispositivo_2_ };
+	dispos = { dispositivo_1_, dispositivo_2_ };
 	for (int i = 1; i <= 2; i++)////Aqui se harian cambios en los dispositivos.
 	{
 		estadoi = dispos[i - 1];
@@ -79,21 +71,21 @@ alertas estado_alerta()
 
 void alerta()
 {
-	while (variable_alarma == "ACTIVADO" && variable_monitoreo == "ACTIVADO" && variable_alarma_desactivada=="NO ACTIVADO") {
+	while (variable_alarma == "ACTIVADO" && variable_monitoreo == "ACTIVADO" && variable_alarma_desactivada == "NO ACTIVADO") {
 
-				cout << endl << "ALERTA" << endl;
-				this_thread::sleep_for(chrono::milliseconds(2000));
+		cout << endl << "ALERTA" << endl;
+		this_thread::sleep_for(chrono::milliseconds(2000));
 	}
 }
 void gestionar_arduino()///Aqui se cambiarian
 {
-			comunicacion.proveer();
-			dispositivo_1_ = comunicacion.dispositivo_1;
-			dispositivo_2_ = comunicacion.dispositivo_2;
+	comunicacion.proveer();
+	dispositivo_1_ = comunicacion.dispositivo_1;
+	dispositivo_2_ = comunicacion.dispositivo_2;
 }
 int monitorear()
 {
-	
+
 	alertas alertad;
 	while (true)
 	{
@@ -101,23 +93,23 @@ int monitorear()
 		{
 			gestionar_arduino();
 			alertad = estado_alerta();
-				if (alertad.estado == "ACTIVADO")////Primero apaga la alerta para que no siga apareciendo
-				{
-					dispositivo_1_ == "NO ACTIVADO";
-					dispositivo_2_ == "NO ACTIVADO";////aqui se cambiarian los dispositivos
-					
-					/////MANDAR CORREO
-					variable_alarma = "ACTIVADO";
-						thread alertar(alerta);
-						alertar.detach();
-				}
+			if (alertad.estado == "ACTIVADO")////Primero apaga la alerta para que no siga apareciendo
+			{
+				dispositivo_1_ == "NO ACTIVADO";
+				dispositivo_2_ == "NO ACTIVADO";////aqui se cambiarian los dispositivos
+
+				/////MANDAR CORREO
+				variable_alarma = "ACTIVADO";
+				thread alertar(alerta);
+				alertar.detach();
+			}
 
 		}
 		else return NULL;
 	}
 
 }
-
+/*
 struct U_Principal
 {
 	int codigoP;
@@ -151,7 +143,10 @@ struct S_A
 
 
 vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
-vector<string>Ucontraseña;
+vector<string>Ucontraseña;*/
+
+
+
 
 string hora()
 {
@@ -169,7 +164,7 @@ string hora()
 
 string fecha()
 {
-	string d,m,a,r;
+	string d, m, a, r;
 	time_t now;
 	struct tm nowLocal;
 	now = time(NULL);
@@ -233,12 +228,12 @@ void readFile()//Lee usuarios establecidos del monitoreo.cpp
 			registro1.clear();
 			getline(my_file, registro);
 			registro1.push_back(registro);
-			
+
 			for (int i = 0; i < registro1.size(); i++)
 			{
 				NOidentificaciones.push_back(registro1[i]);
-				
-			}		
+
+			}
 		}
 		if (my_file.eof())
 		{
@@ -249,12 +244,12 @@ void readFile()//Lee usuarios establecidos del monitoreo.cpp
 
 void Ids()//Funcion que extrae las identificaciones del archivo
 {
-	for (int i = 0; i < NOidentificaciones.size()-1; i++)
+	for (int i = 0; i < NOidentificaciones.size() - 1; i++)
 	{
-		
+
 		ExtraerInfo(NOidentificaciones[i]);
 	}
-	
+
 }
 
 
@@ -374,7 +369,7 @@ bool validar_palabra_clave(string x) //Verifica todo el string para que se cumpl
 		return true;
 	else return false;
 }
-
+/*
 string Encript(string frase)//Algoritmo de encriptado
 {
 	string resultado = "";
@@ -407,7 +402,7 @@ string Desencript(string frase)//Algortimo para desencriptar
 		}
 	}return resultado;
 }
-
+*/
 string getpassword(const string& prompt = "Enter password> ") //Hace que no se vean la clave cuando se ingresa
 {
 	string result;
@@ -555,7 +550,7 @@ void ExtraerInfoSecciones(string str1) //Guarda los usuarios en users
 			us2.nombre_persona = US1[2];
 			us2.telefono = ToInt1(US1[3]);
 			usuarios2.push_back(us2);
-			
+
 		}
 	}
 	user1.UsuariosS = usuarios2;
@@ -575,7 +570,7 @@ void ExtraerInfoSecciones(string str1) //Guarda los usuarios en users
 	}
 	user1.zonas = Zonas2;*/
 	usuarios.push_back(user1);
-	
+
 }
 
 void LeerArchivoSA()
@@ -598,7 +593,7 @@ void LeerArchivoSA()
 
 			for (int i = 0; i < seccion.size(); i++)
 			{
-				
+
 				seccion1.push_back(seccion[i]);
 
 			}
@@ -639,10 +634,6 @@ void prueba()
 	}*/
 }
 
-void Archivo_Bitacora()
-{
-
-}
 
 void Archivo_monitoreo()
 {
@@ -653,7 +644,7 @@ void Archivo_monitoreo()
 
 void armar_sistema()
 {
-	string id, con,con1;
+	string id, con, con1;
 	string est = "Armar";
 
 	cout << "Ingrese usuario o la identificacion: ";
@@ -716,7 +707,7 @@ void armar_sistema()
 
 void desarmar_sistema()
 {
-	string id, con,con1;
+	string id, con, con1;
 	string est = "Desarmar";
 	//time_t H = time(nullptr);
 	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
@@ -781,7 +772,6 @@ void desactivar_sistema()
 	string est = "DESACTIVACION";
 	//time_t H = time(nullptr);
 	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
-	Linea_bitacora linea;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
@@ -791,7 +781,7 @@ void desactivar_sistema()
 		getline(cin, con1);
 		variable_alarma = "NO ACTIVADO";
 	}
-	else { variable_alarma_desactivada=="NO ACTIVADO"; alerta(); cout << "Usuario no registrado" << endl; }
+	else { variable_alarma_desactivada == "NO ACTIVADO"; alerta(); cout << "Usuario no registrado" << endl; }
 }
 
 void programar_zonas() //Me falta terminar esta
@@ -800,7 +790,7 @@ void programar_zonas() //Me falta terminar esta
 	zona zo;
 	vector<zona>zv;
 	string id, des, dis, op, op2, des2, dis2, con, con1;
-	int num, num2,num3;
+	int num, num2, num3;
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -812,8 +802,8 @@ void programar_zonas() //Me falta terminar esta
 
 		for (int i = 0; i < usuarios.size(); i++)
 		{
-			
-			if (id == usuarios.at(i).identificacion&&usuarios.at(i).UsuarioP.cod_accesoP==con)
+
+			if (id == usuarios.at(i).identificacion&&usuarios.at(i).UsuarioP.cod_accesoP == con)
 			{
 				cout << "Numero de zona: ";
 				cin >> num;
@@ -952,7 +942,7 @@ void programar_zonas() //Me falta terminar esta
 					}
 				}
 			}
-			
+
 		}
 	}
 	else cout << "Usuario no registrado" << endl;
@@ -963,7 +953,7 @@ void SaveFileZ(vector<zona>zz1)//Archivo pdf para imprimir lista
 	fstream my_file;
 	string m = "Lista.pdf";
 
-	my_file.open(m, ios::out|ios::binary);
+	my_file.open(m, ios::out | ios::binary);
 
 	if (!my_file.is_open())
 		cout << "Error al abrir archivo" << endl;
@@ -980,16 +970,119 @@ void SaveFileZ(vector<zona>zz1)//Archivo pdf para imprimir lista
 
 }
 
+void lineasff()//Funcion para guardar las lineas en el vector.
+{
+	fstream monitoreo;
+	string linea;
+	monitoreo.open("monitoreo.txt", ios::in);/////Recordar cambiar a nombre del archivo real.
+	cin.ignore();
+	lineasd.clear();
+	while (!monitoreo.eof())
+	{
+		getline(monitoreo, linea);
+
+		lineasd.push_back(linea);
+
+	}
+	monitoreo.close();
+}
+
+vector<string> dividir_stringd(string string1)//Divide string separado  por espacios
+{
+	vector<string> space;
+
+
+	istringstream iss(string1);
+
+	string token;
+
+	while (getline(iss, token, ' '))
+	{
+
+		space.push_back(token);
+
+	}
+	return space;
+}
+
+datos_de_lineax separar_linead(string linea)
+{
+	string descripcion = "";
+	string accion = "";
+	int sw = 0;
+	int sw2 = 0;
+	vector<string> elementos = dividir_stringd(linea);
+	datos_de_lineax lineac;
+
+	for (int j = 0; j < int(elementos.size()); j++) {
+		if (elementos[j] == "." || sw == 1)
+		{
+			sw = 1;
+			if (elementos[j] == "..") {
+				sw = 0; sw2 = 1;
+			}
+			if (elementos[j] != "." && sw == 1)
+			{
+				if (elementos[j] == "&") { descripcion = "none"; }
+				else { descripcion += (" " + elementos[j]); }
+			}
+
+		}
+		if (sw2 == 1)
+		{
+			if (elementos[j] == "...")sw2 = 0;
+			if (elementos[j] != ".." && sw2 == 1) {
+				if (elementos[j] == "&") { accion = "none"; }
+				else { accion += (" " + elementos[j]); }
+			}
+		}
+		lineac.accion = accion;
+		lineac.descripcion = descripcion;
+		lineac.elementos = elementos;
+	}return lineac;
+}
+
+vector<int> imprimir_lineasd(int indice_min, int contador, int indice_max)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
+{
+	int indice_min = 0;
+	int tope;
+	vector<string> elementos;
+	datos_de_lineax datos;
+	vector<int> respuesta;
+
+	lineasff();
+
+	if (indice_max > int(lineasd.size()) - 1)tope = int(lineasd.size()) - 1;
+	else tope = indice_max;
+
+	for (int i = indice_min; i <= tope; i++)
+	{
+		datos = separar_linead(lineasd[i]);
+		elementos = datos.elementos;
+
+		if (elementos[elementos.size() - 1] == "1")
+		{
+			cout << contador << "-" << elementos[1] << setw(10) << elementos[2] << setw(13) << elementos[3] << "    " << elementos[4];
+			cout << setw(10) << elementos[5] << setw(10) << datos.descripcion << setw(10) << datos.accion << endl;
+			contador++;
+		}
+		else { if (tope<int(lineasd.size()) - 1)tope++; }
+	}
+	respuesta.push_back(contador);
+	respuesta.push_back(tope + 1);
+	return respuesta;
+}
+
 void ArchivoImprimir(string id)
 {
 	string m = id + ".pdf";
-	
+
 	ShellExecute(NULL, TEXT("open"), TEXT("C:\\Users\\User\\Desktop\\Prueba12\\Proyecto2\\Proyecto2\\Lista.pdf"), NULL, NULL, SW_SHOWNORMAL);
 }
 
 void lista_zonas()
 {
-	string id,con,imp,con1;
+	string id, con, imp, con1;
 	vector<int>Nzonas;
 	vector<zona>zz;
 	int z;
@@ -997,10 +1090,10 @@ void lista_zonas()
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
-	
+
 	if (RecorrerIden(id))
 	{
-		
+
 		cout << "Ingrese la clave: ";
 		con = getpassword(con1);
 		getline(cin, con1);
@@ -1043,7 +1136,7 @@ void lista_zonas()
 
 		for (int i = 1; i < Nzonas.size(); i++)//acomoda la lista en orden
 		{
-		
+
 			for (int j = 0; j < Nzonas.size() - 1; j++)
 			{
 				if (Nzonas[j] > Nzonas[j + 1])
@@ -1080,7 +1173,7 @@ void lista_zonas()
 				{
 					for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
 					{
-						
+
 						cout << setw(20) << "Zona" << setw(20) << "Descripcion" << setw(40) << "Dispositivo" << endl;
 						cout << setw(108) << "==============================================================================================" << endl;
 
@@ -1138,7 +1231,7 @@ void lista_zonas()
 			}
 		}
 
-		
+
 
 	}
 	else cout << "Usuario no registrado" << endl;
@@ -1146,7 +1239,7 @@ void lista_zonas()
 
 void bitacora()
 {
-	string id,c_a;
+	string id, c_a;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
@@ -1155,7 +1248,7 @@ void bitacora()
 		getline(cin, c_a);
 		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if ((id == usuarios.at(i).identificacion)&&(c_a == usuarios.at(i).UsuarioP.cod_accesoP))
+			if ((id == usuarios.at(i).identificacion) && (c_a == usuarios.at(i).UsuarioP.cod_accesoP))
 			{
 				//crear_archivo_Bitacora(id);
 				//leer_AB(id);
@@ -1180,7 +1273,7 @@ void borrar_bitacora()
 
 void establecer_CAP()//Establece el codigo principal
 {
-	string id, con1,con11, con2,con22, cambio, clave,clave1;
+	string id, con1, con11, con2, con22, cambio, clave, clave1;
 	vector<string>contraseñas;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -1316,7 +1409,7 @@ void establecer_CAP()//Establece el codigo principal
 
 			}
 		}
-		
+
 	}
 	else cout << "Usuario no registrado" << endl;
 	cout << endl;
@@ -1324,7 +1417,7 @@ void establecer_CAP()//Establece el codigo principal
 
 void establecer_CAS()//Establece codigos secundarios
 {
-	string id, conP, conP1, conS1,conS11,conS22, conS2, numTel;
+	string id, conP, conP1, conS1, conS11, conS22, conS2, numTel;
 	int numCod, numCod2;
 	string Cod, nombre;
 	U_secundario ss;
@@ -1341,7 +1434,7 @@ void establecer_CAS()//Establece codigos secundarios
 		getline(cin, conP1);
 		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if ((id == usuarios.at(i).identificacion)&&(conP==usuarios.at(i).UsuarioP.cod_accesoP))
+			if ((id == usuarios.at(i).identificacion) && (conP == usuarios.at(i).UsuarioP.cod_accesoP))
 			{
 				if (usuarios.at(i).UsuariosS.size() == 0)
 				{
@@ -1445,7 +1538,7 @@ void establecer_CAS()//Establece codigos secundarios
 										cout << "Claves no concuerdan" << endl;
 										break;
 									}
-									
+
 								}
 							}
 							else
@@ -1462,7 +1555,7 @@ void establecer_CAS()//Establece codigos secundarios
 						break;
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -1508,56 +1601,56 @@ void panico()
 
 }
 
-int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llamando a la funcion para consultar el estado 
+int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llamando a la funcion para consultar el estado
 									 o para correr el menu, tipo es el dato de quien esta haciendo la consulta*/
 {
-		string opcion;
-		
-		readFile();
-		Ids(); //se cargan las identidades del monitoreo.cpp
-	   // LeerArchivoSA();
-		//IU();
-		
-		//prueba();
-		
-		cin.ignore();
-		while (true)
-		{
-			cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
-			cout << "2. Desarmar sistema" << endl;
-			cout << "3. Desactivar sistema" << endl;
-			cout << "4. Programa zonas" << endl;
-			cout << "5. Lista de zonas" << endl;
-			cout << "6. Bitacora" << endl;
-			cout << "7. Borrar bitacora" << endl;
-			cout << "8. Establecer codigo de acceso principal" << endl;
-			cout << "9. Establecer codigos de acceso secundarios" << endl;
-			cout << "10. Centro de ayuda" << endl;
-			cout << "11. Acerca De" << endl;
-			cout << "0. Fin" << endl;
-			cout << setw(10) << "F.FUEGO" << setw(10) << "A.AYUDA" << setw(11) << "P.PANICO" << endl;
-			cout << "Opcion: ";
-			getline(cin, opcion);
-			cout << endl;
+	string opcion;
 
-			if (opcion == "0")return 0;
-			else if (opcion == "1") {  armar_sistema(); }
-			else if (opcion == "2") { variable_alarma_desactivada = "ACTIVADO"; desarmar_sistema(); }
-			else if (opcion == "3") { variable_alarma_desactivada = "ACTIVADO"; desactivar_sistema(); }
-			else if (opcion == "4")programar_zonas();
-			else if (opcion == "5") {
-				lista_zonas();
-			}
-			else if (opcion == "6")bitacora();
-			else if (opcion == "7")borrar_bitacora();
-			else if (opcion == "8")establecer_CAP();
-			else if (opcion == "9") { establecer_CAS(); imp(); }
-			//else if (opcion == "10")armar_sistema();
-			//else if (opcion == "11")armar_sistema();
+	readFile();
+	Ids(); //se cargan las identidades del monitoreo.cpp
+	LeerArchivoSA();
+	//IU();
 
+	//prueba();
 
+	cin.ignore();
+	while (true)
+	{
+		cout << "1. Armar sistema" << endl;//Salida del comando que se desee ingresar
+		cout << "2. Desarmar sistema" << endl;
+		cout << "3. Desactivar sistema" << endl;
+		cout << "4. Programa zonas" << endl;
+		cout << "5. Lista de zonas" << endl;
+		cout << "6. Bitacora" << endl;
+		cout << "7. Borrar bitacora" << endl;
+		cout << "8. Establecer codigo de acceso principal" << endl;
+		cout << "9. Establecer codigos de acceso secundarios" << endl;
+		cout << "10. Centro de ayuda" << endl;
+		cout << "11. Acerca De" << endl;
+		cout << "0. Fin" << endl;
+		cout << setw(10) << "F.FUEGO" << setw(10) << "A.AYUDA" << setw(11) << "P.PANICO" << endl;
+		cout << "Opcion: ";
+		getline(cin, opcion);
+		cout << endl;
+
+		if (opcion == "0")return 0;
+		else if (opcion == "1") { armar_sistema(); }
+		else if (opcion == "2") { variable_alarma_desactivada = "ACTIVADO"; desarmar_sistema(); }
+		else if (opcion == "3") { variable_alarma_desactivada = "ACTIVADO"; desactivar_sistema(); }
+		else if (opcion == "4")programar_zonas();
+		else if (opcion == "5") {
+			lista_zonas();
 		}
-		
+		else if (opcion == "6")bitacora();
+		else if (opcion == "7")borrar_bitacora();
+		else if (opcion == "8")establecer_CAP();
+		else if (opcion == "9") { establecer_CAS(); imp(); }
+		//else if (opcion == "10")armar_sistema();
+		//else if (opcion == "11")armar_sistema();
+
+
+	}
+
 }
 
 ////El estado tipo 1 indica si la alarma esta o no esta armada.
