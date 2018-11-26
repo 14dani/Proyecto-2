@@ -35,18 +35,8 @@ struct alertas
 	string estado;
 };
 
-struct Linea_bitacora
-{
-	string fyh;
-	string id;
-	string balerta;
-	string z_c;
-	string bdescripcion;
-	string baccion;
-	int el;
-};
 
-struct Linea_bitacora1
+/*struct Linea_bitacora1
 {
 	string f1;
 	string h1;
@@ -56,9 +46,9 @@ struct Linea_bitacora1
 	string bdescripcion1;
 	string baccion1;
 	int el;
-};
+};*/
 
-vector<Linea_bitacora>lb;
+/*vector<Linea_bitacora1>lb;*/
 
 
 int numero_dispositivo;
@@ -384,7 +374,7 @@ bool validar_palabra_clave(string x) //Verifica todo el string para que se cumpl
 		return true;
 	else return false;
 }
-/*
+
 string Encript(string frase)//Algoritmo de encriptado
 {
 	string resultado = "";
@@ -417,7 +407,7 @@ string Desencript(string frase)//Algortimo para desencriptar
 		}
 	}return resultado;
 }
-*/
+
 string getpassword(const string& prompt = "Enter password> ") //Hace que no se vean la clave cuando se ingresa
 {
 	string result;
@@ -666,7 +656,6 @@ void armar_sistema()
 	string id, con,con1;
 	string est = "Armar";
 
-	Linea_bitacora linea;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
@@ -731,7 +720,6 @@ void desarmar_sistema()
 	string est = "Desarmar";
 	//time_t H = time(nullptr);
 	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
-	Linea_bitacora linea;
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
 	if (RecorrerIden(id))
