@@ -258,7 +258,6 @@ int ToInt(string s) //Funcion que convierte lo telefono en int
 	return x;
 }
 
-
 int Monitorear()
 {
 	string comando = "enter";

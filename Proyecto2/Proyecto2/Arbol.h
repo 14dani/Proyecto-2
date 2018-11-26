@@ -2,6 +2,7 @@
 #include "Nodo.h"
 #include <iostream>
 #include <string>
+#include "Sistema_alarma.h"
 using namespace std;
 
 class Arbol
@@ -9,7 +10,7 @@ class Arbol
 	Nodo * raiz; //
 public:
 	Arbol();
-	void insertar(string);
+	void insertar(Sistema_alarma);
 	Nodo* insertar_nodo(Nodo*, Nodo*);
 	void recorrer();
 	void en_orden(Nodo*);

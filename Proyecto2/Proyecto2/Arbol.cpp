@@ -2,6 +2,7 @@
 #include "Arbol.h"
 #include "Nodo.h"
 #include <string>
+#include "Sistema_alarma.h"
 using namespace std;
 
 
@@ -10,66 +11,40 @@ Arbol::Arbol() // constructor
 	raiz = nullptr;
 }
 
-void Arbol::insertar(string valor) // llega el puntero del nodo a insertar 
+int indicar_nivel(Nodo* actual)
 {
-	Nodo* ptr = new Nodo(valor);
-	raiz = insertar_nodo(raiz, ptr); // envia punteros de la raiz y del nodo a insertar 
+	int contador = 1;
+	while (actual->inferior_izquierdo!=nullptr && actual->inferior_derecho!=nullptr )
 }
 
-Nodo* Arbol::insertar_nodo(Nodo *ptr_raiz, Nodo *ptr)
+void Arbol::insertar(Sistema_alarma valor) // llega el puntero del nodo a insertar 
 {
-	if (ptr_raiz == nullptr)
-		ptr_raiz = ptr;
-	else
-		if (ptr->dato <= ptr_raiz->dato) // nodos <= raiz van a su izquierda 
-			ptr_raiz->superior = insertar_nodo(ptr_raiz->superior, ptr);
-		else // nodos > raiz van a su derecha 
-			ptr_raiz->inferior = insertar_nodo(ptr_raiz->inferior, ptr);
-	return ptr_raiz;
-}
+	Nodo* actual;
+	Nodo* actual2;
+	Nodo* siguiente_izquierdo;
+	Nodo* siguiente_derecho;
+	Nodo* a_conectar;
+	Nodo* salarma = new Nodo(valor);
+	int sw1 = 0;
+	int sw2=0;
+	if (raiz == nullptr)raiz = salarma;
+	else {
+		actual = raiz;
+		actual2 = raiz;
 
-void Arbol::recorrer()  // inicia el recorrido por la raiz del arbol 
-{
-	en_orden(raiz);
-	system("pause");
-}
-void Arbol::en_orden(Nodo *ptr) // recorrido I-R-D
-{
-	if (ptr != nullptr)
-	{
-		en_orden(ptr->superior);
-		cout << ptr->dato << endl;
-		en_orden(ptr->inferior);
+		while (sw1==0 && sw2==0)
+		{
+			if (actual->inferior_izquierdo == nullptr || actual->inferior_derecho == nullptr)
+			{
+				sw1 = 1;
+			}
+			else if (actual2->inferior_izquierdo == nullptr || actual2->inferior_derecho == nullptr)
+			{
+				sw2 = 1;
+			}
+
+		}
+
 	}
-}
-
-Nodo* Arbol::buscar(string valor)
-{
-	return buscar_nodo(raiz, valor);
-}
-
-Nodo* Arbol::buscar_nodo(Nodo* ptr_raiz, string valor)
-{
-	if (ptr_raiz == nullptr) // caso base 1: algoritmo termina si arbol vacio o no esta el valor
-		return nullptr;
-	if (valor == ptr_raiz->dato)  // caso base 2: dato encontrado 
-		return ptr_raiz;
-	if (valor <= ptr_raiz->dato)  // la funcion mueve punteros segun el valor sea <= o > raiz
-		return buscar_nodo(ptr_raiz->superior, valor); // se mueve por el hijo izquierdo <= 
-	else
-		return buscar_nodo(ptr_raiz->inferior, valor); // se mueve por el hijo derecho > 
-}
-
-Nodo* Arbol::buscar_nodo_iterativo(string valor)
-{
-	Nodo* ptr_raiz = raiz;
-	while (ptr_raiz != nullptr)
-	{
-		if (valor == ptr_raiz->dato)
-			break;
-		if (valor <= ptr_raiz->dato)
-			ptr_raiz = ptr_raiz->superior;
-		else ptr_raiz = ptr_raiz->inferior;
-	}
-	return ptr_raiz;
+	
 }

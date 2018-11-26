@@ -17,9 +17,18 @@
 #include <winsock2.h>
 #include <stdexcept> //Clave
 #include <windows.h>//Clave
+#include "Usuario.h"
+#include "Zona.h"
 using namespace std;
 
 Arduino arduino;
+
+struct datos_de_linea
+{
+	vector<string> elementos;
+	string accion;
+	string descripcion;
+};
 
 vector<string> lineasd;
 struct datos_de_lineax
@@ -141,9 +150,9 @@ struct S_A
 	string disponible;
 };
 
-
+*/
 vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
-vector<string>Ucontraseña;*/
+vector<string>Ucontraseña;
 
 
 
@@ -641,7 +650,6 @@ void Archivo_monitoreo()
 }
 
 
-
 void armar_sistema()
 {
 	string id, con, con1;
@@ -987,6 +995,18 @@ void lineasff()//Funcion para guardar las lineas en el vector.
 	monitoreo.close();
 }
 
+void guardar()
+{
+	fstream monitoreo;
+	monitoreo.open("monitoreo.txt", ios::out);
+	for (int i = 0; i<int(lineasd.size() - 1); i++)
+	{
+		monitoreo << lineasd[i] << endl;
+	}
+	monitoreo << lineasd[int(lineasd.size() - 1)]; //guardar el ultimo
+	monitoreo.close();
+}
+
 vector<string> dividir_stringd(string string1)//Divide string separado  por espacios
 {
 	vector<string> space;
@@ -1042,35 +1062,29 @@ datos_de_lineax separar_linead(string linea)
 	}return lineac;
 }
 
-vector<int> imprimir_lineasd(int indice_min, int contador, int indice_max)//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
+void imprimir_lineasd()//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
 {
-	int indice_min = 0;
-	int tope;
+	int indice_min = int(size(lineasd) - 2);
+	int tope=0;
 	vector<string> elementos;
 	datos_de_lineax datos;
-	vector<int> respuesta;
 
 	lineasff();
 
-	if (indice_max > int(lineasd.size()) - 1)tope = int(lineasd.size()) - 1;
-	else tope = indice_max;
-
-	for (int i = indice_min; i <= tope; i++)
+	cout << endl << "Fecha" << setw(10) << "Hora"
+		<< setw(10) << "Usuario" << setw(10) << "Alerta" << "Zona/Cod Descripcion" << setw(10)
+		<< "Accion";
+	for (int i = indice_min; i <= tope; i--)
 	{
 		datos = separar_linead(lineasd[i]);
 		elementos = datos.elementos;
 
 		if (elementos[elementos.size() - 1] == "1")
 		{
-			cout << contador << "-" << elementos[1] << setw(10) << elementos[2] << setw(13) << elementos[3] << "    " << elementos[4];
+			cout << elementos[1] << setw(10) << elementos[2] << setw(13) << elementos[3] << "    " << elementos[4];
 			cout << setw(10) << elementos[5] << setw(10) << datos.descripcion << setw(10) << datos.accion << endl;
-			contador++;
 		}
-		else { if (tope<int(lineasd.size()) - 1)tope++; }
 	}
-	respuesta.push_back(contador);
-	respuesta.push_back(tope + 1);
-	return respuesta;
 }
 
 void ArchivoImprimir(string id)
@@ -1237,6 +1251,7 @@ void lista_zonas()
 	else cout << "Usuario no registrado" << endl;
 }
 
+
 void bitacora()
 {
 	string id, c_a;
@@ -1250,13 +1265,75 @@ void bitacora()
 		{
 			if ((id == usuarios.at(i).identificacion) && (c_a == usuarios.at(i).UsuarioP.cod_accesoP))
 			{
-				//crear_archivo_Bitacora(id);
-				//leer_AB(id);
+				imprimir_lineasd();
 			}
 
 		}
 	}
 	else cout << "Usuario no registrado" << endl;
+}
+
+bool hay_activos(int indice)
+{
+	int indice_min = 0;
+	vector<string> elementos;
+	datos_de_lineax datos;
+
+	if (elementos[4] == "armado") {
+		cout << endl << "Fecha" << setw(10) << "Hora"
+			<< setw(10) << "Usuario" << setw(10) << "Alerta" << "Zona/Cod Descripcion" << setw(10)
+			<< "Accion";
+		for (int i = indice_min; i <= indice; i++)
+		{
+			datos = separar_linead(lineasd[i]);
+			elementos = datos.elementos;
+
+			if (elementos[elementos.size() - 1] == "1")
+			{
+				if (elementos[4] == "desarmar")
+				{
+					return true;
+				}
+			}
+		}return false;
+	}
+	else return true;
+}
+
+void borrado()
+{
+	int linea_deseada;
+	int indice_linea;
+	int indice_min = 0;
+	int tope=int(lineasd.size()-1);
+	string accion_monitoreo;
+	vector<string> elementos;
+	string linea_borrada = "";
+	datos_de_lineax datos;
+
+	lineasff();
+
+	for (int i = indice_min; i <= tope; i++)
+	{
+		datos = separar_linead(lineasd[i]);
+		elementos = datos.elementos;
+			if (elementos[elementos.size() - 1] == "1")
+			{
+				if (hay_activos) {
+					elementos[elementos.size() - 1] == "0";
+					indice_linea = i;
+					for (int y = 0; y <= 5; y++)
+					{
+						linea_borrada += elementos[y] + " ";
+					}
+					linea_borrada += ". " + datos.descripcion + " .. " + datos.accion + " ... " + elementos[elementos.size() - 1];
+					lineasd[indice_linea] = linea_borrada;
+					
+					
+				}
+				
+			}
+	}guardar(); cout << endl << "Listo" << endl;
 }
 
 void borrar_bitacora()
@@ -1266,7 +1343,7 @@ void borrar_bitacora()
 	getline(cin, id);
 	if (RecorrerIden(id))
 	{
-		cout << "H" << endl;
+		borrado();
 	}
 	else cout << "Usuario no registrado" << endl;
 }

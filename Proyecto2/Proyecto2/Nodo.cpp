@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "Nodo.h"
 #include <string>
+#include "Sistema_alarma.h"
 using namespace std;
 
 
-Nodo::Nodo(string d) // constructor recibiendo datos
+Nodo::Nodo(Sistema_alarma d) // constructor recibiendo datos
 {
-	dato = d;
+	Sistema_alarma dato = d;
 	superior = nullptr;
-	inferior = nullptr;
+	inferior_izquierdo = nullptr;
+	inferior_derecho = nullptr;
 }
