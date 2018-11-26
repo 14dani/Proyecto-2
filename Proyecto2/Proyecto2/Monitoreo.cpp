@@ -6,7 +6,35 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include "Usuario.h"
+
 using namespace std;
+
+
+
+Usuario::Usuario(string id, string nom, string des, string dir, int t1, int t2, string co, int e)
+{
+	identificacion = id;
+	nombre = nom;
+	tipo_de_propiedad = des;
+	direccion = dir;
+	telefono1 = t1;
+	telefono2 = t2;
+	correo = co;
+	el = e;
+
+}
+Usuario usu;
+vector<Usuario>user1;
+
+Usuario Object(string iden, string nomb,string tp,string dir,int tel1,int tel2,string cor,int eli) //Funcion que crea objetos 
+
+{
+	Usuario usuario(iden,nomb,tp,dir,tel1,tel2,cor,eli);
+	return usuario;
+}
+
+
 vector<string> lineas; /*guarda las lineas del archivo de monitoreo para que se pueda cerrar el archivo de registros inmediatamente
 					   , asi el sistema de alarma puede seguir enviando alertas mientras el sistema de monitoreo esta encendido*/
 struct datos_de_linea
@@ -190,28 +218,15 @@ void modificar_accion(int indice_min, int contador, int indice_max)
 	}
 }
 
-struct Usuario   //estructura para establecer el usuario
-{
-	string identificacion;
-	string nombre;
-	string tipo_propiedad;
-	string direccion;
-	int tel_1;
-	int tel_2;
-	string correo;
-	int el;
 
-};
 
-vector<Usuario>users;//vector para guardar los usuarios establecidos
-
-bool RecorrenUsuarios(string usuario) //Recorre los usuarios de users
+bool Usuario::RecorrenUsuarios(string usuario) //Recorre los usuarios de users
 {
 	bool f = false;
 	{
-		for (int i = 0; i < users.size(); i++)
+		for (int i = 0; i < user1.size(); i++)
 		{
-			if (users.at(i).identificacion == usuario)
+			if (user1.at(i).identificacion == usuario)
 			{
 				f = true;
 			}
@@ -306,7 +321,7 @@ int Monitorear()
 	}cout << endl; return NULL;
 }
 
-void SaveFile()//Archivo para guardar usuarios
+void Usuario::SaveFile()//Archivo para guardar usuarios
 {
 	fstream my_file;
 
@@ -316,16 +331,16 @@ void SaveFile()//Archivo para guardar usuarios
 		cout << "Error al abrir archivo" << endl;
 	else
 	{
-		for (unsigned int i = 0; i < users.size(); i++)
+		for (unsigned int i = 0; i < user1.size(); i++)
 		{
-			my_file << users.at(i).identificacion << "-"
-				<< users.at(i).nombre << "-"
-				<< users.at(i).tipo_propiedad << "-"
-				<< users.at(i).direccion << "-"
-				<< users.at(i).tel_1 << "-"
-				<< users.at(i).tel_2 << "-"
-				<< users.at(i).correo << "-"
-				<< users.at(i).el << endl;
+			my_file << user1.at(i).identificacion << "-"
+				<< user1.at(i).nombre << "-"
+				<< user1.at(i).tipo_de_propiedad << "-"
+				<< user1.at(i).direccion << "-"
+				<< user1.at(i).telefono1 << "-"
+				<< user1.at(i).telefono2 << "-"
+				<< user1.at(i).correo << "-"
+				<< user1.at(i).el << endl;
 
 		}
 		my_file.close();
@@ -358,7 +373,7 @@ vector<string>identificacionesm;
 vector<string>identificaciones1m;//Se guardan identificaciones
 
 
-void ExtraerInfoM(string str1) //Guarda los usuarios en users
+void Usuario::ExtraerInfoM(string str1) //Guarda los usuarios en users
 {
 	Usuario s;
 	string m;
@@ -367,13 +382,13 @@ void ExtraerInfoM(string str1) //Guarda los usuarios en users
 
 	s.identificacion = identificacionesm[0];
 	s.nombre = identificacionesm[1];
-	s.tipo_propiedad = identificacionesm[2];
+	s.tipo_de_propiedad = identificacionesm[2];
 	s.direccion = identificacionesm[3];
-	s.tel_1 = ToInt(identificacionesm[4]);
-	s.tel_2 = ToInt(identificacionesm[5]);
+	s.telefono1 = ToInt(identificacionesm[4]);
+	s.telefono2 = ToInt(identificacionesm[5]);
 	s.correo = identificacionesm[6];
 	s.el = ToInt(identificacionesm[7]);
-	users.push_back(s);
+	user1.push_back(s);
 }
 
 void readFileM()//Lee usuarios establecidos del monitoreo.cpp
@@ -409,15 +424,16 @@ void readFileM()//Lee usuarios establecidos del monitoreo.cpp
 
 void IdsM()//Funcion que extrae los atributos de la estructura Usuario para que no se borren
 {
+	Usuario us2;
 	for (int i = 0; i < NOidentificacionesm.size() - 1; i++)
 	{
-
-		ExtraerInfoM(NOidentificacionesm[i]);
+		
+		us2.ExtraerInfoM(NOidentificacionesm[i]);
 	}
 
 }
 
-void CrearUsuario(string usu)
+void Usuario::CrearUsuario(string usu)
 {
 	Usuario us;
 	string nom, propiedad, dir, correo1,t1,t2;
@@ -429,7 +445,7 @@ void CrearUsuario(string usu)
 
 	cout << "Tipo de propiedad donde desea instalar el sistema de alarma: ";
 	getline(cin, propiedad);
-	us.tipo_propiedad = propiedad;
+	us.tipo_de_propiedad = propiedad;
 
 	cout << "Direccion de propiedad: ";
 	getline(cin, dir);
@@ -441,7 +457,7 @@ void CrearUsuario(string usu)
 		if (telefono(t1))
 		{
 
-			us.tel_1 = ToInt(t1);
+			us.telefono1 = ToInt(t1);
 		}
 		else
 			cout << "Numero debe tener 8 numeros exactos" << endl;
@@ -453,7 +469,7 @@ void CrearUsuario(string usu)
 		if (telefono(t2))
 		{
 
-			us.tel_2 = ToInt(t2);
+			us.telefono2 = ToInt(t2);
 		}
 		else
 			cout << "Numero debe tener 8 numeros exactos" << endl;
@@ -465,12 +481,12 @@ void CrearUsuario(string usu)
 	getline(cin, correo1);
 	us.correo = correo1;
 	us.el = 1;
-	users.push_back(us);
+	user1.push_back(us);
 	SaveFile();
 }
 
 
-void Monitoreo::Establecer_Usuarios(string pusuario)
+void Usuario::Establecer_Usuarios(string pusuario)
 {
 	Usuario us;
 	string op,id,nom2,prop2,dir2,correo2,t11,t22;
@@ -478,7 +494,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 
 	if (caracteres(pusuario))
 	{
-		if (users.size() == 0)
+		if (user1.size() == 0)
 		{
 			
 			CrearUsuario(pusuario);
@@ -487,17 +503,17 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 		{
 			if (RecorrenUsuarios(pusuario))
 			{
-				for (int i = 0; i < users.size(); i++)
+				for (int i = 0; i < user1.size(); i++)
 				{
-					if (pusuario == users.at(i).identificacion) //Desplega informacion cuando ya hay un usuario registrado y da la opcion para realizar cambios
+					if (pusuario == user1.at(i).identificacion) //Desplega informacion cuando ya hay un usuario registrado y da la opcion para realizar cambios
 					{
-						cout << "Identificacion: " << users.at(i).identificacion << endl;
-						cout << "Nombre completo: " << users.at(i).nombre << endl;
-						cout << "Tipo de propiedad: " << users.at(i).tipo_propiedad << endl;
-						cout << "Direccion: " << users.at(i).direccion << endl;
-						cout << "Telefono 1: " << users.at(i).tel_1 << endl;
-						cout << "Telefono 2: " << users.at(i).tel_2 << endl;
-						cout << "Correo: " << users.at(i).correo << endl;
+						cout << "Identificacion: " << user1.at(i).identificacion << endl;
+						cout << "Nombre completo: " << user1.at(i).nombre << endl;
+						cout << "Tipo de propiedad: " << user1.at(i).tipo_de_propiedad << endl;
+						cout << "Direccion: " << user1.at(i).direccion << endl;
+						cout << "Telefono 1: " << user1.at(i).telefono1 << endl;
+						cout << "Telefono 2: " << user1.at(i).telefono2 << endl;
+						cout << "Correo: " << user1.at(i).correo << endl;
 						cout << "Para cambiar algun dato presione la tecla <C>" << endl;
 						cout << "Para salir presione la tecla <S>" << endl;
 						string c;
@@ -521,7 +537,7 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 									getline(cin, id);
 									if (caracteres(id))
 									{
-										users.at(i).identificacion = id;
+										user1.at(i).identificacion = id;
 									}
 									else
 										cout << "Identificacion debe tener 10 o mas caracteres" << endl;
@@ -531,25 +547,25 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 								{
 									cout << "Nombre nuevo: "; 
 									getline(cin, nom2);
-									users.at(i).nombre = nom2;
+									user1.at(i).nombre = nom2;
 								}
 								if (op == "3")
 								{
 									cout << "Tipo de propiedad nueva: "; 
 									getline(cin, prop2); 
-									users.at(i).tipo_propiedad = prop2;
+									user1.at(i).tipo_de_propiedad = prop2;
 								}
 								if (op == "4")
 								{
 									cout << "Direccion nueva: "; 
 									getline(cin, dir2);
-									users.at(i).direccion = dir2;
+									user1.at(i).direccion = dir2;
 								}
 								if (op == "5") {
 									do {
 										cout << "Telefono 1 nuevo: "; getline(cin, t11); if (telefono(t11))
 										{
-											users.at(i).tel_1 = ToInt(t11);
+											user1.at(i).telefono1 = ToInt(t11);
 										}
 										else
 											cout << "Numero debe tener 8 numeros exactos" << endl;
@@ -563,13 +579,13 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 										if (telefono(t22))
 										{
 
-											users.at(i).tel_2 = ToInt(t22);
+											user1.at(i).telefono2= ToInt(t22);
 										}
 										else
 											cout << "Numero debe tener 8 numeros exactos" << endl;
 									} while (telefono(t22) == false);
 								}
-								if (op == "7") { cout << "Correo nuevo: "; getline(cin, correo2); users.at(i).correo = correo2; }
+								if (op == "7") { cout << "Correo nuevo: "; getline(cin, correo2); user1.at(i).correo = correo2; }
 								if (op == "S" || op == "s")break;
 								SaveFile();
 							}
@@ -588,24 +604,25 @@ void Monitoreo::Establecer_Usuarios(string pusuario)
 
 }
 
-void eliminar_Usuario()
+void Usuario::eliminar_Usuario()
 {
 	Usuario us;
 	string eliminar;
 	cout << "Eliminar usuario: ";
 	cin.ignore();
 	getline(cin, eliminar);
-	for (int i = 0; i < users.size(); i++)
+	for (int i = 0; i < user1.size(); i++)
 	{
-		if (eliminar == users.at(i).identificacion)
+		if (eliminar == user1.at(i).identificacion)
 		{
-			users.at(i).el = 0;
+			user1.at(i).el = 0;
 			SaveFile();
 		}
 	}
 
 }
 
+/*
 void pruebam()
 {
 	for (int i = 0; i < users.size(); i++)
@@ -619,11 +636,11 @@ void pruebam()
 		cout << i + 1 << ": " << users.at(i).correo << endl;
 		cout << i + 1 << ": " << users.at(i).el<< endl;
 	}
-}
+}*/
 
 void Monitoreo::Menu()
 {
-	
+	Usuario us;
 	readFileM();
 	IdsM();
 	//pruebam();
@@ -653,12 +670,12 @@ void Monitoreo::Menu()
 			cin.ignore();
 			getline(cin, U);
 			cout << endl;
-			Establecer_Usuarios(U);
+			us.Establecer_Usuarios(U);
 			cout << endl;
 		}
 		if (opcion == 3)
 		{
-			eliminar_Usuario();
+			us.eliminar_Usuario();
 		}
 		if (opcion == 0)
 			break;

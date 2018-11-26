@@ -9,22 +9,29 @@ using namespace std;
 
 
 class Sistema_alarma
-{private:
-	int codigo;
-	string cod_acceso;
-	string nombre_persona;
-	int telefono;
-	int z;
-	Zona la_zona;
+{
+private:
 	string identificacion;
 	Usuario UsuarioP;
 	vector<Usuario>UsuariosS;
 	vector<Zona>zonas;
 	string disponible;
-
-
 public:
 	Sistema_alarma();
+	Sistema_alarma(string, Usuario, vector<Usuario>, vector<Zona>, string);
+	void ExtraerInfo(string);
+	bool RecorrerIden(string);
+	void Archivo_usuario_SA();
+	void ExtraerInfoSecciones(string);
+	void armar_sistema();
+	void desarmar_sistema();
+	void desactivar_sistema();
+	void programar_zonas();
+	void lista_zonas();
+	void establecer_CAP();
+	void establecer_CAS();
+
+
 	int Menu();
 };
 
