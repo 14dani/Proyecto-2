@@ -1527,7 +1527,7 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		
 		readFile();
 		Ids(); //se cargan las identidades del monitoreo.cpp
-	   // LeerArchivoSA();
+	   LeerArchivoSA();
 		//IU();
 		
 		//prueba();
