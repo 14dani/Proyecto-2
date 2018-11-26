@@ -18,6 +18,7 @@
 #include <stdexcept> //Clave
 #include <windows.h>//Clave
 #include "Usuario.h"
+#include "Sistema_alarma.h"
 #include "Zona.h"
 using namespace std;
 
@@ -118,40 +119,33 @@ int monitorear()
 	}
 
 }
-/*
-struct U_Principal
-{
-	int codigoP;
-	string cod_accesoP;
 
-};
-
-struct U_secundario
+Usuario::Usuario(int codP, string claveP)
 {
-	int codigo;
-	string cod_acceso;
-	string nombre_persona;
-	int telefono;
-};
-struct zona
-{
-	int z;
-	string descrpcion;
-	string dispositivo;
-	string disponible;
-};
+	codigo = codP;
+	cod_acceso = claveP;
+	
+}
 
-struct S_A
-{
-	string identificacion;
-	U_Principal UsuarioP;
-	vector<U_secundario>UsuariosS;
-	vector<zona>zonas;
-	string disponible;
-};
 
-*/
-vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
+Usuario::Usuario(int cod, string clave, string nomb, int tel1)
+{
+	codigo = cod;
+	cod_acceso = clave;
+	nombre = nomb;
+	telefono1 = tel1;
+}
+
+Sistema_alarma::Sistema_alarma(string ident, Usuario usuarioP, vector<Usuario>vecus, vector<Zona>vecz, string dispo)
+{
+	identificacion = ident;
+	UsuarioP = usuarioP;
+	UsuariosS = vecus;
+	zonas = vecz;
+	disponible = dispo;
+
+}
+vector<Sistema_alarma>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
 
 
@@ -209,9 +203,9 @@ vector<string>identificaciones;
 vector<string>identificaciones1;//Se guardan identificaciones
 
 
-void ExtraerInfo(string str1) //Extrae cada identificacion
+void Sistema_alarma::ExtraerInfo(string str1) //Extrae cada identificacion
 {
-	S_A s;
+	Sistema_alarma s;
 	string m;
 	identificaciones = Scmd(str1);
 	identificaciones1.push_back(identificaciones[0]);
@@ -253,10 +247,11 @@ void readFile()//Lee usuarios establecidos del monitoreo.cpp
 
 void Ids()//Funcion que extrae las identificaciones del archivo
 {
+	Sistema_alarma sa;
 	for (int i = 0; i < NOidentificaciones.size() - 1; i++)
 	{
 
-		ExtraerInfo(NOidentificaciones[i]);
+		sa.ExtraerInfo(NOidentificaciones[i]);
 	}
 
 }
@@ -267,7 +262,7 @@ void Ids()//Funcion que extrae las identificaciones del archivo
 
 //Validaciones
 
-bool RecorrerIden(string usuario) //Verifica que la identidad o usuario que se ingrese este entre los usuarios establecidos
+bool Sistema_alarma::RecorrerIden(string usuario) //Verifica que la identidad o usuario que se ingrese este entre los usuarios establecidos
 {
 	bool f = false;
 	{
@@ -451,7 +446,7 @@ string getpassword(const string& prompt = "Enter password> ") //Hace que no se v
 }
 //////ARCHIVOS///////////////////////////////////////////////////////////
 
-void Archivo_usuario_SA()
+void Sistema_alarma::Archivo_usuario_SA()
 {
 	fstream file;
 
@@ -464,20 +459,20 @@ void Archivo_usuario_SA()
 		for (unsigned int u = 0; u < usuarios.size(); u++)
 		{
 			file << usuarios.at(u).identificacion << "-"
-				<< usuarios.at(u).UsuarioP.codigoP << "-"
-				<< usuarios.at(u).UsuarioP.cod_accesoP << ".";
+				<< usuarios.at(u).UsuarioP.codigo << "-"
+				<< usuarios.at(u).UsuarioP.cod_acceso << ".";
 			for (int i = 0; i < usuarios.at(u).UsuariosS.size(); i++)
 			{
 				file << usuarios.at(u).UsuariosS.at(i).codigo << "-"
 					<< usuarios.at(u).UsuariosS.at(i).cod_acceso << "-"
-					<< usuarios.at(u).UsuariosS.at(i).nombre_persona << "-"
-					<< usuarios.at(u).UsuariosS.at(i).telefono << "|";
+					<< usuarios.at(u).UsuariosS.at(i).nombre << "-"
+					<< usuarios.at(u).UsuariosS.at(i).telefono1 << "|";
 			}
 			file << ".";
 			for (int f = 0; f < usuarios.at(u).zonas.size(); f++)
 			{
 				file << usuarios.at(u).zonas.at(f).z << "-"
-					<< usuarios.at(u).zonas.at(f).descrpcion << "-"
+					<< usuarios.at(u).zonas.at(f).descripcion << "-"
 					<< usuarios.at(u).zonas.at(f).dispositivo << "-"
 					<< usuarios.at(u).zonas.at(f).disponible << "|";
 			}
@@ -529,55 +524,70 @@ vector<string>seccion;
 vector<string>seccion1;
 vector<string>secciones;
 vector<string>UCC;
+vector<string>UCC2;
 vector<string>USALL;
+vector<string>USALL2;
 vector<string>ZALL;
+vector<string>ZALL2;
 vector<string>US1;
+vector<string>US2;
 vector<string>Z1;
+vector<string>Z2;
 
-void ExtraerInfoSecciones(string str1) //Guarda los usuarios en users
+void Sistema_alarma::ExtraerInfoSecciones(string str1) //Guarda los usuarios en users
 {
-	S_A user1;
-	U_secundario us2;
-	zona z2;
-	vector<U_secundario>usuarios2;
-	vector<zona>Zonas2;
+	Sistema_alarma user1;
+	Usuario us2;
+	Zona z2;
+	vector<Usuario>usuarios2;
+	vector<Zona>Zonas2;
 	secciones = ScmdS(str1);
-	UCC = Scmd(secciones[0]);
-	USALL = ScmdUZ(secciones[1]);
-	ZALL = ScmdUZ(secciones[2]);
+	UCC.push_back(secciones[0]);
+	USALL.push_back(secciones[1]);
+	ZALL.push_back(secciones[2]);
 
-	user1.UsuarioP.codigoP = ToInt1(UCC[1]);
-	/*user1.UsuarioP.cod_accesoP = UCC[2];
-	for (int i = 0; i < USALL.size()-1; i++)
+	UCC2 = Scmd(UCC[0]);
+	user1.identificacion = UCC2[0];
+	user1.UsuarioP.codigo = ToInt1(UCC2[1]);
+	user1.UsuarioP.cod_acceso = UCC2[2];
+
+	USALL2 = ScmdUZ(USALL[0]);
+	for (int i = 0; i < USALL2.size(); i++)
 	{
-		US1.clear();
-		US1 = Scmd(USALL[i]);
-		for (int j = 0; j < US1.size()-1; j++)
-		{
-			us2.codigo = ToInt1(US1[0]);
-			us2.cod_acceso = US1[1];
-			us2.nombre_persona = US1[2];
-			us2.telefono = ToInt1(US1[3]);
-			usuarios2.push_back(us2);
+		US1.push_back(USALL2[i]);
+	}
 
-		}
+	for (int i = 0; i < US1.size(); i++)
+	{
+		//US2.clear();
+		US2 = Scmd(US1[i]);
+		us2.codigo = ToInt1(US2[0]);
+		us2.cod_acceso = US2[1];
+		us2.nombre = US2[2];
+		us2.telefono1 = ToInt1(US2[3]);
+		usuarios2.push_back(us2);
+
 	}
 	user1.UsuariosS = usuarios2;
-	for (int i = 0; i < ZALL.size()-1; i++)
-	{
-		Z1.clear();
-		Z1 = Scmd(ZALL[i]);
-		for (int j = 0; j < Z1.size()-1; j++)
-		{
-			z2.z = ToInt1(US1[0]);
-			z2.descrpcion = US1[1];
-			z2.dispositivo = US1[2];
-			z2.disponible = US1[3];
-			Zonas2.push_back(z2);
 
-		}
+	ZALL2 = ScmdUZ(ZALL[0]);
+	for (int i = 0; i < ZALL2.size(); i++)
+	{
+		Z1.push_back(ZALL2[i]);
 	}
-	user1.zonas = Zonas2;*/
+
+	for (int i = 0; i < Z1.size(); i++)
+	{
+		//US2.clear();
+		Z2 = Scmd(Z1[i]);
+		z2.z = ToInt1(Z2[0]);
+		z2.descripcion = Z2[1];
+		z2.dispositivo = Z2[2];
+		z2.disponible = Z2[3];
+		Zonas2.push_back(z2);
+
+	}
+	user1.zonas = Zonas2;
 	usuarios.push_back(user1);
 
 }
@@ -616,32 +626,16 @@ void LeerArchivoSA()
 
 void IU()//Funcion que extrae los atributos de la estructura Usuario para que no se borren
 {
+	Sistema_alarma sa1;
 	for (int i = 0; i < seccion1.size(); i++)
 	{
 
-		ExtraerInfoSecciones(seccion1[i]);
+		sa1.ExtraerInfoSecciones(seccion1[i]);
 	}
 
 }
 
 
-void prueba()
-{
-	cout << seccion.size() << endl;
-
-	/*for (int i = 0; i < secciones.size(); i++)
-	{
-		cout << secciones[i] << endl;
-		//ExtraerInfoSecciones(seccion1[i]);
-	}*/
-	/*for (int i = 0; i < usuarios.size(); i++)
-	{
-		cout << i + 1 << ":" << usuarios.at(i).identificacion << endl;
-		cout << i + 1 << ":" << usuarios.at(i).UsuarioP.codigoP << endl;
-		cout << i + 1 << ":" << usuarios.at(i).UsuarioP.cod_accesoP << endl;
-		cout << i + 1 << ":" << usuarios.at(i).disponible << endl;
-	}*/
-}
 
 
 void Archivo_monitoreo()
@@ -650,7 +644,8 @@ void Archivo_monitoreo()
 }
 
 
-void armar_sistema()
+
+void Sistema_alarma::armar_sistema()
 {
 	string id, con, con1;
 	string est = "Armar";
@@ -713,7 +708,7 @@ void armar_sistema()
 	else cout << "Usuario no registrado" << endl;
 }
 
-void desarmar_sistema()
+void Sistema_alarma::desarmar_sistema()
 {
 	string id, con, con1;
 	string est = "Desarmar";
@@ -774,7 +769,7 @@ void desarmar_sistema()
 	else { variable_alarma_desactivada = "NO ACTIVADO"; alerta(); cout << "Usuario no registrado" << endl; }
 }
 
-void desactivar_sistema()
+void Sistema_alarma::desactivar_sistema()
 {
 	string id, con, con1;
 	string est = "DESACTIVACION";
@@ -792,11 +787,11 @@ void desactivar_sistema()
 	else { variable_alarma_desactivada == "NO ACTIVADO"; alerta(); cout << "Usuario no registrado" << endl; }
 }
 
-void programar_zonas() //Me falta terminar esta
+void Sistema_alarma::programar_zonas() //Me falta terminar esta
 {
-	S_A sa;
-	zona zo;
-	vector<zona>zv;
+	Sistema_alarma sa;
+	Zona zo;
+	vector<Zona>zv;
 	string id, des, dis, op, op2, des2, dis2, con, con1;
 	int num, num2, num3;
 
@@ -811,7 +806,7 @@ void programar_zonas() //Me falta terminar esta
 		for (int i = 0; i < usuarios.size(); i++)
 		{
 
-			if (id == usuarios.at(i).identificacion&&usuarios.at(i).UsuarioP.cod_accesoP == con)
+			if (id == usuarios.at(i).identificacion&&usuarios.at(i).UsuarioP.cod_acceso == con)
 			{
 				cout << "Numero de zona: ";
 				cin >> num;
@@ -826,7 +821,7 @@ void programar_zonas() //Me falta terminar esta
 						cout << "Ingrese descripcion: ";
 						cin.ignore();
 						getline(cin, des);
-						zo.descrpcion = des;
+						zo.descripcion = des;
 						cout << "Dispositivo que se va a instalar: ";
 
 						getline(cin, dis);
@@ -848,7 +843,7 @@ void programar_zonas() //Me falta terminar esta
 						if (num == usuarios.at(i).zonas.at(m).z)
 						{
 							cout << "Numero de zona: " << usuarios[i].zonas[m].z << endl;
-							cout << "Descripcion: " << usuarios[i].zonas[m].descrpcion << endl;
+							cout << "Descripcion: " << usuarios[i].zonas[m].descripcion << endl;
 							cout << "Dispositivo instalado en la zona: " << usuarios[i].zonas[m].dispositivo << endl;
 							cout << endl;
 							cout << "Para cambiar algun dato presione la tecla <c>" << endl;
@@ -882,7 +877,7 @@ void programar_zonas() //Me falta terminar esta
 										else
 											cout << "Numero debe ser mayor o igual a 1" << endl << endl;
 									}
-									if (op2 == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descrpcion = des2; }
+									if (op2 == "2") { cout << "Nueva descripcion: "; getline(cin, des2); usuarios[i].zonas[m].descripcion = des2; }
 									if (op2 == "3") { cout << "Nuevo dispositivo: "; getline(cin, dis2); usuarios[i].zonas[m].dispositivo = dis2; }
 									if (op2 == "S" || op2 == "s")break;
 									Archivo_usuario_SA();
@@ -903,7 +898,7 @@ void programar_zonas() //Me falta terminar esta
 									cout << "Ingrese descripcion: ";
 									cin.ignore();
 									getline(cin, des);
-									zo.descrpcion = des;
+									zo.descripcion = des;
 									cout << "Dispositivo que se va a instalar: ";
 									getline(cin, dis);
 									zo.dispositivo = dis;
@@ -932,7 +927,7 @@ void programar_zonas() //Me falta terminar esta
 								cout << "Ingrese descripcion: ";
 								cin.ignore();
 								getline(cin, des);
-								zo.descrpcion = des;
+								zo.descripcion = des;
 								cout << "Dispositivo que se va a instalar: ";
 								getline(cin, dis);
 								zo.dispositivo = dis;
@@ -956,7 +951,7 @@ void programar_zonas() //Me falta terminar esta
 	else cout << "Usuario no registrado" << endl;
 }
 
-void SaveFileZ(vector<zona>zz1)//Archivo pdf para imprimir lista
+void SaveFileZ(vector<Zona>zz1)//Archivo pdf para imprimir lista
 {
 	fstream my_file;
 	string m = "Lista.pdf";
@@ -970,7 +965,7 @@ void SaveFileZ(vector<zona>zz1)//Archivo pdf para imprimir lista
 		for (int i = 0; i < zz1.size(); i++)
 		{
 
-			my_file << setw(19) << zz1.at(i).z << setw(11) << setw(10) << zz1.at(i).descrpcion << setw(30) << zz1.at(i).dispositivo << endl;
+			my_file << setw(19) << zz1.at(i).z << setw(11) << setw(10) << zz1.at(i).descripcion << setw(30) << zz1.at(i).dispositivo << endl;
 
 		}
 		my_file.close();
@@ -1094,13 +1089,13 @@ void ArchivoImprimir(string id)
 	ShellExecute(NULL, TEXT("open"), TEXT("C:\\Users\\User\\Desktop\\Prueba12\\Proyecto2\\Proyecto2\\Lista.pdf"), NULL, NULL, SW_SHOWNORMAL);
 }
 
-void lista_zonas()
+void Sistema_alarma::lista_zonas()
 {
 	string id, con, imp, con1;
 	vector<int>Nzonas;
-	vector<zona>zz;
+	vector<Zona>zz;
 	int z;
-	vector<zona>zz2;
+	vector<Zona>zz2;
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
@@ -1117,7 +1112,7 @@ void lista_zonas()
 
 			if (id == usuarios.at(i).identificacion)
 			{
-				if (usuarios.at(i).UsuarioP.cod_accesoP == con)
+				if (usuarios.at(i).UsuarioP.cod_acceso == con)
 				{
 					for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
 					{
@@ -1183,7 +1178,7 @@ void lista_zonas()
 
 			if (id == usuarios.at(i).identificacion)
 			{
-				if (usuarios.at(i).UsuarioP.cod_accesoP == con)
+				if (usuarios.at(i).UsuarioP.cod_acceso == con)
 				{
 					for (int j = 0; j < usuarios.at(i).zonas.size(); j++)
 					{
@@ -1194,12 +1189,12 @@ void lista_zonas()
 						for (int s = 0; s < zz2.size(); s++)
 						{
 
-							cout << setw(19) << zz2.at(s).z << setw(11) << setw(10) << zz2.at(s).descrpcion << setw(30) << zz2.at(s).dispositivo << endl;
+							cout << setw(19) << zz2.at(s).z << setw(11) << setw(10) << zz2.at(s).descripcion << setw(30) << zz2.at(s).dispositivo << endl;
 
 						}
 						SaveFileZ(zz2);
 						cout << "Para IMPRIMIR presione la tecla <I>" << endl;
-						cout << "Para SALIR presione la tecla <S>" << endl << endl;
+						cout << "Para SALIR presione la tecla de <enter>" << endl << endl;
 						getline(cin, imp);
 						/*if (imp == "i" || imp == "I")
 						{
@@ -1224,12 +1219,12 @@ void lista_zonas()
 									for (int l = 0; l < zz2.size(); l++)
 									{
 
-										cout << setw(19) << zz2.at(l).z << setw(11) << setw(10) << zz2.at(l).descrpcion << setw(30) << zz2.at(l).dispositivo << endl;
+										cout << setw(19) << zz2.at(l).z << setw(11) << setw(10) << zz2.at(l).descripcion << setw(30) << zz2.at(l).dispositivo << endl;
 
 									}
 									SaveFileZ(zz2);
 									cout << "Para IMPRIMIR presione la tecla <I>" << endl;
-									cout << "Para SALIR presione la tecla <S>" << endl << endl;
+									cout << "Para SALIR presione la tecla de <enter>" << endl << endl;
 									getline(cin, imp);
 									/*if (imp == "i" || imp == "I")
 									{
@@ -1347,8 +1342,8 @@ void borrar_bitacora()
 	}
 	else cout << "Usuario no registrado" << endl;
 }
-
-void establecer_CAP()//Establece el codigo principal
+*/
+void Sistema_alarma::establecer_CAP()//Establece el codigo principal
 {
 	string id, con1, con11, con2, con22, cambio, clave, clave1;
 	vector<string>contraseñas;
@@ -1376,8 +1371,8 @@ void establecer_CAP()//Establece el codigo principal
 						{
 							if (contraseñas[m] == con2)
 							{
-								usuarios.at(i).UsuarioP.codigoP = 0;
-								usuarios.at(i).UsuarioP.cod_accesoP = con1;
+								usuarios.at(i).UsuarioP.codigo = 0;
+								usuarios.at(i).UsuarioP.cod_acceso = con1;
 								Ucontraseña.push_back(id);
 								Archivo_usuario_SA();
 
@@ -1408,7 +1403,7 @@ void establecer_CAP()//Establece el codigo principal
 								cout << clave << endl;
 								for (int f = 0; f < usuarios.size(); f++)
 								{
-									if ((id == usuarios.at(f).identificacion) && (clave == usuarios.at(f).UsuarioP.cod_accesoP))
+									if ((id == usuarios.at(f).identificacion) && (clave == usuarios.at(f).UsuarioP.cod_acceso))
 									{
 										cout << "Ingrese codigo de acceso principal: ";
 										con1 = getpassword(con11);
@@ -1423,8 +1418,8 @@ void establecer_CAP()//Establece el codigo principal
 											{
 												if (contraseñas[q] == con2)
 												{
-													usuarios.at(f).UsuarioP.codigoP = 0;
-													usuarios.at(f).UsuarioP.cod_accesoP = con1;
+													usuarios.at(f).UsuarioP.codigo = 0;
+													usuarios.at(f).UsuarioP.cod_acceso = con1;
 													Archivo_usuario_SA();
 
 												}
@@ -1463,8 +1458,8 @@ void establecer_CAP()//Establece el codigo principal
 										{
 											if (contraseñas[m] == con2)
 											{
-												usuarios.at(x).UsuarioP.codigoP = 0;
-												usuarios.at(x).UsuarioP.cod_accesoP = con1;
+												usuarios.at(x).UsuarioP.codigo = 0;
+												usuarios.at(x).UsuarioP.cod_acceso = con1;
 												Ucontraseña.push_back(id);
 												Archivo_usuario_SA();
 
@@ -1492,13 +1487,13 @@ void establecer_CAP()//Establece el codigo principal
 	cout << endl;
 }
 
-void establecer_CAS()//Establece codigos secundarios
+void Sistema_alarma::establecer_CAS()//Establece codigos secundarios
 {
 	string id, conP, conP1, conS1, conS11, conS22, conS2, numTel;
 	int numCod, numCod2;
 	string Cod, nombre;
-	U_secundario ss;
-	vector<U_secundario>us;
+	Usuario ss;
+	vector<Usuario>us;
 	vector<string>contraseñas;
 
 
@@ -1511,7 +1506,7 @@ void establecer_CAS()//Establece codigos secundarios
 		getline(cin, conP1);
 		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if ((id == usuarios.at(i).identificacion) && (conP == usuarios.at(i).UsuarioP.cod_accesoP))
+			if ((id == usuarios.at(i).identificacion) && (conP == usuarios.at(i).UsuarioP.cod_acceso))
 			{
 				if (usuarios.at(i).UsuariosS.size() == 0)
 				{
@@ -1535,12 +1530,12 @@ void establecer_CAS()//Establece codigos secundarios
 								ss.cod_acceso = conS1;
 								cout << "Ingrese nombre de usuario: ";
 								getline(cin, nombre);
-								ss.nombre_persona = nombre;
+								ss.nombre = nombre;
 								cout << "Ingrese numero de telefono: ";
 								getline(cin, numTel);
 								if (telefono1(numTel))
 								{
-									ss.telefono = ToInt1(numTel);
+									ss.telefono1 = ToInt1(numTel);
 									us.push_back(ss);
 									usuarios.at(i).UsuariosS = us;
 									Archivo_usuario_SA();
@@ -1592,12 +1587,12 @@ void establecer_CAS()//Establece codigos secundarios
 										ss.cod_acceso = conS1;
 										cout << "Ingrese nombre de usuario: ";
 										getline(cin, nombre);
-										ss.nombre_persona = nombre;
+										ss.nombre = nombre;
 										cout << "Ingrese numero de telefono: ";
 										getline(cin, numTel);
 										if (telefono1(numTel))
 										{
-											ss.telefono = ToInt1(numTel);
+											ss.telefono1 = ToInt1(numTel);
 											us = usuarios.at(i).UsuariosS;
 											us.push_back(ss);
 											usuarios.at(i).UsuariosS = us;
@@ -1639,6 +1634,8 @@ void establecer_CAS()//Establece codigos secundarios
 	else cout << "Usuario no registrado" << endl;
 }
 
+
+/*
 void imp()
 {
 	string id;
@@ -1661,7 +1658,7 @@ void imp()
 		}
 	}
 
-}
+}*/
 
 void Fuego()
 {
@@ -1682,7 +1679,7 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 									 o para correr el menu, tipo es el dato de quien esta haciendo la consulta*/
 {
 	string opcion;
-
+	Sistema_alarma SA1;
 	readFile();
 	Ids(); //se cargan las identidades del monitoreo.cpp
 	LeerArchivoSA();
@@ -1718,10 +1715,10 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		else if (opcion == "5") {
 			lista_zonas();
 		}
-		else if (opcion == "6")bitacora();
-		else if (opcion == "7")borrar_bitacora();
+		//else if (opcion == "6")bitacora();
+		//else if (opcion == "7")borrar_bitacora();
 		else if (opcion == "8")establecer_CAP();
-		else if (opcion == "9") { establecer_CAS(); imp(); }
+		else if (opcion == "9") { establecer_CAS(); }
 		//else if (opcion == "10")armar_sistema();
 		//else if (opcion == "11")armar_sistema();
 
