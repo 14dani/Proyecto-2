@@ -622,7 +622,7 @@ void LeerArchivoSA()
 
 void IU()//Funcion que extrae los atributos de la estructura Usuario para que no se borren
 {
-	for (int i = 0; i < seccion1.size()-1; i++)
+	for (int i = 0; i < seccion1.size(); i++)
 	{
 
 		ExtraerInfoSecciones(seccion1[i]);
@@ -633,12 +633,13 @@ void IU()//Funcion que extrae los atributos de la estructura Usuario para que no
 
 void prueba()
 {
+	cout << seccion.size() << endl;
 
-	for (int i = 0; i < seccion1.size() - 2; i++)
+	/*for (int i = 0; i < secciones.size(); i++)
 	{
-		cout << seccion1[i] << endl;
+		cout << secciones[i] << endl;
 		//ExtraerInfoSecciones(seccion1[i]);
-	}
+	}*/
 	/*for (int i = 0; i < usuarios.size(); i++)
 	{
 		cout << i + 1 << ":" << usuarios.at(i).identificacion << endl;
@@ -1526,10 +1527,10 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		
 		readFile();
 		Ids(); //se cargan las identidades del monitoreo.cpp
-	    LeerArchivoSA();
+	   // LeerArchivoSA();
 		//IU();
 		
-		prueba();
+		//prueba();
 		
 		cin.ignore();
 		while (true)
