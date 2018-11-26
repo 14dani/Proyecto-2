@@ -267,14 +267,7 @@ void Ids()//Funcion que extrae las identificaciones del archivo
 	
 }
 
-void prueba()
-{
-	for (int i = 0; i < usuarios.size(); i++)
-	{
-		cout << i + 1 << ":" << usuarios.at(i).identificacion<< endl;
-		cout << i + 1 << ":" << usuarios.at(i).disponible << endl;
-	}
-}
+
 
 
 
@@ -544,21 +537,54 @@ vector<string>secciones;
 vector<string>UCC;
 vector<string>USALL;
 vector<string>ZALL;
+vector<string>US1;
+vector<string>Z1;
 
 void ExtraerInfoSecciones(string str1) //Guarda los usuarios en users
 {
 	S_A user1;
+	U_secundario us2;
+	zona z2;
+	vector<U_secundario>usuarios2;
+	vector<zona>Zonas2;
 	secciones = ScmdS(str1);
 	UCC = Scmd(secciones[0]);
 	USALL = ScmdUZ(secciones[1]);
 	ZALL = ScmdUZ(secciones[2]);
 
-	user1.identificacion = UCC[0];
 	user1.UsuarioP.codigoP = ToInt1(UCC[1]);
-	user1.UsuarioP.cod_accesoP = UCC[2];
+	/*user1.UsuarioP.cod_accesoP = UCC[2];
+	for (int i = 0; i < USALL.size()-1; i++)
+	{
+		US1.clear();
+		US1 = Scmd(USALL[i]);
+		for (int j = 0; j < US1.size()-1; j++)
+		{
+			us2.codigo = ToInt1(US1[0]);
+			us2.cod_acceso = US1[1];
+			us2.nombre_persona = US1[2];
+			us2.telefono = ToInt1(US1[3]);
+			usuarios2.push_back(us2);
+			
+		}
+	}
+	user1.UsuariosS = usuarios2;
+	for (int i = 0; i < ZALL.size()-1; i++)
+	{
+		Z1.clear();
+		Z1 = Scmd(ZALL[i]);
+		for (int j = 0; j < Z1.size()-1; j++)
+		{
+			z2.z = ToInt1(US1[0]);
+			z2.descrpcion = US1[1];
+			z2.dispositivo = US1[2];
+			z2.disponible = US1[3];
+			Zonas2.push_back(z2);
 
-
-	user1.disponible = secciones[3];
+		}
+	}
+	user1.zonas = Zonas2;*/
+	usuarios.push_back(user1);
 	
 }
 
@@ -582,6 +608,7 @@ void LeerArchivoSA()
 
 			for (int i = 0; i < seccion.size(); i++)
 			{
+				
 				seccion1.push_back(seccion[i]);
 
 			}
@@ -595,12 +622,30 @@ void LeerArchivoSA()
 
 void IU()//Funcion que extrae los atributos de la estructura Usuario para que no se borren
 {
-	for (int i = 0; i < seccion1.size() - 1; i++)
+	for (int i = 0; i < seccion1.size()-1; i++)
 	{
 
 		ExtraerInfoSecciones(seccion1[i]);
 	}
 
+}
+
+
+void prueba()
+{
+
+	for (int i = 0; i < seccion1.size() - 2; i++)
+	{
+		cout << seccion1[i] << endl;
+		//ExtraerInfoSecciones(seccion1[i]);
+	}
+	/*for (int i = 0; i < usuarios.size(); i++)
+	{
+		cout << i + 1 << ":" << usuarios.at(i).identificacion << endl;
+		cout << i + 1 << ":" << usuarios.at(i).UsuarioP.codigoP << endl;
+		cout << i + 1 << ":" << usuarios.at(i).UsuarioP.cod_accesoP << endl;
+		cout << i + 1 << ":" << usuarios.at(i).disponible << endl;
+	}*/
 }
 
 void Archivo_Bitacora()
@@ -924,12 +969,12 @@ void programar_zonas() //Me falta terminar esta
 	else cout << "Usuario no registrado" << endl;
 }
 
-void SaveFileZ(vector<zona>zz1,string ids)//Archivo pdf para imprimir lista
+void SaveFileZ(vector<zona>zz1)//Archivo pdf para imprimir lista
 {
 	fstream my_file;
-	string m = "Lista"+ids + ".txt";
+	string m = "Lista.pdf";
 
-	my_file.open(m, ios::out);
+	my_file.open(m, ios::out|ios::binary);
 
 	if (!my_file.is_open())
 		cout << "Error al abrir archivo" << endl;
@@ -1056,7 +1101,7 @@ void lista_zonas()
 							cout << setw(19) << zz2.at(s).z << setw(11) << setw(10) << zz2.at(s).descrpcion << setw(30) << zz2.at(s).dispositivo << endl;
 
 						}
-						SaveFileZ(zz2, id);
+						SaveFileZ(zz2);
 						cout << "Para IMPRIMIR presione la tecla <I>" << endl;
 						cout << "Para SALIR presione la tecla <S>" << endl << endl;
 						getline(cin, imp);
@@ -1086,7 +1131,7 @@ void lista_zonas()
 										cout << setw(19) << zz2.at(l).z << setw(11) << setw(10) << zz2.at(l).descrpcion << setw(30) << zz2.at(l).dispositivo << endl;
 
 									}
-									SaveFileZ(zz2, id);
+									SaveFileZ(zz2);
 									cout << "Para IMPRIMIR presione la tecla <I>" << endl;
 									cout << "Para SALIR presione la tecla <S>" << endl << endl;
 									getline(cin, imp);
@@ -1481,8 +1526,10 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		
 		readFile();
 		Ids(); //se cargan las identidades del monitoreo.cpp
+	    LeerArchivoSA();
+		//IU();
 		
-	//	prueba();
+		prueba();
 		
 		cin.ignore();
 		while (true)
