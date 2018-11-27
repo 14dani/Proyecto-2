@@ -57,129 +57,9 @@ int numero_dispositivo;
 string estadoi;
 alertas alertadx;
 
-
-void lineasff()//Funcion para guardar las lineas en el vector.
+Sistema_alarma::Sistema_alarma()
 {
-	fstream monitoreo;
-	string linea;
-	monitoreo.open("monitoreo.txt", ios::in);/////Recordar cambiar a nombre del archivo real.
-	cin.ignore();
-	lineasd.clear();
-	while (!monitoreo.eof())
-	{
-		getline(monitoreo, linea);
-
-		lineasd.push_back(linea);
-
-	}
-	monitoreo.close();
 }
-
-void guardar()
-{
-	fstream monitoreo;
-	monitoreo.open("monitoreo.txt", ios::out);
-	for (int i = 0; i<int(lineasd.size() - 1); i++)
-	{
-		monitoreo << lineasd[i] << endl;
-	}
-	monitoreo << lineasd[int(lineasd.size() - 1)]; //guardar el ultimo
-	monitoreo.close();
-}
-
-vector<string> dividir_stringd(string string1)//Divide string separado  por espacios
-{
-	vector<string> space;
-
-
-	istringstream iss(string1);
-
-	string token;
-
-	while (getline(iss, token, ' '))
-	{
-
-		space.push_back(token);
-
-	}
-	return space;
-}
-
-datos_de_lineax separar_linead(string linea)
-{
-	string descripcion = "";
-	string accion = "";
-	int sw = 0;
-	int sw2 = 0;
-	vector<string> elementos = dividir_stringd(linea);
-	datos_de_lineax lineac;
-
-	for (int j = 0; j < int(elementos.size()); j++) {
-		if (elementos[j] == "." || sw == 1)
-		{
-			sw = 1;
-			if (elementos[j] == "..") {
-				sw = 0; sw2 = 1;
-			}
-			if (elementos[j] != "." && sw == 1)
-			{
-				if (elementos[j] == "&") { descripcion = "none"; }
-				else { descripcion += (" " + elementos[j]); }
-			}
-
-		}
-		if (sw2 == 1)
-		{
-			if (elementos[j] == "...")sw2 = 0;
-			if (elementos[j] != ".." && sw2 == 1) {
-				if (elementos[j] == "&") { accion = "none"; }
-				else { accion += (" " + elementos[j]); }
-			}
-		}
-		lineac.accion = accion;
-		lineac.descripcion = descripcion;
-		lineac.elementos = elementos;
-	}return lineac;
-}
-
-string hora()
-{
-	string h, m, s, r;
-	time_t now;
-	struct tm nowLocal;
-	now = time(NULL);
-	nowLocal = *localtime(&now);
-	h = to_string(nowLocal.tm_hour);
-	m = to_string(nowLocal.tm_min);
-	s = to_string(nowLocal.tm_sec);
-	r = h + ":" + m + ":" + s;
-	return r;
-}
-
-string fecha()
-{
-	string d, m, a, r;
-	time_t now;
-	struct tm nowLocal;
-	now = time(NULL);
-	nowLocal = *localtime(&now);
-	d = to_string(nowLocal.tm_mday);
-	m = to_string(nowLocal.tm_mon + 1);
-	a = to_string(nowLocal.tm_year + 1900);
-	r = d + "." + m + "." + a;
-	return r;
-}
-
-/*string agregar_linea(string comando)
-{
-	string linea = "";
-	lineasff();
-	int numero = int(lineasd.size() - 1);
-	string linea_provicional = lineasd[int(lineasd.size() - 1)];
-	linea += numero + " " + fecha() + " " + hora() +/////aqui uno;
-		lineasd[int(lineasd.size() - 1)] = linea;
-	lineasd.push_back(lineas_provicional)
-}*/
 
 alertas estado_alerta()
 {
@@ -240,7 +120,7 @@ int monitorear()
 
 }
 
-Usuario::Usuario(int codP, string claveP)//asignar valores al codigo principal y acceso.
+Usuario::Usuario(int codP, string claveP)
 {
 	codigo = codP;
 	cod_acceso = claveP;
@@ -248,7 +128,7 @@ Usuario::Usuario(int codP, string claveP)//asignar valores al codigo principal y
 }
 
 
-Usuario::Usuario(int cod, string clave, string nomb, int tel1)//Asignar valores
+Usuario::Usuario(int cod, string clave, string nomb, int tel1)
 {
 	codigo = cod;
 	cod_acceso = clave;
@@ -269,6 +149,36 @@ vector<Sistema_alarma>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
 
 
+
+
+string hora()
+{
+	string h, m, s, r;
+	time_t now;
+	struct tm nowLocal;
+	now = time(NULL);
+	nowLocal = *localtime(&now);
+	h = to_string(nowLocal.tm_hour);
+	m = to_string(nowLocal.tm_min);
+	s = to_string(nowLocal.tm_sec);
+	r = h + ":" + m + ":" + s;
+	return r;
+}
+
+string fecha()
+{
+	string d, m, a, r;
+	time_t now;
+	struct tm nowLocal;
+	now = time(NULL);
+	nowLocal = *localtime(&now);
+	d = to_string(nowLocal.tm_mday);
+	m = to_string(nowLocal.tm_mon + 1);
+	a = to_string(nowLocal.tm_year + 1900);
+	r = d + "." + m + "." + a;
+	return r;
+}
+
 vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
 {
 	vector<string> space;
@@ -285,7 +195,7 @@ vector<string> Scmd(string string1) //Separa el string cuando se ingresan los co
 
 	}
 	return space;
-} //Separar lo del archivo del usuario con guion
+}
 
 vector<string>registro1;
 vector<string>NOidentificaciones;
@@ -293,7 +203,7 @@ vector<string>identificaciones;
 vector<string>identificaciones1;//Se guardan identificaciones
 
 
-void Sistema_alarma::ExtraerInfo(string str1) //Extrae cada identificacion de cada sistema de alarma
+void Sistema_alarma::ExtraerInfo(string str1) //Extrae cada identificacion
 {
 	Sistema_alarma s;
 	string m;
@@ -302,9 +212,9 @@ void Sistema_alarma::ExtraerInfo(string str1) //Extrae cada identificacion de ca
 	s.identificacion = identificaciones[0];
 	s.disponible = identificaciones[7];
 	usuarios.push_back(s);
-}//////va a cambio
+}
 
-void readFile()//Lee usuarios establecidos del archivo usuario
+void readFile()//Lee usuarios establecidos del monitoreo.cpp
 {
 	ifstream my_file;
 	string registro;
@@ -367,76 +277,6 @@ bool Sistema_alarma::RecorrerIden(string usuario) //Verifica que la identidad o 
 	return f;
 }
 
-string Encript(string frase)//Algoritmo de encriptado
-{
-	string resultado = "";
-	int n = 1;
-	for (int tamano = 0; tamano < frase.size(); tamano++)
-	{
-		char letra = frase[tamano] - n;
-		resultado += letra;
-		n++;
-		if (n > 10)
-		{
-			n = 1;
-		}
-	}
-	return resultado;
-}
-
-string Desencript(string frase)//Algortimo para desencriptar
-{
-	string resultado = "";
-	int n = 1;
-	for (int tamano = 0; tamano < frase.size(); tamano++)
-	{
-		char letra = frase[tamano] - n;
-		resultado += letra;
-		n++;
-		if (n > 10)
-		{
-			n = 1;
-		}
-	}return resultado;
-}
-
-/*bool comprobar_contrasena_principal(string x)
-{
-	x = Desencript(x);
-	string linea;
-	cin.ignore();
-	fstream contrasena;
-	contrasena.open("contrasena_principal.txt", ios::in);
-	getline(contrasena, linea);
-	contrasena.close();
-		if (linea == x)
-			return true;
-return false;
-}	
-
-bool comprobar_contrasenas_secun(string x)
-{
-	x = Desencript(x);
-	vector<string>contrasenas;
-	string linea;
-	fstream contrasena;
-	cin.ignore();
-	contrasena.open("contrasenas.txt", ios::in);
-	while (!contrasena.eof())
-	{
-		getline(contrasena, linea);
-
-		contrasenas.push_back(linea);
-
-	}contrasena.close();
-	for (int i = 0; i<int(contrasenas.size()); i++)
-	{
-		if (contrasenas[i] == x)
-			return true;
-
-	}return false;
-
-}*/
 
 //Validacion del telefono de usuario secundarios
 
@@ -533,9 +373,40 @@ bool validar_palabra_clave(string x) //Verifica todo el string para que se cumpl
 		return true;
 	else return false;
 }
+/*
+string Encript(string frase)//Algoritmo de encriptado
+{
+	string resultado = "";
+	int n = 1;
+	for (int tamano = 0; tamano < frase.size(); tamano++)
+	{
+		char letra = frase[tamano] - n;
+		resultado += letra;
+		n++;
+		if (n > 10)
+		{
+			n = 1;
+		}
+	}
+	return resultado;
+}
 
-
-
+string Desencript(string frase)//Algortimo para desencriptar
+{
+	string resultado = "";
+	int n = 1;
+	for (int tamano = 0; tamano < frase.size(); tamano++)
+	{
+		char letra = frase[tamano] - n;
+		resultado += letra;
+		n++;
+		if (n > 10)
+		{
+			n = 1;
+		}
+	}return resultado;
+}
+*/
 string getpassword(const string& prompt = "Enter password> ") //Hace que no se vean la clave cuando se ingresa
 {
 	string result;
@@ -774,15 +645,59 @@ void Archivo_monitoreo()
 
 
 
-void armar_sistema()
+void Sistema_alarma::armar_sistema()
 {
 	string id, con, con1;
 	string est = "Armar";
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
-	if (RecorrerIden(id))///aqui iba RecorrerIden(id)
+	if (RecorrerIden(id))
 	{
+		/*
+		cout << "Ingrese la clave: ";
+		con = getpassword(con1);
+		getline(cin, con1);
+		for(int i=0;i<usuarios.size();i++)
+		{
+			if ((id == usuarios.at(i).identificacion)&&(con == usuarios.at(i).UsuarioP.cod_accesoP))
+			{
+				usuarios.at(i).UsuarioP.codigoP = 0;
+
+				//linea.fyh = ctime(&H);
+				linea.id = id;
+				linea.balerta = est;
+				linea.z_c = usuarios.at(i).UsuarioP.codigoP;
+				linea.bdescripcion = "&";
+				linea.baccion = "&";
+				linea.el = 1;
+				lb.push_back(linea);
+
+			}
+			else
+			{
+				for (int n = 0; n < usuarios.size(); n++)
+				{
+					for (int m = 0; m < usuarios.at(n).UsuariosS.size(); m++)
+					{
+						if (con == usuarios.at(n).UsuariosS.at(m).cod_acceso)
+						{
+							//linea.fyh = ctime(&H);
+							linea.id = id;
+							linea.balerta = est;
+							linea.z_c = usuarios.at(n).UsuariosS.at(m).codigo;
+							linea.bdescripcion = "&";
+							linea.baccion = "&";
+							linea.el = 1;
+							lb.push_back(linea);
+
+						}
+
+					}
+				}
+			}
+
+		}*/
 		variable_monitoreo = "ACTIVADO";
 		variable_alarma_desactivada = "NO ACTIVADO";
 		thread a_monitorear(monitorear);
@@ -1058,11 +973,94 @@ void SaveFileZ(vector<Zona>zz1)//Archivo pdf para imprimir lista
 
 }
 
+void lineasff()//Funcion para guardar las lineas en el vector.
+{
+	fstream monitoreo;
+	string linea;
+	monitoreo.open("monitoreo.txt", ios::in);/////Recordar cambiar a nombre del archivo real.
+	cin.ignore();
+	lineasd.clear();
+	while (!monitoreo.eof())
+	{
+		getline(monitoreo, linea);
+
+		lineasd.push_back(linea);
+
+	}
+	monitoreo.close();
+}
+
+void guardar()
+{
+	fstream monitoreo;
+	monitoreo.open("monitoreo.txt", ios::out);
+	for (int i = 0; i<int(lineasd.size() - 1); i++)
+	{
+		monitoreo << lineasd[i] << endl;
+	}
+	monitoreo << lineasd[int(lineasd.size() - 1)]; //guardar el ultimo
+	monitoreo.close();
+}
+
+vector<string> dividir_stringd(string string1)//Divide string separado  por espacios
+{
+	vector<string> space;
+
+
+	istringstream iss(string1);
+
+	string token;
+
+	while (getline(iss, token, ' '))
+	{
+
+		space.push_back(token);
+
+	}
+	return space;
+}
+
+datos_de_lineax separar_linead(string linea)
+{
+	string descripcion = "";
+	string accion = "";
+	int sw = 0;
+	int sw2 = 0;
+	vector<string> elementos = dividir_stringd(linea);
+	datos_de_lineax lineac;
+
+	for (int j = 0; j < int(elementos.size()); j++) {
+		if (elementos[j] == "." || sw == 1)
+		{
+			sw = 1;
+			if (elementos[j] == "..") {
+				sw = 0; sw2 = 1;
+			}
+			if (elementos[j] != "." && sw == 1)
+			{
+				if (elementos[j] == "&") { descripcion = "none"; }
+				else { descripcion += (" " + elementos[j]); }
+			}
+
+		}
+		if (sw2 == 1)
+		{
+			if (elementos[j] == "...")sw2 = 0;
+			if (elementos[j] != ".." && sw2 == 1) {
+				if (elementos[j] == "&") { accion = "none"; }
+				else { accion += (" " + elementos[j]); }
+			}
+		}
+		lineac.accion = accion;
+		lineac.descripcion = descripcion;
+		lineac.elementos = elementos;
+	}return lineac;
+}
 
 void imprimir_lineasd()//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
 {
-	int indice_min = 0;
-	int tope;
+	int indice_min = int(size(lineasd) - 2);
+	int tope=0;
 	vector<string> elementos;
 	datos_de_lineax datos;
 
@@ -1248,7 +1246,8 @@ void Sistema_alarma::lista_zonas()
 	else cout << "Usuario no registrado" << endl;
 }
 
-void bitacora()
+
+void Sistema_alarma::bitacora()
 {
 	string id, c_a;
 	cout << "Ingrese usuario o la identificacion: ";
@@ -1259,7 +1258,7 @@ void bitacora()
 		getline(cin, c_a);
 		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if ((id == usuarios.at(i).identificacion) && (c_a == usuarios.at(i).UsuarioP.cod_accesoP))
+			if ((id == usuarios.at(i).identificacion) && (c_a == usuarios.at(i).UsuarioP.cod_acceso))
 			{
 				imprimir_lineasd();
 			}
@@ -1332,7 +1331,7 @@ void borrado()
 	}guardar(); cout << endl << "Listo" << endl;
 }
 
-void borrar_bitacora()
+void Sistema_alarma::borrar_bitacora()
 {
 	string id;
 	cout << "Ingrese usuario o la identificacion: ";
@@ -1680,6 +1679,7 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 									 o para correr el menu, tipo es el dato de quien esta haciendo la consulta*/
 {
 	string opcion;
+	Sistema_alarma SA1;
 	readFile();
 	Ids(); //se cargan las identidades del monitoreo.cpp
 	LeerArchivoSA();
@@ -1715,8 +1715,8 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		else if (opcion == "5") {
 			lista_zonas();
 		}
-		else if (opcion == "6")bitacora();
-		else if (opcion == "7")borrar_bitacora();
+		//else if (opcion == "6")bitacora();
+		//else if (opcion == "7")borrar_bitacora();
 		else if (opcion == "8")establecer_CAP();
 		else if (opcion == "9") { establecer_CAS(); }
 		//else if (opcion == "10")armar_sistema();
