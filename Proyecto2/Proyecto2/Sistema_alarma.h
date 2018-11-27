@@ -28,6 +28,8 @@ public:
 	void desactivar_sistema();
 	void programar_zonas();
 	void lista_zonas();
+	void bitacora();
+	void borrar_bitacora();
 	void establecer_CAP();
 	void establecer_CAS();
 

@@ -14,7 +14,7 @@ Arbol::Arbol() // constructor
 int indicar_nivel(Nodo* actual)
 {
 	int contador = 1;
-	while (actual->inferior_izquierdo!=nullptr && actual->inferior_derecho!=nullptr )
+	while (actual->inferior_izquierdo != nullptr && actual->inferior_derecho != nullptr);
 }
 
 void Arbol::insertar(Sistema_alarma valor) // llega el puntero del nodo a insertar 

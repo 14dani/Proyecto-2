@@ -1247,7 +1247,7 @@ void Sistema_alarma::lista_zonas()
 }
 
 
-void bitacora()
+void Sistema_alarma::bitacora()
 {
 	string id, c_a;
 	cout << "Ingrese usuario o la identificacion: ";
@@ -1258,7 +1258,7 @@ void bitacora()
 		getline(cin, c_a);
 		for (int i = 0; i < usuarios.size(); i++)
 		{
-			if ((id == usuarios.at(i).identificacion) && (c_a == usuarios.at(i).UsuarioP.cod_accesoP))
+			if ((id == usuarios.at(i).identificacion) && (c_a == usuarios.at(i).UsuarioP.cod_acceso))
 			{
 				imprimir_lineasd();
 			}
@@ -1331,7 +1331,7 @@ void borrado()
 	}guardar(); cout << endl << "Listo" << endl;
 }
 
-void borrar_bitacora()
+void Sistema_alarma::borrar_bitacora()
 {
 	string id;
 	cout << "Ingrese usuario o la identificacion: ";
@@ -1342,7 +1342,7 @@ void borrar_bitacora()
 	}
 	else cout << "Usuario no registrado" << endl;
 }
-*/
+
 void Sistema_alarma::establecer_CAP()//Establece el codigo principal
 {
 	string id, con1, con11, con2, con22, cambio, clave, clave1;
