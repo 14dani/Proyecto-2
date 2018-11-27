@@ -10,4 +10,5 @@ using namespace std;
 		dato=d.
 		p_izq = nullptr;
 		p_der = nullptr;
-	}
+	}
+
