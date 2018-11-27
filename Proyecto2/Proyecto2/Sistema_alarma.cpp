@@ -20,6 +20,8 @@
 #include "Usuario.h"
 #include "Sistema_alarma.h"
 #include "Zona.h"
+#include "easendmailobj.tlh"
+using namespace EASendMailObjLib;
 using namespace std;
 
 Arduino arduino;
@@ -39,6 +41,7 @@ struct datos_de_lineax
 	string descripcion;
 };
 
+string id_actual;
 string dispositivo_1_;
 string dispositivo_2_;
 string variable_monitoreo;
@@ -57,7 +60,49 @@ int numero_dispositivo;
 string estadoi;
 alertas alertadx;
 
+string Encript(string frase)//Algoritmo de encriptado
+{
+	string resultado = "";
+	int n = 1;
+	for (int tamano = 0; tamano < frase.size(); tamano++)
+	{
+		char letra = frase[tamano] - n;
+		resultado += letra;
+		n++;
+		if (n > 10)
+		{
+			n = 1;
+		}
+	}
+	return resultado;
+}
 
+string Desencript(string frase)//Algortimo para desencriptar
+{
+	string resultado = "";
+	int n = 1;
+	for (int tamano = 0; tamano < frase.size(); tamano++)
+	{
+		char letra = frase[tamano] - n;
+		resultado += letra;
+		n++;
+		if (n > 10)
+		{
+			n = 1;
+		}
+	}return resultado;
+}
+
+void agregar_linea_alerta(string accion, string identificacion)
+{
+	string linea = "";
+	lineasff();
+	string linea_provisional = lineasd[int(lineasd.size() - 1)];
+	linea += int(lineasd.size() - 1) + " " + fecha() + " " + hora() + " " + identificacion + " " + "1" + " . & .. & ... 1";
+	lineasd[int(lineasd.size() - 1)] = linea;
+	lineasd.push_back(linea_provisional);
+	guardard();
+}
 
 alertas estado_alerta()
 {
@@ -91,6 +136,57 @@ void gestionar_arduino()///Aqui se cambiarian
 	dispositivo_1_ = comunicacion.dispositivo_1;
 	dispositivo_2_ = comunicacion.dispositivo_2;
 }
+
+int correo(int argc, CHAR* argv[]) //En este codigo no se pueden pasar parametros para cambiar de correo
+{
+	::CoInitialize(NULL);
+	IMailPtr oSmtp = NULL;
+	oSmtp.CreateInstance("EASendMailObj.Mail");
+	oSmtp->LicenseCode = ("TryIt");
+
+
+	// Set your gmail email address
+	oSmtp->FromAddr = ("monitoreo.sa2018@gmail.com");
+
+	// Add recipient email address
+	oSmtp->AddRecipientEx(("caesloso@gmail.com"), 0);
+
+	// Set email subject
+	oSmtp->Subject = ("ALERTA");
+
+	// Set email body
+	oSmtp->BodyText = ("Le informamos que una de sus alarmas ha sido activada,  por favor tome las previsiones del caso.");
+
+	// Gmail SMTP server address
+	oSmtp->ServerAddr = ("smtp.gmail.com");
+
+	// Use SSL 465 port,
+	oSmtp->ServerPort = 465;
+
+	// detect SSL/TLS automatically
+	oSmtp->SSL_init();
+
+	// Gmail user authentication should use your
+	// Gmail email address as the user name.
+	// For example: your email is "gmailid@gmail.com", then the user should be "gmailid@gmail.com"
+	oSmtp->UserName = ("monitoreo.sa2018@gmail.com");
+	oSmtp->Password = ("monitoreo18");
+	printf(("Start to send email via gmail account ...\r\n"));
+
+	if (oSmtp->SendMail() == 0)
+	{
+		printf(("email was sent successfully!\r\n"));
+	}
+	else
+	{
+		printf(("failed to send email with the following error: %s\r\n"),
+			(const TCHAR*)oSmtp->GetLastErrDescription());
+	}
+	if (oSmtp != NULL)
+		oSmtp.Release();
+
+	return 0;
+}
 int monitorear()
 {
 
@@ -105,8 +201,7 @@ int monitorear()
 			{
 				dispositivo_1_ == "NO ACTIVADO";
 				dispositivo_2_ == "NO ACTIVADO";////aqui se cambiarian los dispositivos
-
-				/////MANDAR CORREO
+				correo();
 				variable_alarma = "ACTIVADO";
 				thread alertar(alerta);
 				alertar.detach();
@@ -212,6 +307,7 @@ Sistema_alarma::Sistema_alarma(string iden1, string dispo1)
 	disponible = dispo1;
 }
 
+
 void Sistema_alarma::ExtraerInfo(string str1) //Extrae cada identificacion
 {
 	Sistema_alarma s;
@@ -314,6 +410,7 @@ int ToInt1(string s) //Funcion que convierte lo de telefono en int
 
 //Validaciones de la contraseña
 
+
 bool verificar_cantidad(string x) //verifica que la contraseña tenga 8 o mas caracteres
 {
 	if (8 > int(x.length()))
@@ -382,40 +479,8 @@ bool validar_palabra_clave(string x) //Verifica todo el string para que se cumpl
 		return true;
 	else return false;
 }
-/*
-string Encript(string frase)//Algoritmo de encriptado
-{
-	string resultado = "";
-	int n = 1;
-	for (int tamano = 0; tamano < frase.size(); tamano++)
-	{
-		char letra = frase[tamano] - n;
-		resultado += letra;
-		n++;
-		if (n > 10)
-		{
-			n = 1;
-		}
-	}
-	return resultado;
-}
 
-string Desencript(string frase)//Algortimo para desencriptar
-{
-	string resultado = "";
-	int n = 1;
-	for (int tamano = 0; tamano < frase.size(); tamano++)
-	{
-		char letra = frase[tamano] - n;
-		resultado += letra;
-		n++;
-		if (n > 10)
-		{
-			n = 1;
-		}
-	}return resultado;
-}
-*/
+
 string getpassword(const string& prompt = "Enter password> ") //Hace que no se vean la clave cuando se ingresa
 {
 	string result;
@@ -661,6 +726,7 @@ void Sistema_alarma::armar_sistema()
 
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
+	id_actual = id;
 	if (RecorrerIden(id))
 	{
 		/*
@@ -707,6 +773,7 @@ void Sistema_alarma::armar_sistema()
 			}
 
 		}*/
+		agregar_linea_alerta("Armar", id);
 		variable_monitoreo = "ACTIVADO";
 		variable_alarma_desactivada = "NO ACTIVADO";
 		thread a_monitorear(monitorear);
@@ -725,6 +792,7 @@ void Sistema_alarma::desarmar_sistema()
 	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
+	id_actual = id;
 	if (RecorrerIden(id))
 	{
 		/*
@@ -786,6 +854,7 @@ void Sistema_alarma::desactivar_sistema()
 	//tm * timeinfo = localtime(&H); ////linea.fyh = ctime(&H);
 	cout << "Ingrese usuario o la identificacion: ";
 	getline(cin, id);
+	id_actual = id;
 	if (RecorrerIden(id))
 	{
 		cout << "Ingrese la clave: ";
@@ -1671,17 +1740,20 @@ void imp()
 
 void Fuego()
 {
-
+	dispositivo_1_ = "ACTIVADO";
+	agregar_linea_alerta("ACTIVACION", id_actual);
 }
 
 void ayuda()
 {
-
+	dispositivo_1_ = "ACTIVADO";
+	agregar_linea_alerta("ACTIVACION", id_actual);
 }
 
 void panico()
 {
-
+	dispositivo_1_ = "ACTIVADO";
+	agregar_linea_alerta("ACTIVACION", id_actual);
 }
 
 int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llamando a la funcion para consultar el estado
@@ -1724,12 +1796,14 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		else if (opcion == "5") {
 			lista_zonas();
 		}
-		//else if (opcion == "6")bitacora();
-		//else if (opcion == "7")borrar_bitacora();
+		else if (opcion == "6")bitacora();
+		else if (opcion == "7")borrar_bitacora();
 		else if (opcion == "8")establecer_CAP();
 		else if (opcion == "9") { establecer_CAS(); }
-		//else if (opcion == "10")armar_sistema();
-		//else if (opcion == "11")armar_sistema();
+		else if (opcion == "F")armar_sistema();
+		else if (opcion == "A")armar_sistema();
+		else if (opcion == "P")armar_sistema();
+
 
 
 	}
