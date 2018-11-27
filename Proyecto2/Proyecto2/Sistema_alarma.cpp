@@ -146,7 +146,7 @@ Sistema_alarma::Sistema_alarma(string ident, Usuario usuarioP, vector<Usuario>ve
 
 Sistema_alarma::Sistema_alarma()
 {
-	
+
 
 }
 
