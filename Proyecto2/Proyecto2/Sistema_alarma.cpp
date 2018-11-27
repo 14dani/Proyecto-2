@@ -1756,6 +1756,30 @@ void panico()
 	agregar_linea_alerta("ACTIVACION", id_actual);
 }
 
+
+void Help()
+{
+	ShellExecute(NULL, TEXT("open"), TEXT("C:\\Users\\User\\Desktop\\P22\\Proyecto2\\Proyecto2\\ManualDeUsuarioSA.pdf"), NULL, NULL, SW_SHOWNORMAL);//Uso de funcion ShellExecute de la libreria Windows.h.
+}
+
+
+void About()
+{
+
+	cout << setw(40) << "Acerca del programa" << endl;
+	cout << "El nombre de este proyecto es ALARMA2, en este programa se pueden" << endl;
+	cout << "generar alertas y enviarlas a un centro de monitoreo para su" << endl;
+	cout << "seguridad" << endl;
+	cout << endl;
+	cout << setw(60) << "V01-47-87441" << endl;
+	cout << setw(60) << "Fecha de creacion - 26/10/2018" << endl;
+	cout << setw(53) << "Autores" << endl;
+	cout << setw(60) << "Daniela Alfaro Castro" << endl;
+	cout << setw(60) << "Esteban Lopez Solano" << endl;
+	cout << setw(60) << "ALARMA2 © 2018" << endl;
+}
+
+
 int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llamando a la funcion para consultar el estado
 									 o para correr el menu, tipo es el dato de quien esta haciendo la consulta*/
 {
@@ -1800,6 +1824,8 @@ int Sistema_alarma::Menu()/*Estado es un interruptor que indica si se esta llama
 		else if (opcion == "7")borrar_bitacora();
 		else if (opcion == "8")establecer_CAP();
 		else if (opcion == "9") { establecer_CAS(); }
+		else if (opcion == "10")Help();
+		else if (opcion == "11")About();
 		else if (opcion == "F")armar_sistema();
 		else if (opcion == "A")armar_sistema();
 		else if (opcion == "P")armar_sistema();

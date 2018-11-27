@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include "Usuario.h"
+#include <Windows.h>
 
 using namespace std;
 
@@ -621,21 +622,28 @@ void Usuario::eliminar_Usuario()
 
 }
 
-/*
-void pruebam()
+void Help1()
 {
-	for (int i = 0; i < users.size(); i++)
-	{
-		cout << i + 1 << ": " << users.at(i).identificacion << endl;
-		cout << i + 1 << ": " << users.at(i).nombre << endl;
-		cout << i + 1 << ": " << users.at(i).tipo_propiedad << endl;
-		cout << i + 1 << ": " << users.at(i).direccion << endl;
-		cout << i + 1 << ": " << users.at(i).tel_1 << endl;
-		cout << i + 1 << ": " << users.at(i).tel_2 << endl;
-		cout << i + 1 << ": " << users.at(i).correo << endl;
-		cout << i + 1 << ": " << users.at(i).el<< endl;
-	}
-}*/
+	ShellExecute(NULL, TEXT("open"), TEXT("C:\\Users\\User\\Desktop\\P22\\Proyecto2\\Proyecto2\\ManualDeUsuarioM.pdf"), NULL, NULL, SW_SHOWNORMAL);//Uso de funcion ShellExecute de la libreria Windows.h.
+}
+
+
+void About1()
+{
+
+	cout << setw(40) << "Acerca del programa" << endl;
+	cout << "El nombre de este proyecto es ALARMA2, en el se pueden monitorear" << endl;
+	cout << "un sistema de alarma cuando se activa y desactiva y cuando se arma " << endl;
+	cout << "y se desarma" << endl;
+	cout << endl;
+	cout << setw(60) << "V01-47-87441" << endl;
+	cout << setw(60) << "Fecha de creacion - 26/10/2018" << endl;
+	cout << setw(53) << "Autores" << endl;
+	cout << setw(60) << "Daniela Alfaro Castro" << endl;
+	cout << setw(60) << "Esteban Lopez Solano" << endl;
+	cout << setw(60) << "ALARMA2 © 2018" << endl;
+
+}
 
 void Monitoreo::Menu()
 {
@@ -675,6 +683,14 @@ void Monitoreo::Menu()
 		if (opcion == 3)
 		{
 			us.eliminar_Usuario();
+		}
+		if (opcion == 4)
+		{
+			Help1;
+		}
+		if (opcion == 5)
+		{
+			About1();
 		}
 		if (opcion == 0)
 			break;
