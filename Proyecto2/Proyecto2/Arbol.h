@@ -1,23 +1,15 @@
 #pragma once
-#include "Nodo.h"
+#include "nodo.h"
 #include <iostream>
-#include <string>
-#include "Sistema_alarma.h"
 using namespace std;
-
 class Arbol
 {
-	Nodo * raiz; //
+private:
+	Nodo * raiz; // mantiene la raiz de todo el arbol
 public:
 	Arbol();
-	void insertar(Sistema_alarma);
+	void insertar(int);
 	Nodo* insertar_nodo(Nodo*, Nodo*);
-	void recorrer();
-	void en_orden(Nodo*);
-	Nodo* buscar(string);
-	Nodo* buscar_nodo(Nodo*, string);
-	Nodo* buscar_nodo_iterativo(string);
-	friend class Sistema_alarma;
 };
 
 
