@@ -1,50 +1,28 @@
 #include "pch.h"
-#include "Arbol.h"
-#include "Nodo.h"
-#include <string>
-#include "Sistema_alarma.h"
-using namespace std;
 
+#include "Nodo.h"
+#include "Arbol.h"
 
 Arbol::Arbol() // constructor
 {
 	raiz = nullptr;
 }
 
-int indicar_nivel(Nodo* actual)
+void Arbol::insertar(int valor) // llega el puntero del nodo a insertar
 {
-	int contador = 1;
-	while (actual->inferior_izquierdo != nullptr && actual->inferior_derecho != nullptr);
+	Nodo* ptr = new Nodo(valor);
+	raiz = insertar_nodo(raiz, ptr); // envia punteros de la raiz y del nodo a insertar
 }
-
-void Arbol::insertar(Sistema_alarma valor) // llega el puntero del nodo a insertar 
+Nodo* Arbol::insertar_nodo(Nodo *ptr_raiz, Nodo *ptr)
 {
-	Nodo* actual;
-	Nodo* actual2;
-	Nodo* siguiente_izquierdo;
-	Nodo* siguiente_derecho;
-	Nodo* a_conectar;
-	Nodo* salarma = new Nodo(valor);
-	int sw1 = 0;
-	int sw2=0;
-	if (raiz == nullptr)raiz = salarma;
-	else {
-		actual = raiz;
-		actual2 = raiz;
-
-		while (sw1==0 && sw2==0)
-		{
-			if (actual->inferior_izquierdo == nullptr || actual->inferior_derecho == nullptr)
-			{
-				sw1 = 1;
-			}
-			else if (actual2->inferior_izquierdo == nullptr || actual2->inferior_derecho == nullptr)
-			{
-				sw2 = 1;
-			}
-
-		}
-
-	}
-	
+	if (ptr_raiz == nullptr)
+		ptr_raiz = ptr;
+	else
+		if (ptr->dato <= ptr_raiz->dato)
+			// nodos <= raiz van a su izquierda
+			ptr_raiz->p_izq = insertar_nodo(ptr_raiz->p_izq, ptr);
+		else
+			// nodos > raiz van a su derecha
+			ptr_raiz->p_der = insertar_nodo(ptr_raiz->p_der, ptr);
+	return ptr_raiz;
 }

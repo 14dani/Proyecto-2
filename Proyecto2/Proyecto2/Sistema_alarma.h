@@ -16,13 +16,13 @@ private:
 	vector<Usuario>UsuariosS;
 	vector<Zona>zonas;
 	string disponible;
-	string nombre;
-	int numero;
-	int carnet;
-	vector<int> zonas;
-	int codigo;
+
+
 public:
+	Sistema_alarma();
 	Sistema_alarma(string, Usuario, vector<Usuario>, vector<Zona>, string);
+	Sistema_alarma(string,string);
+	
 	void ExtraerInfo(string);
 	bool RecorrerIden(string);
 	void Archivo_usuario_SA();

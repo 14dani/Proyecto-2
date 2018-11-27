@@ -57,9 +57,7 @@ int numero_dispositivo;
 string estadoi;
 alertas alertadx;
 
-Sistema_alarma::Sistema_alarma()
-{
-}
+
 
 alertas estado_alerta()
 {
@@ -145,6 +143,13 @@ Sistema_alarma::Sistema_alarma(string ident, Usuario usuarioP, vector<Usuario>ve
 	disponible = dispo;
 
 }
+
+Sistema_alarma::Sistema_alarma()
+{
+	
+
+}
+
 vector<Sistema_alarma>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
 
@@ -201,7 +206,11 @@ vector<string>registro1;
 vector<string>NOidentificaciones;
 vector<string>identificaciones;
 vector<string>identificaciones1;//Se guardan identificaciones
-
+Sistema_alarma::Sistema_alarma(string iden1, string dispo1)
+{
+	identificacion = iden1;
+	disponible = dispo1;
+}
 
 void Sistema_alarma::ExtraerInfo(string str1) //Extrae cada identificacion
 {
@@ -789,7 +798,7 @@ void Sistema_alarma::desactivar_sistema()
 
 void Sistema_alarma::programar_zonas() //Me falta terminar esta
 {
-	Sistema_alarma sa;
+	
 	Zona zo;
 	vector<Zona>zv;
 	string id, des, dis, op, op2, des2, dis2, con, con1;
@@ -990,7 +999,7 @@ void lineasff()//Funcion para guardar las lineas en el vector.
 	monitoreo.close();
 }
 
-void guardar()
+void guardard()
 {
 	fstream monitoreo;
 	monitoreo.open("monitoreo.txt", ios::out);
@@ -1297,7 +1306,7 @@ bool hay_activos(int indice)
 
 void borrado()
 {
-	int linea_deseada;
+	
 	int indice_linea;
 	int indice_min = 0;
 	int tope=int(lineasd.size()-1);
@@ -1328,7 +1337,7 @@ void borrado()
 				}
 				
 			}
-	}guardar(); cout << endl << "Listo" << endl;
+	}guardard(); cout << endl << "Listo" << endl;
 }
 
 void Sistema_alarma::borrar_bitacora()
