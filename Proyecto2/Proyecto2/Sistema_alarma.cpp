@@ -92,6 +92,62 @@ string Desencript(string frase)//Algortimo para desencriptar
 		}
 	}return resultado;
 }
+void lineasff()//Funcion para guardar las lineas en el vector.
+{
+	fstream monitoreo;
+	string linea;
+	monitoreo.open("monitoreo.txt", ios::in);/////Recordar cambiar a nombre del archivo real.
+	cin.ignore();
+	lineasd.clear();
+	while (!monitoreo.eof())
+	{
+		getline(monitoreo, linea);
+
+		lineasd.push_back(linea);
+
+	}
+	monitoreo.close();
+}
+
+string hora()
+{
+	string h, m, s, r;
+	time_t now;
+	struct tm nowLocal;
+	now = time(NULL);
+	nowLocal = *localtime(&now);
+	h = to_string(nowLocal.tm_hour);
+	m = to_string(nowLocal.tm_min);
+	s = to_string(nowLocal.tm_sec);
+	r = h + ":" + m + ":" + s;
+	return r;
+}
+
+string fecha()
+{
+	string d, m, a, r;
+	time_t now;
+	struct tm nowLocal;
+	now = time(NULL);
+	nowLocal = *localtime(&now);
+	d = to_string(nowLocal.tm_mday);
+	m = to_string(nowLocal.tm_mon + 1);
+	a = to_string(nowLocal.tm_year + 1900);
+	r = d + "." + m + "." + a;
+	return r;
+}
+
+void guardard()
+{
+	fstream monitoreo;
+	monitoreo.open("monitoreo.txt", ios::out);
+	for (int i = 0; i<int(lineasd.size() - 1); i++)
+	{
+		monitoreo << lineasd[i] << endl;
+	}
+	monitoreo << lineasd[int(lineasd.size() - 1)]; //guardar el ultimo
+	monitoreo.close();
+}
 
 void agregar_linea_alerta(string accion, string identificacion)
 {
@@ -201,7 +257,7 @@ int monitorear()
 			{
 				dispositivo_1_ == "NO ACTIVADO";
 				dispositivo_2_ == "NO ACTIVADO";////aqui se cambiarian los dispositivos
-				correo();
+				//correo();
 				variable_alarma = "ACTIVADO";
 				thread alertar(alerta);
 				alertar.detach();
@@ -249,35 +305,6 @@ vector<Sistema_alarma>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
 
 
-
-
-string hora()
-{
-	string h, m, s, r;
-	time_t now;
-	struct tm nowLocal;
-	now = time(NULL);
-	nowLocal = *localtime(&now);
-	h = to_string(nowLocal.tm_hour);
-	m = to_string(nowLocal.tm_min);
-	s = to_string(nowLocal.tm_sec);
-	r = h + ":" + m + ":" + s;
-	return r;
-}
-
-string fecha()
-{
-	string d, m, a, r;
-	time_t now;
-	struct tm nowLocal;
-	now = time(NULL);
-	nowLocal = *localtime(&now);
-	d = to_string(nowLocal.tm_mday);
-	m = to_string(nowLocal.tm_mon + 1);
-	a = to_string(nowLocal.tm_year + 1900);
-	r = d + "." + m + "." + a;
-	return r;
-}
 
 vector<string> Scmd(string string1) //Separa el string cuando se ingresan los comandos cuando encuentra espacios
 {
@@ -1051,34 +1078,6 @@ void SaveFileZ(vector<Zona>zz1)//Archivo pdf para imprimir lista
 
 }
 
-void lineasff()//Funcion para guardar las lineas en el vector.
-{
-	fstream monitoreo;
-	string linea;
-	monitoreo.open("monitoreo.txt", ios::in);/////Recordar cambiar a nombre del archivo real.
-	cin.ignore();
-	lineasd.clear();
-	while (!monitoreo.eof())
-	{
-		getline(monitoreo, linea);
-
-		lineasd.push_back(linea);
-
-	}
-	monitoreo.close();
-}
-
-void guardard()
-{
-	fstream monitoreo;
-	monitoreo.open("monitoreo.txt", ios::out);
-	for (int i = 0; i<int(lineasd.size() - 1); i++)
-	{
-		monitoreo << lineasd[i] << endl;
-	}
-	monitoreo << lineasd[int(lineasd.size() - 1)]; //guardar el ultimo
-	monitoreo.close();
-}
 
 vector<string> dividir_stringd(string string1)//Divide string separado  por espacios
 {
