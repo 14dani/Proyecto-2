@@ -148,6 +148,8 @@ Sistema_alarma::Sistema_alarma(string ident, Usuario usuarioP, vector<Usuario>ve
 vector<Sistema_alarma>usuarios; //Vector donde se guaradaran los usuarios
 vector<string>Ucontraseña;
 
+vector<S_A>usuarios; //Vector donde se guaradaran los usuarios
+vector<string>Ucontraseña;*/
 
 
 
@@ -645,7 +647,7 @@ void Archivo_monitoreo()
 
 
 
-void Sistema_alarma::armar_sistema()
+void armar_sistema()
 {
 	string id, con, con1;
 	string est = "Armar";
@@ -1059,8 +1061,8 @@ datos_de_lineax separar_linead(string linea)
 
 void imprimir_lineasd()//Funcion para imprimir lineas(de 15 en 15), el switch es para indicar la tanda de lineas que se esta buscando imprimir.
 {
-	int indice_min = int(size(lineasd) - 2);
-	int tope=0;
+	int indice_min = 0;
+	int tope;
 	vector<string> elementos;
 	datos_de_lineax datos;
 
@@ -1245,7 +1247,6 @@ void Sistema_alarma::lista_zonas()
 	}
 	else cout << "Usuario no registrado" << endl;
 }
-
 
 void bitacora()
 {
