@@ -16,7 +16,7 @@ void Arduino::proveer()/////Aqui se envian los datos en terminos activos o desac
 {
 	
 	dispositivo_1 = "DESACTIVADO";
-	dispositivo_2 = "DESACTIVADO";
+	dispositivo_2 = "ACTIVADO";
 	this->dispositivo_1 = dispositivo_1;
 	this->dispositivo_2 = dispositivo_2;
 }

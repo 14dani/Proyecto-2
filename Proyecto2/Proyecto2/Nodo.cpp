@@ -9,5 +9,6 @@ Nodo::Nodo(int d) // constructor
 	dato = d;
 	p_izq = nullptr;
 	p_der = nullptr;
-}
+}
+
 	//
