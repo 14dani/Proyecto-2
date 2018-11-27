@@ -9,6 +9,3 @@ public:
 	Nodo(int);
 	friend class Arbol;
 };
-
-
-
