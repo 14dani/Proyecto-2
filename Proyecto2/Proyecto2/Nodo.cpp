@@ -4,11 +4,10 @@
 #include "Sistema_alarma.h"
 using namespace std;
 
-
-Nodo::Nodo(Sistema_alarma d) // constructor recibiendo datos
-{
-	Sistema_alarma dato = d;
-	superior = nullptr;
-	inferior_izquierdo = nullptr;
-	inferior_derecho = nullptr;
-}
+	Nodo::Nodo(Sistema_alarma d) // constructor
+	{
+		objeto = d;
+		dato=d.
+		p_izq = nullptr;
+		p_der = nullptr;
+	}
